@@ -1,4 +1,60 @@
 import streamlit as st
+import streamlit.components.v1 as components
+from pathlib import Path
+import base64
+
+# -------------------------------------------------------
+# Streamlit Page Configuration
+# -------------------------------------------------------
+st.set_page_config(
+    page_title="NucLigs Database",
+    page_icon="🧬",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# -------------------------------------------------------
+# Hide Streamlit Default UI
+# -------------------------------------------------------
+hide_streamlit_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+.stDeployButton {display:none;}
+
+.block-container {
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+    padding-left: 0rem;
+    padding-right: 0rem;
+    max-width: 100%;
+}
+
+html, body, [class*="css"] {
+    margin: 0;
+    padding: 0;
+}
+</style>
+"""
+
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+# -------------------------------------------------------
+# App Header
+# -------------------------------------------------------
+st.markdown(
+    """
+    <div style="
+        background-color:#060a14;
+        padding:10px 20px;
+        border-bottom:1px solid rgba(99,130,191,.2);
+    ">
+        <h2 style="
+            color:#38bdf8;
+            margin:0;
+            font-family:Arial;
+            letter-spacing:1px;
         ">
             NucLigs Database — Nucleotide & Nucleoside Analog Database
         </h2>
@@ -10,7 +66,7 @@ import streamlit as st
 # -------------------------------------------------------
 # HTML File Path
 # -------------------------------------------------------
-html_file = Path("nucligs_visualizer.html")
+html_file = Path("nucligs_visualizer(4).html")
 
 # -------------------------------------------------------
 # Load and Render HTML
@@ -26,7 +82,7 @@ if html_file.exists():
 
 else:
     st.error(
-        "HTML file not found. Please place 'nucligs_visualizer.html' in the same folder as app.py"
+        "HTML file not found. Please place 'nucligs_visualizer(4).html' in the same folder as app.py"
     )
 
 # -------------------------------------------------------
