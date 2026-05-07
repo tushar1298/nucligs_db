@@ -77,7 +77,7 @@ if html_file.exists():
     components.html(
         html_content,
         height=250,
-        scrolling=False
+        scrolling=True
     )
 
 else:
