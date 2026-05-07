@@ -8,7 +8,6 @@ import base64
 # -------------------------------------------------------
 st.set_page_config(
     page_title="NucLigs Database",
-    page_icon="https://github.com/tushar1298/nucligs_db/blob/main/NucLigs.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
