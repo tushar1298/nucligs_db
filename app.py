@@ -102,7 +102,7 @@ if uploaded_html is not None:
 
     components.html(
         html_data,
-        height=2500,
+        height=25000,
         scrolling=True
     )
 
