@@ -8,7 +8,7 @@ import base64
 # -------------------------------------------------------
 st.set_page_config(
     page_title="NucLigs Database",
-    page_icon="🧬",
+    page_icon=,
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -66,7 +66,7 @@ st.markdown(
 # -------------------------------------------------------
 # HTML File Path
 # -------------------------------------------------------
-html_file = Path("nucligs_visualizer(4).html")
+html_file = Path("nucligs_visualizer.html")
 
 # -------------------------------------------------------
 # Load and Render HTML
@@ -82,7 +82,7 @@ if html_file.exists():
 
 else:
     st.error(
-        "HTML file not found. Please place 'nucligs_visualizer(4).html' in the same folder as app.py"
+        "HTML file not found. Please place 'nucligs_visualizer.html' in the same folder as app.py"
     )
 
 # -------------------------------------------------------
