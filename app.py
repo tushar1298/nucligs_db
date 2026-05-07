@@ -76,7 +76,7 @@ if html_file.exists():
 
     components.html(
         html_content,
-        height=250,
+        height=2500,
         scrolling=True
     )
 
@@ -102,7 +102,7 @@ if uploaded_html is not None:
 
     components.html(
         html_data,
-        height=25000,
+        height=2500,
         scrolling=True
     )
 
