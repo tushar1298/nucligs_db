@@ -60,9 +60,7 @@ st.markdown(
                 border-radius:10px;
             "
         >
-
         <div>
-
             <h2 style="
                 color:#38bdf8;
                 margin:0;
@@ -71,7 +69,6 @@ st.markdown(
             ">
                 NucLigs Database — Nucleotide & Nucleoside Analog Database
             </h2>
-
             <h4 style="
                 color:#94a3b8;
                 margin-top:6px;
@@ -82,9 +79,7 @@ st.markdown(
             ">
                 Designed by Tushar Gupta and Dr. Pradeep Pant
             </h4>
-
         </div>
-
     </div>
     """,
     unsafe_allow_html=True
