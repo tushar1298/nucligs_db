@@ -72,7 +72,7 @@ st.markdown("""
             color:#38bdf8;
             margin:0;
             font-family:Arial;
-            letter-spacing:1px;
+            letter-spacing:0.5px;
         ">
             Nucleotide and Nucleoside Database
         </h3>
