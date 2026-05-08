@@ -126,7 +126,7 @@ st.markdown(
         background:#060a14;
         border-top:1px solid rgba(99,130,191,.1);
     ">
-        NucLigs Database 2026 V1
+        NucLigs Database 2026 Verson 1.0
     </div>
     """,
     unsafe_allow_html=True
