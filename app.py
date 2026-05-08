@@ -1,10 +1,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from pathlib import Path
-import base64
 
 # -------------------------------------------------------
-# Streamlit Page Configuration
+# Page Config
 # -------------------------------------------------------
 st.set_page_config(
     page_title="NucLigs Database",
@@ -13,135 +12,122 @@ st.set_page_config(
 )
 
 # -------------------------------------------------------
-# Hide Streamlit Default UI
+# Hide Streamlit UI
 # -------------------------------------------------------
-hide_streamlit_style = """
+st.markdown("""
 <style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
+
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+header {visibility:hidden;}
 .stDeployButton {display:none;}
 
-.block-container {
-    padding-top: 0rem;
-    padding-bottom: 0rem;
-    padding-left: 0rem;
-    padding-right: 0rem;
-    max-width: 100%;
+.block-container{
+    padding:0rem;
+    max-width:100%;
 }
 
-html, body, [class*="css"] {
-    margin: 0;
-    padding: 0;
+html, body, [class*="css"]{
+    margin:0;
+    padding:0;
 }
+
+iframe{
+    border:none !important;
+}
+
 </style>
-"""
-
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # -------------------------------------------------------
-# App Header
+# Header
 # -------------------------------------------------------
-st.markdown(
-    """
-    <div style="
-        background-color:#060a14;
-        padding:12px 20px;
-        border-bottom:1px solid rgba(99,130,191,.2);
-        display:flex;
-        align-items:center;
-        gap:18px;
-    ">
-        <img 
-            src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
-            style="
-                height:72px;
-                width:auto;
-                border-radius:10px;
-            "
-        >
-        <div>
-            <h2 style="
-                color:#38bdf8;
-                margin:0;
-                font-family:Arial;
-                letter-spacing:1px;
-            ">
-                NucLigs Database — Nucleotide & Nucleoside Analog Database
-            </h2>
-            <h4 style="
-                color:#94a3b8;
-                margin-top:6px;
-                margin-bottom:0;
-                font-family:Arial;
-                font-weight:400;
-                letter-spacing:.5px;
-            ">
-                Designed by Tushar Gupta and Dr. Pradeep Pant
-            </h4>
+st.markdown("""
+<div style="
+    background:#060a14;
+    padding:12px 20px;
+    border-bottom:1px solid rgba(99,130,191,.2);
+    display:flex;
+    align-items:center;
+    gap:18px;
+">
+
+    <img
+        src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
+        style="
+            height:68px;
+            width:auto;
+            border-radius:10px;
+        "
+    >
+
+    <div>
+
+        <h2 style="
+            color:#38bdf8;
+            margin:0;
+            font-family:Arial;
+            letter-spacing:1px;
+        ">
+            NucLigs Database — Nucleotide & Nucleoside Analog Database
+        </h2>
+
+        <div style="
+            color:#94a3b8;
+            margin-top:6px;
+            font-size:14px;
+            font-family:Arial;
+        ">
+            Designed by Tushar Gupta and Dr. Pradeep Pant
         </div>
+
     </div>
-    """,
-    unsafe_allow_html=True
-)
-# -------------------------------------------------------
-# HTML File Path
-# -------------------------------------------------------
-html_file = Path("nucligs_visualizer.html")
+
+</div>
+""", unsafe_allow_html=True)
 
 # -------------------------------------------------------
-# Load and Render HTML
+# Cache HTML File
 # -------------------------------------------------------
-if html_file.exists():
-    html_content = html_file.read_text(encoding="utf-8")
+@st.cache_data(show_spinner=False)
+def load_html():
+    html_path = Path("nucligs_visualizer.html")
+
+    if not html_path.exists():
+        return None
+
+    return html_path.read_text(encoding="utf-8")
+
+html_content = load_html()
+
+# -------------------------------------------------------
+# Render HTML
+# -------------------------------------------------------
+if html_content:
 
     components.html(
         html_content,
-        height=2500,
+        height=1200,
         scrolling=True
     )
 
 else:
     st.error(
-        "HTML file not found. Please place 'nucligs_visualizer.html' in the same folder as app.py"
-    )
-
-# -------------------------------------------------------
-# Optional File Upload Helper
-# -------------------------------------------------------
-st.sidebar.title("Upload HTML File")
-
-uploaded_html = st.sidebar.file_uploader(
-    "Upload HTML File",
-    type=["html", "htm"]
-)
-
-if uploaded_html is not None:
-    html_data = uploaded_html.read().decode("utf-8")
-
-    st.success("HTML File Loaded Successfully")
-
-    components.html(
-        html_data,
-        height=2500,
-        scrolling=False
+        "nucligs_visualizer.html not found in app directory"
     )
 
 # -------------------------------------------------------
 # Footer
 # -------------------------------------------------------
-st.markdown(
-    """
-    <div style="
-        text-align:center;
-        padding:10px;
-        color:#94a3b8;
-        font-size:12px;
-        background:#060a14;
-        border-top:1px solid rgba(99,130,191,.1);
-    ">
-        NucLigs Database 2026 Verson 1.0
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div style="
+    text-align:center;
+    padding:10px;
+    color:#94a3b8;
+    font-size:12px;
+    background:#060a14;
+    border-top:1px solid rgba(99,130,191,.1);
+">
+    NucLigs Database 2026 Version 1.0
+</div>
+""", unsafe_allow_html=True)
