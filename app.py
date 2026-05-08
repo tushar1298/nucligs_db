@@ -46,30 +46,50 @@ st.markdown(
     """
     <div style="
         background-color:#060a14;
-        padding:10px 20px;
+        padding:12px 20px;
         border-bottom:1px solid rgba(99,130,191,.2);
+        display:flex;
+        align-items:center;
+        gap:18px;
     ">
-        <h2 style="
-            color:#38bdf8;
-            margin:0;
-            font-family:Arial;
-            letter-spacing:1px;
-        ">
-            NucLigs Database — Nucleotide & Nucleoside Analog Database
-        </h4>
-                <h4 style="
-            color:#38bdf8;
-            margin:0;
-            font-family:Arial;
-            letter-spacing:1px;
-        ">
-            Designed by Tushar Gupta and Dr. Pradeep Pant
-        </h4>
+
+        <img 
+            src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
+            style="
+                height:72px;
+                width:auto;
+                border-radius:10px;
+            "
+        >
+
+        <div>
+
+            <h2 style="
+                color:#38bdf8;
+                margin:0;
+                font-family:Arial;
+                letter-spacing:1px;
+            ">
+                NucLigs Database — Nucleotide & Nucleoside Analog Database
+            </h2>
+
+            <h4 style="
+                color:#94a3b8;
+                margin-top:6px;
+                margin-bottom:0;
+                font-family:Arial;
+                font-weight:400;
+                letter-spacing:.5px;
+            ">
+                Designed by Tushar Gupta and Dr. Pradeep Pant
+            </h4>
+
+        </div>
+
     </div>
     """,
     unsafe_allow_html=True
 )
-
 # -------------------------------------------------------
 # HTML File Path
 # -------------------------------------------------------
