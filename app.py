@@ -3,7 +3,7 @@
 # -------------------------------------------------------
 import base64
 
-logo_path = "nucligs.png"
+logo_path = "nucligs_db/nucligs.png"
 
 logo_base64 = ""
 
