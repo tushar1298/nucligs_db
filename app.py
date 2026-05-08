@@ -56,7 +56,15 @@ st.markdown(
             letter-spacing:1px;
         ">
             NucLigs Database — Nucleotide & Nucleoside Analog Database
-        </h2>
+        </h4>
+                <h4 style="
+            color:#38bdf8;
+            margin:0;
+            font-family:Arial;
+            letter-spacing:1px;
+        ">
+            Designed by Tushar Gupta
+        </h4>
     </div>
     """,
     unsafe_allow_html=True
