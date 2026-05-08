@@ -52,7 +52,6 @@ st.markdown(
         align-items:center;
         gap:18px;
     ">
-
         <img 
             src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
             style="
