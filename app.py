@@ -49,7 +49,7 @@ st.markdown("""
     border-bottom:1px solid rgba(99,130,191,.2);
     display:flex;
     align-items:center;
-    gap:18px;
+    gap:10px;
 ">
     <img
         src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
