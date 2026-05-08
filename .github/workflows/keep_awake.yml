@@ -1,0 +1,31 @@
+name: Keep NucLigs Streamlit App Alive
+
+on:
+  schedule:
+    # Every 3 days at 12:00 UTC
+    - cron: "0 12 */1 * *"
+  workflow_dispatch:
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Streamlit App (safe)
+        run: |
+          echo "Pinging NucLigs Streamlit app..."
+
+          HTTP_STATUS=$(curl -L \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
+            --connect-timeout 30 \
+            --max-time 60 \
+            -o /dev/null \
+            -s \
+            -w "%{http_code}" \
+            https://nucligs.streamlit.app/ || true)
+
+          echo "HTTP Status: $HTTP_STATUS"
+          echo "Ping completed (non-fatal)."
+
+      - name: Done
+        run: echo "Keep-alive workflow finished successfully."
