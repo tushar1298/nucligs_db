@@ -1,1 +1,1 @@
-# nucligs_db
+#NucLigs Database
