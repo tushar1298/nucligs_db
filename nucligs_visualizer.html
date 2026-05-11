@@ -1,0 +1,2708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NucLigs Database — Nucleotide & Nucleoside Analog Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"></script>
+<script src="https://3dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --c-bg:#060a14;--c-bg2:#080d1a;--c-surface:#0b1220;--c-panel:#0f1726;--c-panel2:#121c2e;
+  --c-border:rgba(99,130,191,.1);--c-border2:rgba(99,130,191,.18);--c-border3:rgba(99,130,191,.28);
+  --c-accent:#38bdf8;--c-accent-dim:rgba(56,189,248,.1);--c-accent-glow:rgba(56,189,248,.22);
+  --c-teal:#2dd4bf;--c-teal-dim:rgba(45,212,191,.1);
+  --c-green:#4ade80;--c-green-dim:rgba(74,222,128,.1);
+  --c-yellow:#fbbf24;--c-yellow-dim:rgba(251,191,36,.1);
+  --c-red:#f87171;--c-red-dim:rgba(248,113,113,.1);
+  --c-purple:#a78bfa;--c-purple-dim:rgba(167,139,250,.1);
+  --c-orange:#fb923c;--c-orange-dim:rgba(251,146,60,.1);
+  --c-pink:#f472b6;--c-pink-dim:rgba(244,114,182,.1);
+  --c-text:#e2e8f0;--c-text2:#94a3b8;--c-text3:#4b5a72;--c-text4:#2d3a52;
+  --ff-display:'Syne',sans-serif;--ff-body:'DM Sans',sans-serif;--ff-mono:'JetBrains Mono',monospace;
+  --r:8px;--r2:12px;--sidebar-w:340px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--c-bg);color:var(--c-text);font-family:var(--ff-body);font-size:13px;line-height:1.55}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--c-border2);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--c-border3)}
+input,button,select{font-family:inherit;font-size:inherit}
+a{color:var(--c-accent);text-decoration:none}a:hover{text-decoration:underline}
+
+/* ── TOP BAR ──────────────────────────────────────────── */
+#topbar{height:52px;min-height:52px;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:14px;padding:0 18px;position:relative;z-index:20}
+#logo{font-family:var(--ff-display);font-size:15px;font-weight:800;color:var(--c-accent);letter-spacing:1.5px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+#logo-sub{font-size:10px;color:var(--c-text3);font-weight:400;letter-spacing:.3px;font-family:var(--ff-body);margin-top:2px}
+.logo-hex{width:30px;height:30px;background:var(--c-accent-dim);border:1px solid rgba(56,189,248,.25);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-hex svg{width:17px;height:17px;stroke:var(--c-accent);fill:none;stroke-width:1.5}
+#stat-pills{display:flex;gap:7px;margin-left:2px}
+.stat-pill{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;font-family:var(--ff-mono);letter-spacing:.3px;border:1px solid var(--c-border);color:var(--c-text3);white-space:nowrap}
+.stat-pill.loaded{border-color:rgba(56,189,248,.25);color:var(--c-accent)}
+.hspacer{flex:1}
+#rdkit-pill{padding:3px 11px;border-radius:20px;font-size:10px;font-family:var(--ff-mono);border:1px solid var(--c-border3);color:var(--c-text2);transition:all .3s}
+#rdkit-pill.ok{border-color:rgba(74,222,128,.3);color:var(--c-green)}
+#rdkit-pill.err{border-color:rgba(248,113,113,.3);color:var(--c-red)}
+.top-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.top-btn{padding:5px 10px;border-radius:999px;background:var(--c-panel);border:1px solid var(--c-border2);color:var(--c-text2);font-size:10px;cursor:pointer;transition:all .18s}
+.top-btn:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.top-btn strong{font-weight:700}
+
+/* ── LAYOUT ───────────────────────────────────────────── */
+#app{display:flex;flex-direction:column;height:100vh}
+#main{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* ── SIDEBAR ──────────────────────────────────────────── */
+#sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--c-surface);border-right:1px solid var(--c-border);display:flex;flex-direction:column;overflow:hidden}
+
+/* Search area */
+#search-area{padding:12px 12px 10px;border-bottom:1px solid var(--c-border);flex-shrink:0}
+.search-wrap{position:relative;margin-bottom:9px}
+.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none}
+.search-ico svg{width:13px;height:13px;stroke:var(--c-text3);fill:none;stroke-width:2}
+#search-input{width:100%;padding:8px 32px 8px 30px;background:var(--c-panel);border:1px solid var(--c-border2);border-radius:var(--r);color:var(--c-text);font-size:12px;outline:none;transition:border-color .2s}
+#search-input:focus{border-color:rgba(56,189,248,.4);box-shadow:0 0 0 3px rgba(56,189,248,.06)}
+#search-input::placeholder{color:var(--c-text3)}
+.search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);cursor:pointer;padding:2px;opacity:0;transition:opacity .2s;background:none;border:none;color:var(--c-text3)}
+.search-clear.visible{opacity:1}
+.search-clear:hover{color:var(--c-text2)}
+
+/* Filter row */
+#filter-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:6px}
+
+/* bibliography filter panel */
+#biblio-toggle{width:100%;padding:5px 8px;background:none;border:1px solid var(--c-border);border-radius:5px;color:var(--c-text3);font-size:10.5px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .15s;font-family:var(--ff-body)}
+#biblio-toggle:hover{border-color:var(--c-border2);color:var(--c-text2)}
+#biblio-toggle.active{border-color:rgba(56,189,248,.3);color:var(--c-accent)}
+#biblio-toggle .bt-arrow{transition:transform .2s;font-size:9px}
+#biblio-toggle.active .bt-arrow{transform:rotate(180deg)}
+#biblio-filters{display:none;margin-top:7px;padding:8px;background:var(--c-panel2);border-radius:7px;border:1px solid var(--c-border)}
+#biblio-filters.open{display:block}
+.bf-label{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--c-text3);font-weight:600;margin-bottom:3px;margin-top:7px}
+.bf-label:first-child{margin-top:0}
+.bf-input{width:100%;padding:5px 8px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text);font-size:11px;outline:none;transition:border-color .2s}
+.bf-input:focus{border-color:rgba(56,189,248,.4);box-shadow:0 0 0 3px rgba(56,189,248,.06)}
+.bf-input::placeholder{color:var(--c-text3)}
+.bf-year-row{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;align-items:center}
+.bf-year-sep{font-size:10px;color:var(--c-text3);text-align:center}
+.bf-select{width:100%;padding:5px 22px 5px 8px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text2);font-size:10.5px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%234b5a72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;transition:border-color .2s}
+.bf-select:focus{border-color:var(--c-border2)}
+.bf-select option{background:var(--c-panel2);color:var(--c-text)}
+#biblio-active-count{display:none;font-size:9px;font-family:var(--ff-mono);font-weight:600;color:var(--c-accent);background:var(--c-accent-dim);padding:1px 5px;border-radius:3px}
+.filt-select{width:100%;padding:5px 6px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text2);font-size:10.5px;outline:none;cursor:pointer;transition:border-color .2s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%234b5a72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;padding-right:20px}
+.filt-select:focus{border-color:var(--c-border2)}
+.filt-select option{background:var(--c-panel2);color:var(--c-text)}
+
+/* Results toolbar */
+#results-toolbar{padding:7px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--c-border);flex-shrink:0;flex-wrap:wrap;background:var(--c-bg2)}
+#results-count{font-size:10.5px;color:var(--c-text3);font-family:var(--ff-mono);flex-shrink:0;min-width:0}
+#results-count b{color:var(--c-text2)}
+.toolbar-spacer{flex:1}
+
+/* Sort select */
+#sort-select{padding:4px 22px 4px 8px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text2);font-size:10.5px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%234b5a72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 5px center;transition:border-color .2s}
+#sort-select:focus{border-color:var(--c-border2)}
+#sort-select option{background:var(--c-panel2)}
+#sort-dir-btn{padding:4px 7px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text3);font-size:11px;cursor:pointer;transition:all .15s;line-height:1}
+#sort-dir-btn:hover{border-color:var(--c-border2);color:var(--c-text)}
+
+/* Show N select */
+#show-n-wrap{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.show-n-label{font-size:10px;color:var(--c-text3);white-space:nowrap}
+#show-n-select{padding:4px 22px 4px 8px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text2);font-size:10.5px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%234b5a72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 5px center}
+#show-n-select:focus{border-color:var(--c-border2)}
+#show-n-select option{background:var(--c-panel2)}
+
+/* Column view select */
+#view-mode-select{padding:4px 22px 4px 8px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text2);font-size:10.5px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%234b5a72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 5px center}
+.toolbar-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.toolbar-btn{padding:5px 9px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text2);font-size:10.5px;cursor:pointer;transition:all .15s}
+.toolbar-btn:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.toolbar-btn:disabled{opacity:.45;cursor:not-allowed}
+.range-label{font-size:10px;color:var(--c-text3)}
+.range-input{width:66px;padding:5px 8px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text);font-size:10.5px;outline:none}
+.range-input:focus{border-color:rgba(56,189,248,.4);box-shadow:0 0 0 3px rgba(56,189,248,.06)}
+.toolbar-note{font-size:10px;color:var(--c-text3);white-space:nowrap}
+
+/* Result list */
+#result-list{flex:1;overflow-y:auto;padding:0}
+.result-item{padding:9px 12px;cursor:pointer;border-left:2px solid transparent;transition:all .12s;border-bottom:1px solid rgba(99,130,191,.05);position:relative}
+.result-item:hover{background:rgba(56,189,248,.04)}
+.result-item.active{background:rgba(56,189,248,.07);border-left-color:var(--c-accent)}
+.ri-top{display:flex;align-items:baseline;gap:7px;margin-bottom:2px}
+.ri-nl{font-family:var(--ff-mono);font-size:9.5px;color:var(--c-accent);font-weight:600;flex-shrink:0}
+.ri-name{font-size:11.5px;color:var(--c-text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
+.ri-iupac{font-size:10px;color:var(--c-text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2;margin-bottom:3px;font-style:italic}
+.ri-badges{display:flex;gap:3px;flex-wrap:wrap}
+.ri-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600;letter-spacing:.3px;white-space:nowrap;border:1px solid}
+
+/* Row-number in compact mode */
+.ri-rownum{position:absolute;right:10px;top:9px;font-family:var(--ff-mono);font-size:9px;color:var(--c-text4)}
+
+/* badge colour classes */
+.badge-analog{background:rgba(167,139,250,.12);color:var(--c-purple);border-color:rgba(167,139,250,.2)}
+.badge-natural{background:var(--c-green-dim);color:var(--c-green);border-color:rgba(74,222,128,.2)}
+.badge-adenine{background:rgba(56,189,248,.1);color:var(--c-accent);border-color:rgba(56,189,248,.2)}
+.badge-uracil{background:var(--c-orange-dim);color:var(--c-orange);border-color:rgba(251,146,60,.2)}
+.badge-cytosine{background:var(--c-teal-dim);color:var(--c-teal);border-color:rgba(45,212,191,.2)}
+.badge-guanine{background:var(--c-yellow-dim);color:var(--c-yellow);border-color:rgba(251,191,36,.2)}
+.badge-thymine{background:var(--c-pink-dim);color:var(--c-pink);border-color:rgba(244,114,182,.2)}
+.badge-modified-base{background:var(--c-red-dim);color:var(--c-red);border-color:rgba(248,113,113,.2)}
+.badge-mw{background:var(--c-panel2);color:var(--c-text3);border-color:var(--c-border)}
+.badge-mod-base{background:rgba(56,189,248,.08);color:var(--c-accent);border-color:rgba(56,189,248,.15)}
+.badge-mod-sugar{background:var(--c-teal-dim);color:var(--c-teal);border-color:rgba(45,212,191,.15)}
+.badge-mod-region{background:var(--c-red-dim);color:var(--c-red);border-color:rgba(248,113,113,.15)}
+
+/* Table view mode */
+.view-table{width:100%;border-collapse:collapse;font-size:10.5px}
+.view-table thead{background:var(--c-bg2);position:sticky;top:0;z-index:5}
+.view-table th{padding:6px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--c-text3);font-weight:600;border-bottom:1px solid var(--c-border2);white-space:nowrap;cursor:pointer;transition:color .15s}
+.view-table th:hover{color:var(--c-text2)}
+.view-table th.sub{background:var(--c-surface);font-size:8.5px;letter-spacing:.5px;color:var(--c-text4);padding:3px 10px;border-bottom:1px solid var(--c-border)}
+.view-table td{padding:6px 10px;border-bottom:1px solid rgba(99,130,191,.04);vertical-align:middle;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.view-table tr.active-row td{background:rgba(56,189,248,.06)}
+.view-table tr:hover td{background:rgba(255,255,255,.02)}
+.view-table tr{cursor:pointer}
+.th-group{background:var(--c-surface);font-family:var(--ff-display);font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--c-accent);padding:4px 10px;border-bottom:1px solid var(--c-border)}
+
+/* Section sub-label in table */
+.subhead-row td{background:var(--c-bg);font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--c-text4);padding:3px 10px;border-bottom:1px solid var(--c-border);font-weight:700;font-family:var(--ff-display)}
+
+/* Show-more pagination area */
+#list-footer{padding:10px;text-align:center;border-top:1px solid var(--c-border);font-size:10.5px;color:var(--c-text3);flex-shrink:0}
+#list-footer b{color:var(--c-text2)}
+
+#no-results{display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:10px;color:var(--c-text3);font-size:12px;text-align:center}
+#no-results svg{opacity:.2}
+#loading-data{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:12px;color:var(--c-text2);font-size:12px}
+.spinner{width:22px;height:22px;border-radius:50%;border:2px solid var(--c-border2);border-top-color:var(--c-accent);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── CONTENT ──────────────────────────────────────────── */
+#content{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#splash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--c-text3);text-align:center;padding:40px}
+#splash .splash-icon{width:60px;height:60px;border-radius:50%;background:var(--c-panel);border:1px solid var(--c-border2);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+#splash .splash-icon svg{stroke:var(--c-text4);fill:none;width:26px;height:26px}
+#splash h2{font-family:var(--ff-display);font-size:15px;font-weight:600;color:var(--c-text3)}
+#splash p{font-size:11.5px;max-width:280px;line-height:1.65}
+
+/* ── COMPOUND DETAIL ─────────────────────────────────── */
+#detail{flex:1;display:none;flex-direction:column;overflow:hidden;animation:slideIn .22s ease}
+#comp-header{padding:11px 18px;background:var(--c-surface);border-bottom:1px solid var(--c-border);flex-shrink:0;display:flex;align-items:flex-start;gap:11px;flex-wrap:wrap}
+#comp-nl{font-family:var(--ff-mono);font-size:11px;font-weight:600;color:var(--c-accent);background:var(--c-accent-dim);padding:4px 10px;border-radius:4px;border:1px solid rgba(56,189,248,.2);white-space:nowrap;flex-shrink:0}
+#comp-name-block{flex:1;min-width:0}
+#comp-name{font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--c-text);line-height:1.3}
+#comp-iupac{font-size:10.5px;color:var(--c-text3);margin-top:2px;line-height:1.4;font-style:italic}
+#comp-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.comp-badge{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.3px;border:1px solid;white-space:nowrap}
+.cb-analog{background:var(--c-purple-dim);color:var(--c-purple);border-color:rgba(167,139,250,.25)}
+.cb-natural{background:var(--c-green-dim);color:var(--c-green);border-color:rgba(74,222,128,.25)}
+.cb-base{background:var(--c-accent-dim);color:var(--c-accent);border-color:rgba(56,189,248,.25)}
+.cb-sugar{background:var(--c-teal-dim);color:var(--c-teal);border-color:rgba(45,212,191,.25)}
+.cb-region{background:var(--c-red-dim);color:var(--c-red);border-color:rgba(248,113,113,.25)}
+
+/* ── VIEWERS ─────────────────────────────────────────── */
+#viewers{display:grid;grid-template-columns:1fr 1fr;height:310px;min-height:240px;border-bottom:1px solid var(--c-border);flex-shrink:0;background:var(--c-border);gap:1px}
+.viewer-panel{background:var(--c-panel);display:flex;flex-direction:column;overflow:hidden}
+.vp-header{padding:7px 13px;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.vp-title{font-family:var(--ff-display);font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--c-text2)}
+.vp-tag{font-family:var(--ff-mono);font-size:8.5px;padding:2px 6px;border-radius:3px}
+.vt-2d{background:rgba(56,189,248,.1);color:var(--c-accent)}
+.vt-3d{background:rgba(74,222,128,.1);color:var(--c-green)}
+.vp-controls{display:flex;gap:3px;margin-left:auto}
+.vp-btn{padding:3px 8px;border-radius:4px;font-size:9px;font-weight:600;background:none;border:1px solid var(--c-border2);color:var(--c-text3);cursor:pointer;transition:all .12s}
+.vp-btn:hover,.vp-btn.active{border-color:var(--c-accent);color:var(--c-accent)}
+.vp-body{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.vp-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--c-text4);font-size:11px;text-align:center}
+.vp-empty svg{opacity:.2;width:26px;height:26px;stroke:var(--c-text3);fill:none}
+#viewer3d-el{width:100%;height:100%}
+#viewer2d-legend{padding:5px 12px;border-top:1px solid var(--c-border);display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0;background:var(--c-surface)}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--c-text3)}
+.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+#3d-note{font-size:9.5px;color:var(--c-text4);text-align:center;padding:4px;border-top:1px solid var(--c-border);flex-shrink:0}
+
+/* ── TABS ─────────────────────────────────────────────── */
+#tabs-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+#tab-bar{display:flex;overflow-x:auto;background:var(--c-surface);border-bottom:1px solid var(--c-border);flex-shrink:0}
+#tab-bar::-webkit-scrollbar{height:0}
+.tab-btn{padding:8px 14px;font-size:11px;font-weight:500;color:var(--c-text3);cursor:pointer;white-space:nowrap;border:none;background:none;border-bottom:2px solid transparent;transition:all .12s}
+.tab-btn:hover{color:var(--c-text2)}
+.tab-btn.active{color:var(--c-accent);border-bottom-color:var(--c-accent);background:var(--c-accent-dim)}
+#tab-contents{flex:1;overflow-y:auto;padding:14px 18px}
+.tab-pane{display:none;animation:fadeIn .18s ease}.tab-pane.active{display:block}
+
+/* ── SECTION LAYOUT ───────────────────────────────────── */
+.sec{margin-bottom:18px}
+.sec-title{font-family:var(--ff-display);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--c-text3);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--c-border)}
+
+/* Section sub-heading (from merged cells) */
+.subhead{font-family:var(--ff-display);font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--c-accent);padding:3px 0 6px;opacity:.7;border-bottom:1px dashed var(--c-border);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.subhead::before{content:'';width:3px;height:12px;background:var(--c-accent);border-radius:2px;opacity:.5}
+
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px}
+.info-grid.wide{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.info-grid.full{grid-template-columns:1fr}
+.ig-card{background:var(--c-panel2);border:1px solid var(--c-border);border-radius:var(--r);padding:9px 11px;transition:border-color .15s}
+.ig-card:hover{border-color:var(--c-border2)}
+.ig-card.highlight{border-color:rgba(56,189,248,.2)}
+.ig-key{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--c-text3);margin-bottom:3px;font-weight:600}
+.ig-val{font-size:11.5px;color:var(--c-text);word-break:break-word;line-height:1.5}
+.ig-val.mono{font-family:var(--ff-mono);font-size:10.5px;color:var(--c-accent)}
+.ig-val.large{font-size:14px;font-weight:600}
+.ig-val.muted{color:var(--c-text3);font-style:italic;font-size:11px}
+.ig-val.predicted{color:var(--c-yellow)}
+.ig-predicted-label{font-size:8.5px;color:var(--c-yellow);background:var(--c-yellow-dim);padding:1px 5px;border-radius:3px;display:inline-block;margin-top:3px;font-weight:600}
+
+.tag-list{display:flex;flex-wrap:wrap;gap:5px}
+.tag{padding:3px 9px;border-radius:4px;font-size:10px;line-height:1.3;border:1px solid transparent}
+.tag-blue{background:var(--c-accent-dim);color:var(--c-accent);border-color:rgba(56,189,248,.18)}
+.tag-teal{background:var(--c-teal-dim);color:var(--c-teal);border-color:rgba(45,212,191,.18)}
+.tag-green{background:var(--c-green-dim);color:var(--c-green);border-color:rgba(74,222,128,.18)}
+.tag-yellow{background:var(--c-yellow-dim);color:var(--c-yellow);border-color:rgba(251,191,36,.18)}
+.tag-red{background:var(--c-red-dim);color:var(--c-red);border-color:rgba(248,113,113,.18)}
+.tag-purple{background:var(--c-purple-dim);color:var(--c-purple);border-color:rgba(167,139,250,.18)}
+.tag-orange{background:var(--c-orange-dim);color:var(--c-orange);border-color:rgba(251,146,60,.18)}
+.tag-pink{background:var(--c-pink-dim);color:var(--c-pink);border-color:rgba(244,114,182,.18)}
+.tag-gray{background:var(--c-panel2);color:var(--c-text3);border-color:var(--c-border)}
+
+.prop-ring{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px}
+.prop-card{background:var(--c-panel2);border:1px solid var(--c-border);border-radius:var(--r);padding:11px;text-align:center}
+.prop-val{font-family:var(--ff-mono);font-size:17px;font-weight:600;color:var(--c-accent);line-height:1.1}
+.prop-val.good{color:var(--c-green)}.prop-val.warn{color:var(--c-yellow)}.prop-val.pred{color:var(--c-yellow)}
+.prop-label{font-size:9px;color:var(--c-text3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px}
+.prop-predicted{font-size:8px;color:var(--c-yellow);margin-top:2px}
+
+.bio-table{width:100%;border-collapse:collapse}
+.bio-table th{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--c-text3);font-weight:600;padding:6px 10px;text-align:left;border-bottom:1px solid var(--c-border)}
+.bio-table td{font-size:11px;color:var(--c-text);padding:6px 10px;border-bottom:1px solid var(--c-border2);vertical-align:top}
+.bio-table tr:last-child td{border-bottom:none}
+.bio-table tr:hover td{background:rgba(56,189,248,.03)}
+.bio-val{font-family:var(--ff-mono);font-size:11px;color:var(--c-teal);font-weight:600}
+
+.ref-item{background:var(--c-panel2);border:1px solid var(--c-border);border-radius:var(--r);padding:11px 13px;margin-bottom:8px}
+.ref-title{font-size:11.5px;color:var(--c-text);font-weight:600;line-height:1.45;margin-bottom:8px}
+.ref-meta{display:flex;gap:7px;flex-wrap:wrap;font-size:10px;color:var(--c-text3)}
+.ref-journal{color:var(--c-accent)}
+.ref-doi{display:inline-flex;align-items:center;gap:3px;font-family:var(--ff-mono);font-size:9px;background:var(--c-accent-dim);color:var(--c-accent);padding:2px 6px;border-radius:3px;word-break:break-all}
+.ref-pmid{font-family:var(--ff-mono);font-size:9px;background:var(--c-panel);color:var(--c-text3);padding:2px 6px;border-radius:3px}
+.ref-fields{display:flex;flex-direction:column;gap:5px}
+.ref-field{display:flex;align-items:flex-start;gap:8px;font-size:10.5px}
+.ref-field-label{flex-shrink:0;width:60px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--c-text4);padding-top:1px;font-family:var(--ff-display)}
+.ref-field-val{color:var(--c-text2);line-height:1.45;flex:1;min-width:0}
+.ref-field-val.ref-journal-val{color:var(--c-accent);font-weight:500}
+.ref-field-val.ref-year-val{color:var(--c-yellow);font-family:var(--ff-mono);font-weight:600}
+.ref-field-val.ref-authors-val{color:var(--c-text2);font-style:italic}
+.ref-source-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-family:var(--ff-mono);padding:2px 7px;border-radius:3px;margin-bottom:7px;border:1px solid}
+.ref-source-chembl{background:rgba(232,164,90,.1);color:#e8a45a;border-color:rgba(232,164,90,.25)}
+.ref-source-pubmed{background:rgba(91,141,238,.1);color:#5b8dee;border-color:rgba(91,141,238,.25)}
+.ref-source-db{background:var(--c-green-dim);color:var(--c-green);border-color:rgba(74,222,128,.25)}
+.ref-fetch-loading{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--c-text3);padding:10px 2px}
+.ref-no-data{display:flex;flex-direction:column;gap:6px}
+
+.xref-row{display:flex;flex-wrap:wrap;gap:7px}
+.xref-chip{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:6px;background:var(--c-panel2);border:1px solid var(--c-border);font-size:11px;transition:border-color .12s}
+.xref-chip:hover{border-color:var(--c-border2)}
+.xref-label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text3);font-weight:600}
+.xref-val{font-family:var(--ff-mono);font-size:11px;font-weight:600}
+.xref-val.chembl{color:#e8a45a}.xref-val.pubchem{color:#5b8dee}.xref-val.drugbank{color:#4ade80}
+
+.mod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.mod-card{background:var(--c-panel2);border:1px solid var(--c-border);border-radius:var(--r);padding:11px}
+.mod-card-type{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--c-text3);font-weight:700;margin-bottom:7px}
+.mod-card-value{font-size:12px;color:var(--c-text);font-weight:500}
+.mod-card-detail{font-size:10px;color:var(--c-text3);margin-top:3px}
+
+.status-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r);margin-bottom:11px}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-text{font-size:11px;color:var(--c-text);line-height:1.4}
+
+.copy-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:4px;font-size:10px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text3);cursor:pointer;transition:all .12s;margin-top:5px}
+.copy-btn:hover{border-color:var(--c-border2);color:var(--c-text)}
+.copy-btn.ok{color:var(--c-green);border-color:rgba(74,222,128,.3)}
+
+/* Loading / Upload overlay */
+#data-loading{position:fixed;inset:0;background:var(--c-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;z-index:999;padding:20px}
+#data-loading .spinner{width:34px;height:34px;border-width:3px}
+#data-loading p{font-size:12.5px;color:var(--c-text3);text-align:center}
+#data-loading .prog{width:300px;height:3px;background:var(--c-panel2);border-radius:99px;overflow:hidden;margin-top:6px}
+#data-loading .prog-fill{height:100%;background:var(--c-accent);border-radius:99px;transition:width .3s;width:0}
+#data-loading .load-title{font-family:var(--ff-display);font-size:17px;font-weight:700;color:var(--c-accent);letter-spacing:2px;margin-bottom:4px}
+
+/* ── UPLOAD UI ───────────────────────────────────────────────────── */
+#upload-ui{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:560px}
+#upload-zone{width:100%;border:2px dashed var(--c-border3);border-radius:14px;padding:32px 28px;text-align:center;cursor:pointer;transition:border-color .22s,background .22s;background:var(--c-panel)}
+#upload-zone:hover,#upload-zone.drag-over{border-color:var(--c-accent);background:rgba(56,189,248,.05)}
+#upload-zone .uz-icon{margin-bottom:10px}
+#upload-zone .uz-icon svg{stroke:var(--c-text3);width:36px;height:36px}
+#upload-zone .uz-title{font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--c-text);margin-bottom:6px}
+#upload-zone .uz-sub{font-size:11.5px;color:var(--c-text3);line-height:1.65;margin-bottom:16px}
+.uz-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 22px;background:var(--c-accent);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ff-body);transition:opacity .15s}
+.uz-btn:hover{opacity:.88}
+#file-input{display:none}
+#upload-error{display:none;color:var(--c-red);font-size:11.5px;margin-top:10px;max-width:500px;text-align:center;line-height:1.5}
+.uz-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.uz-tag{padding:3px 10px;border-radius:20px;font-size:9.5px;font-weight:600;border:1px solid var(--c-border3);color:var(--c-text3)}
+.uz-tag.hi{border-color:rgba(74,222,128,.3);color:var(--c-green)}
+
+/* parse-progress ui */
+#parse-ui{display:none;flex-direction:column;align-items:center;gap:12px}
+
+:root[data-theme="light"]{
+  --c-bg:#f4f7fb;--c-bg2:#edf2f8;--c-surface:#ffffff;--c-panel:#f7f9fc;--c-panel2:#eef3f9;
+  --c-border:rgba(27,52,89,.08);--c-border2:rgba(27,52,89,.14);--c-border3:rgba(27,52,89,.2);
+  --c-accent:#0f6cbd;--c-accent-dim:rgba(15,108,189,.1);--c-accent-glow:rgba(15,108,189,.18);
+  --c-teal:#0f8b8d;--c-teal-dim:rgba(15,139,141,.1);
+  --c-green:#0b8f55;--c-green-dim:rgba(11,143,85,.1);
+  --c-yellow:#9a6b00;--c-yellow-dim:rgba(154,107,0,.1);
+  --c-red:#c2413c;--c-red-dim:rgba(194,65,60,.1);
+  --c-purple:#6d4aff;--c-purple-dim:rgba(109,74,255,.1);
+  --c-orange:#cf6a32;--c-orange-dim:rgba(207,106,50,.1);
+  --c-pink:#c03f86;--c-pink-dim:rgba(192,63,134,.1);
+  --c-text:#17324d;--c-text2:#40566f;--c-text3:#72859b;--c-text4:#9aabbe;
+}
+</style>
+</head>
+<body>
+
+<div id="data-loading">
+
+  <!-- ── Phase A : Upload ─────────────────────────────────────── -->
+  <div id="upload-ui">
+    <div class="load-title">NucLigs Database</div>
+    <div style="font-size:11px;color:var(--c-text3);margin-bottom:20px;letter-spacing:.3px">Nucleotide &amp; Nucleoside Analog Explorer</div>
+
+    <div id="upload-zone"
+         onclick="document.getElementById('file-input').click()"
+         ondrop="handleDrop(event)"
+         ondragover="handleDragOver(event)"
+         ondragleave="handleDragLeave(event)">
+      <div class="uz-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+        </svg>
+      </div>
+      <div class="uz-title">Upload your NucLigs Excel file</div>
+      <div class="uz-sub">
+        Drop an <strong>.xlsx</strong> file here, or click to browse.<br>
+        The tool auto-detects the 3-level merged-header format and maps all 64 columns.
+      </div>
+      <button class="uz-btn" onclick="event.stopPropagation();document.getElementById('file-input').click()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Choose Excel File
+      </button>
+    </div>
+
+    <input type="file" id="file-input" accept=".xlsx,.xls" onchange="handleFileSelect(event)">
+    <div id="upload-error"></div>
+
+    <div class="uz-tags">
+      <span class="uz-tag hi">.xlsx / .xls</span>
+      <span class="uz-tag">64 columns auto-mapped</span>
+      <span class="uz-tag">3-level merged headers</span>
+      <span class="uz-tag">10 000+ compounds</span>
+      <span class="uz-tag">Property predictions</span>
+    </div>
+  </div><!-- /upload-ui -->
+
+  <!-- ── Phase B : Progress ────────────────────────────────────── -->
+  <div id="parse-ui">
+    <div class="load-title">Loading…</div>
+    <div class="spinner"></div>
+    <p id="load-msg">Reading file…</p>
+    <div class="prog"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+
+</div><!-- /data-loading -->
+
+<div id="logo" style="display: flex; align-items: center; gap: 12px;">
+  <img 
+    src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png" 
+    alt="NucLigs logo" 
+    style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--c-accent);"
+    onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=NL&background=1463b8&color=fff';"
+  >
+  
+  <div style="display: flex; flex-direction: column;">
+    <div style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.5px; color: var(--c-text);">
+      NucLigs <span style="color: var(--c-accent);">database</span>
+    </div>
+    <div id="logo-sub" style="font-size: 0.75rem; opacity: 0.7; font-family: 'DM Sans', sans-serif;">
+      Nucleotide &amp; Nucleoside Analog Database
+    </div>
+  </div>
+</div>
+
+  <div id="main">
+    <!-- ── SIDEBAR ── -->
+    <div id="sidebar">
+      <div id="search-area">
+        <div class="search-wrap">
+          <div class="search-ico"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <input type="text" id="search-input" placeholder="Search name, NL, SMILES, target, author, journal…" autocomplete="off" spellcheck="false">
+          <button class="search-clear" id="search-clear" onclick="clearSearch()" title="Clear">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div id="filter-row">
+          <select class="filt-select" id="filt-base" onchange="applyFilters()">
+            <option value="">All Bases</option>
+            <option value="Adenine">Adenine</option>
+            <option value="Uracil">Uracil</option>
+            <option value="Cytosine">Cytosine</option>
+            <option value="Guanine">Guanine</option>
+            <option value="Thymine">Thymine</option>
+            <option value="Modified">Modified</option>
+          </select>
+          <select class="filt-select" id="filt-status" onchange="applyFilters()">
+            <option value="">All Types</option>
+            <option value="Analog">Analogs</option>
+            <option value="Natural">Natural</option>
+          </select>
+          <select class="filt-select" id="filt-region" onchange="applyFilters()">
+            <option value="">All Regions</option>
+            <option value="Base">Base mod</option>
+            <option value="Sugar">Sugar mod</option>
+            <option value="Phosphate">Phosphate mod</option>
+            <option value="Combination">Combination</option>
+          </select>
+        </div>
+
+        <!-- Bibliography filters toggle -->
+        <button id="biblio-toggle" onclick="toggleBiblioFilters()" title="Filter by author, year, journal">
+          <span style="display:flex;align-items:center;gap:5px">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            Bibliography Filters
+            <span id="biblio-active-count"></span>
+          </span>
+          <span class="bt-arrow">▼</span>
+        </button>
+
+        <div id="biblio-filters">
+          <div class="bf-label">Author</div>
+          <input class="bf-input" id="filt-author" type="text" placeholder="e.g. Smith, Johnson…" oninput="debouncedApply()" autocomplete="off" spellcheck="false">
+
+          <div class="bf-label">Year Range</div>
+          <div class="bf-year-row">
+            <select class="bf-select" id="filt-year-from" onchange="applyFilters()">
+              <option value="">From</option>
+            </select>
+            <span class="bf-year-sep">—</span>
+            <select class="bf-select" id="filt-year-to" onchange="applyFilters()">
+              <option value="">To</option>
+            </select>
+          </div>
+
+          <div class="bf-label">Journal</div>
+          <select class="bf-select" id="filt-journal" onchange="applyFilters()">
+            <option value="">All Journals</option>
+          </select>
+          <div style="margin-top:9px;text-align:right">
+            <button onclick="clearBiblioFilters()" style="background:none;border:none;color:var(--c-text3);font-size:10px;cursor:pointer;padding:0;font-family:var(--ff-body)" title="Clear all bibliography filters">✕ Clear filters</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Results toolbar with sort + show-N + view mode -->
+      <div id="results-toolbar">
+        <div id="results-count"><b id="rc-num">0</b> results</div>
+        <div class="toolbar-spacer"></div>
+
+        <div class="toolbar-group">
+          <select id="sort-select" onchange="applyFilters()" title="Sort by">
+            <option value="default">Sort: Workbook order</option>
+          </select>
+          <button id="sort-dir-btn" onclick="toggleSortDirection()" title="Toggle sort direction">↑</button>
+        </div>
+
+        <select id="show-n-select" onchange="applyShowN()" title="Items per page">
+          <option value="100">Show 100</option>
+          <option value="200">Show 200</option>
+          <option value="500">Show 500</option>
+          <option value="1000">Show 1000</option>
+          <option value="all">Show All</option>
+        </select>
+
+        <select id="view-mode-select" onchange="applyViewMode()" title="View mode">
+          <option value="cards">Card View</option>
+          <option value="table">Table View</option>
+          <option value="compact">Compact</option>
+        </select>
+
+        <div class="toolbar-group">
+          <button class="toolbar-btn" id="export-selected-btn" onclick="exportSelected()" title="Download the selected structure and metadata">Export Selected</button>
+          <button class="toolbar-btn" id="export-filtered-btn" onclick="exportFiltered()" title="Download the full filtered result set">Export Filtered</button>
+        </div>
+
+        <div class="toolbar-group">
+          <span class="range-label">Range</span>
+          <input class="range-input" id="range-start" type="number" min="1" placeholder="1">
+          <span class="range-label">to</span>
+          <input class="range-input" id="range-end" type="number" min="1" placeholder="50">
+          <button class="toolbar-btn" onclick="exportRange()" title="Download a filtered subset by result position">Export Range</button>
+        </div>
+      </div>
+
+      <div id="result-list">
+        <div id="loading-data"><div class="spinner"></div><p>Loading compounds…</p></div>
+        <div id="no-results">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11" opacity=".4"/></svg>
+          <p>No compounds match your criteria</p>
+        </div>
+      </div>
+      <div id="list-footer" style="display:none"></div>
+    </div><!-- end sidebar -->
+
+    <!-- ── CONTENT ── -->
+    <div id="content">
+      <div id="splash">
+        <div class="splash-icon">
+          <svg viewBox="0 0 24 24" stroke-width="1.2"><path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M9 3h10a2 2 0 0 1 2 2v4"/><path d="M3 9v10a2 2 0 0 0 2 2h4"/><path d="M21 9v10a2 2 0 0 1-2 2h-4"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h2>Select a compound to explore</h2>
+        <p>Search nucleotide and nucleoside analogs by IUPAC name, trade name, NL identifier, SMILES, or biological target.</p>
+      </div>
+
+      <div id="detail">
+        <div id="comp-header">
+          <div id="comp-nl">—</div>
+          <div id="comp-name-block">
+            <div id="comp-name">—</div>
+            <div id="comp-iupac"></div>
+            <div id="comp-badges"></div>
+          </div>
+        </div>
+
+        <div id="viewers">
+          <!-- 2D -->
+          <div class="viewer-panel">
+            <div class="vp-header">
+              <span class="vp-title">2D Structure</span>
+              <span class="vp-tag vt-2d">RDKit.js</span>
+              <span id="atom-count" style="font-family:var(--ff-mono);font-size:9px;color:var(--c-text3);margin-left:3px"></span>
+              <div class="vp-controls">
+                <button class="vp-btn active" id="btn-kek" onclick="toggle2D(this)">Kekulé</button>
+                <button class="vp-btn" id="btn-wdg" onclick="toggle2D(this)">Wedge</button>
+              </div>
+            </div>
+            <div class="vp-body" id="viewer2d">
+              <div class="vp-empty"><svg viewBox="0 0 24 24" stroke-width="1"><circle cx="12" cy="12" r="10"/></svg><span>Select compound</span></div>
+            </div>
+            <div id="viewer2d-legend">
+              <div class="leg-item"><div class="leg-dot" style="background:#6eaaff"></div>Nucleobase</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#3dffa0"></div>Sugar</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#ff6b7a"></div>Modified</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#ffaa40"></div>Phosphate</div>
+            </div>
+          </div>
+          <!-- 3D -->
+          <div class="viewer-panel">
+            <div class="vp-header">
+              <span class="vp-title">3D Structure</span>
+              <span class="vp-tag vt-3d">3Dmol.js</span>
+              <div class="vp-controls">
+                <button class="vp-btn active" id="btn3-stick" onclick="set3DStyle('stick')">Stick</button>
+                <button class="vp-btn" id="btn3-sphere" onclick="set3DStyle('sphere')">CPK</button>
+                <button class="vp-btn" id="btn3-surf" onclick="set3DStyle('surface')">Surface</button>
+              </div>
+            </div>
+            <div class="vp-body" style="position:relative">
+              <div id="viewer3d-el"></div>
+              <div id="3d-empty" style="position:absolute;inset:0;display:flex;" class="vp-empty">
+                <svg viewBox="0 0 24 24" stroke-width="1"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <span>Fetching 3D…</span>
+              </div>
+            </div>
+            <div id="3d-note">3D from PubChem · drag to rotate · scroll to zoom</div>
+          </div>
+        </div>
+
+        <div id="tabs-wrap">
+          <div id="tab-bar">
+            <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="showTab('structure')">Modification Analysis</button>
+            <button class="tab-btn" onclick="showTab('props')">Physicochemical</button>
+            <button class="tab-btn" onclick="showTab('targets')">Biological Targets</button>
+            <button class="tab-btn" onclick="showTab('bioactivity')">Bioactivity</button>
+            <button class="tab-btn" onclick="showTab('clinical')">Clinical &amp; Regulatory</button>
+            <button class="tab-btn" onclick="showTab('refs')">References</button>
+            <button class="tab-btn" onclick="showTab('identifiers')">Identifiers &amp; SMILES</button>
+          </div>
+          <div id="tab-contents">
+            <div id="tab-overview" class="tab-pane active"><div id="ov-content"></div></div>
+            <div id="tab-structure" class="tab-pane"><div id="mod-content"></div></div>
+            <div id="tab-props" class="tab-pane"><div id="props-content"></div></div>
+            <div id="tab-targets" class="tab-pane"><div id="targets-content"></div></div>
+            <div id="tab-bioactivity" class="tab-pane"><div id="bio-content"></div></div>
+            <div id="tab-clinical" class="tab-pane"><div id="clinical-content"></div></div>
+            <div id="tab-refs" class="tab-pane"><div id="refs-content"></div></div>
+            <div id="tab-identifiers" class="tab-pane"><div id="ident-content"></div></div>
+          </div>
+        </div>
+      </div><!-- end detail -->
+    </div><!-- end content -->
+  </div><!-- end main -->
+</div><!-- end app -->
+
+<script>
+// ════════════════════════════════════════════════════════
+//  NucLigs Database
+// ════════════════════════════════════════════════════════
+
+// ─── GLOBALS ────────────────────────────────────────────
+let ALL_COMPOUNDS = [];
+let FILTERED      = [];
+let CURRENT_IDX   = -1;
+let RDKIT         = null;
+let VIEWER3D      = null;
+let STYLE3D       = 'stick';
+let SEARCH_TIMER  = null;
+let SHOW_N        = 100;
+let VIEW_MODE     = 'cards'; // 'cards' | 'table' | 'compact'
+let SEARCH_INDEX  = [];
+let SORT_FIELD    = 'default';
+let SORT_DESC     = false;
+let ACTIVE_COLUMNS = [];
+let SORTABLE_COLUMNS = [];
+let EXTRA_COLUMNS = [];
+let PREDICTION_INDEX = null;
+let CURRENT_THEME = 'dark';
+
+// ─── MERGED-CELL HEADER SCHEMA ──────────────────────────
+const HEADER_SCHEMA = [
+  { section: null, sub: null, col: 'nl',            label: 'NL ID' },
+  { section: null, sub: null, col: 'iupac_name',    label: 'IUPAC Name' },
+  { section: null, sub: null, col: 'trade_name',    label: 'Trade / Common Name' },
+  { section: null, sub: null, col: 'synonyms',      label: 'Synonyms' },
+  { section: null, sub: null, col: 'smiles',        label: 'SMILES' },
+  { section: null, sub: null, col: 'inchi_key',     label: 'InChI Key' },
+  { section: 'Modification', sub: 'Base',           col: 'mod_base',      label: 'Base' },
+  { section: 'Modification', sub: 'Sugar',          col: 'mod_sugar',     label: 'Sugar' },
+  { section: 'Modification', sub: 'Phosphate',      col: 'mod_phosphate', label: 'Phosphate' },
+  { section: 'Modification', sub: 'Modifications',  col: 'mod_detail',    label: 'Modification Detail' },
+  { section: 'Modification', sub: 'Modified Region',col: 'mod_region',    label: 'Modified Region' },
+  { section: null, sub: null, col: 'analog_status', label: 'Analog Status' },
+  { section: null, sub: null, col: 'mol_weight',    label: 'MW (g/mol)' },
+  { section: null, sub: null, col: 'mol_formula',   label: 'Molecular Formula' },
+  { section: null, sub: null, col: 'logp',          label: 'LogP' },
+  { section: null, sub: null, col: 'psa',           label: 'PSA (Å²)' },
+  { section: 'Target', sub: 'Compound & Target',              col: 'primary_target',     label: 'Primary Target' },
+  { section: 'Target', sub: 'Molecular Targets',              col: 'receptor',           label: 'Receptor' },
+  { section: 'Target', sub: 'Molecular Targets',              col: 'kinase',             label: 'Kinase' },
+  { section: 'Target', sub: 'Molecular Targets',              col: 'cdk',                label: 'CDK / Cyclin' },
+  { section: 'Target', sub: 'Molecular Targets',              col: 'enzyme',             label: 'Enzyme' },
+  { section: 'Target', sub: 'Molecular Targets',              col: 'transporter',        label: 'Transporter' },
+  { section: 'Target', sub: 'Molecular Targets',              col: 'ion_channel',        label: 'Ion Channel' },
+  { section: 'Target', sub: 'Molecular Targets',              col: 'protein_signaling',  label: 'Protein/Signaling' },
+  { section: 'Target', sub: 'Cell Lines',                     col: 'cancer_cell_line',   label: 'Cancer Cell Line' },
+  { section: 'Target', sub: 'Cell Lines',                     col: 'non_cancer_cell_line',label: 'Non-Cancer Cell Line' },
+  { section: 'Target', sub: 'Pathogens',                      col: 'virus',              label: 'Virus' },
+  { section: 'Target', sub: 'Pathogens',                      col: 'bacteria',           label: 'Bacteria' },
+  { section: 'Target', sub: 'Pathogens',                      col: 'fungi',              label: 'Fungi' },
+  { section: 'Target', sub: 'Pathogens',                      col: 'parasite',           label: 'Parasite' },
+  { section: 'Target', sub: 'Organisms & Tissues',            col: 'model_organism',     label: 'Model Organism' },
+  { section: 'Target', sub: 'Organisms & Tissues',            col: 'tissue',             label: 'Tissue/Fluid' },
+  { section: 'Target', sub: 'Miscellaneous',                  col: 'other_bio',          label: 'Other' },
+  { section: 'Biological Activity', sub: 'IC50/EC50/Kd',      col: 'ic50',    label: 'IC₅₀' },
+  { section: 'Biological Activity', sub: 'IC50/EC50/Kd',      col: 'ec50',    label: 'EC₅₀' },
+  { section: 'Biological Activity', sub: 'IC50/EC50/Kd',      col: 'kd',      label: 'Kd' },
+  { section: 'Biological Activity', sub: 'Mechanism of Action',col: 'moa_role',label: 'MoA / Role' },
+  { section: 'Biological Activity', sub: 'Mechanism of Action',col: 'mechanism',label: 'Mechanism' },
+  { section: 'Biological Activity', sub: 'Mechanism of Action',col: 'therapeutic_app',label: 'Therapeutic Application' },
+  { section: 'Clinical Data', sub: 'Therapeutic Area',        col: 'therapeutic_area',  label: 'Therapeutic Area' },
+  { section: 'Clinical Data', sub: 'Clinical Status',         col: 'clinical_status',   label: 'Clinical Status' },
+  { section: 'Clinical Data', sub: 'Clinical Status',         col: 'approved_by',       label: 'Approved By' },
+  { section: 'Regulatory',   sub: 'Regulatory',               col: 'patents',           label: 'Patents' },
+  { section: 'Cross References', sub: 'IDs',                  col: 'drugbank_id',       label: 'DrugBank ID' },
+  { section: 'Cross References', sub: 'IDs',                  col: 'chembl_id',         label: 'ChEMBL ID' },
+  { section: 'Cross References', sub: 'IDs',                  col: 'pubchem_id',        label: 'PubChem ID' },
+  { section: 'Cross References', sub: 'IDs',                  col: 'modomics_id',        label: 'MODOMICS ID' },
+  { section: 'Bibliography', sub: 'References',               col: 'title',             label: 'Title' },
+  { section: 'Bibliography', sub: 'References',               col: 'journal',           label: 'Journal' },
+  { section: 'Bibliography', sub: 'References',               col: 'year',              label: 'Year' },
+  { section: 'Bibliography', sub: 'References',               col: 'doi',               label: 'DOI' },
+];
+
+const TABLE_COLS = [
+  { col:'nl', label:'Structure ID', w:'100px' },
+  { col:'trade_name', label:'Name', w:'140px' },
+  { col:'iupac_name', label:'IUPAC Name', w:'220px' },
+  { col:'analog_status', label:'Type', w:'70px' },
+  { col:'mod_base', label:'Base', w:'75px', subhead:'Modification' },
+  { col:'mod_sugar', label:'Sugar', w:'90px', subhead:'Modification' },
+  { col:'mod_detail', label:'Mod. Detail', w:'100px', subhead:'Modification' },
+  { col:'mod_region', label:'Region', w:'80px', subhead:'Modification' },
+  { col:'mol_weight', label:'MW', w:'70px' },
+  { col:'logp', label:'LogP', w:'60px' },
+  { col:'primary_target', label:'Primary Target', w:'160px', subhead:'Target' },
+  { col:'receptor', label:'Receptor', w:'130px', subhead:'Target — Molecular' },
+  { col:'ic50', label:'IC₅₀', w:'90px', subhead:'Bioactivity' },
+  { col:'ec50', label:'EC₅₀', w:'90px', subhead:'Bioactivity' },
+  { col:'clinical_status', label:'Status', w:'100px', subhead:'Clinical' },
+  { col:'year', label:'Year', w:'80px', subhead:'Bibliography' },
+  { col:'journal', label:'Journal', w:'140px', subhead:'Bibliography' },
+  { col:'authors', label:'Authors', w:'180px', subhead:'Bibliography' },
+  { col:'chembl_id', label:'ChEMBL', w:'100px', subhead:'Cross-Refs' },
+];
+
+const EXCEL_COL_MAP = [
+  'nl','compound_name','iupac_name','trade_name','synonyms',
+  'smiles','inchi','inchi_key',
+  'mod_base','mod_sugar','mod_phosphate','mod_detail','mod_region',
+  'analog_status','mol_weight','mol_formula','melting_point','boiling_point',
+  'solubility','pka','logp','psa',
+  'primary_target','receptor','kinase','cdk','enzyme','transporter',
+  'ion_channel','protein_signaling',
+  'cancer_cell_line','non_cancer_cell_line',
+  'virus','bacteria','fungi','parasite',
+  'model_organism','tissue','other_bio',
+  'moa_role',
+  'ic50','ec50','kd',
+  'therapeutic_app','therapeutic_area','mechanism','clinical_status',
+  'organism',
+  'approved_by','patents',
+  'drugbank_id','chembl_id','pubchem_id', 'modomics_id',
+  'references','ref_link','doi','pubmed_id','doc_chembl_id',
+  'title','journal','year','authors',
+  'pdbs'
+];
+const EXCEL_HEADER_ROWS = 3;
+
+const FIELD_ALIASES = [
+  { key:'nl', tests:['nl'] },
+  { key:'compound_name', tests:['compound general name'] },
+  { key:'iupac_name', tests:['iupac name'] },
+  { key:'trade_name', tests:['trade name'] },
+  { key:'synonyms', tests:['synonyms'] },
+  { key:'smiles', tests:['smiles'] },
+  { key:'inchi', tests:['inchi'] },
+  { key:'inchi_key', tests:['inchi key', 'invhi key'] },
+  { key:'mod_base', tests:['modification | base', 'type of modification | base level', 'base'] },
+  { key:'mod_sugar', tests:['modification | sugar', 'type of modification | sugar level', 'sugar'] },
+  { key:'mod_phosphate', tests:['modification | phosphate', 'type of modification | phosphate level', 'phosphate'] },
+  { key:'mod_detail', tests:['modification | modifications', 'type of modification | miscellaneous', 'modifications'] },
+  { key:'mod_region', tests:['modification | modified region', 'modified region'] },
+  { key:'analog_status', tests:['analog status'] },
+  { key:'mol_weight', tests:['molecular weight'] },
+  { key:'mol_formula', tests:['molecular formula'] },
+  { key:'melting_point', tests:['melting point'] },
+  { key:'boiling_point', tests:['boiling point'] },
+  { key:'solubility', tests:['solubility'] },
+  { key:'pka', tests:['pka'] },
+  { key:'logp', tests:['logp'] },
+  { key:'psa', tests:['polar surface area', 'psa'] },
+  { key:'primary_target', tests:['compound target | primary target', 'target | compound target | primary target', 'primary target'] },
+  { key:'receptor', tests:['molecular targets | receptor', 'receptor'] },
+  { key:'kinase', tests:['molecular targets | kinase', 'kinase'] },
+  { key:'cdk', tests:['molecular targets | cdk complex cyclin', 'cdk complex cyclin'] },
+  { key:'enzyme', tests:['molecular targets | enzyme', 'target | enzymes', 'enzyme'] },
+  { key:'transporter', tests:['molecular targets | transporter', 'transporter'] },
+  { key:'ion_channel', tests:['molecular targets | ion channel', 'ion channel'] },
+  { key:'protein_signaling', tests:['molecular targets | protein signaling molecule', 'protein signaling molecule'] },
+  { key:'cancer_cell_line', tests:['cell lines | cancer cell line', 'cancer cell lines', 'cancer cell line'] },
+  { key:'non_cancer_cell_line', tests:['cell lines | non cancer cell line', 'non cancer cell line'] },
+  { key:'virus', tests:['pathogens | virus', 'target | virus', 'virus'] },
+  { key:'bacteria', tests:['pathogens | bacteria', 'bacteria'] },
+  { key:'fungi', tests:['pathogens | fungi', 'fungi'] },
+  { key:'parasite', tests:['pathogens | parasite', 'parasite'] },
+  { key:'model_organism', tests:['organisms tissues | model organism', 'model organism'] },
+  { key:'tissue', tests:['organisms tissues | tissue biological fluid', 'tissue biological fluid'] },
+  { key:'other_bio', tests:['miscellaneous | other', 'other'] },
+  { key:'moa_role', tests:['role of drug and its target', 'mechanism of action'] },
+  { key:'ic50', tests:['ic50'] },
+  { key:'ec50', tests:['ec50'] },
+  { key:'kd', tests:['kd'] },
+  { key:'therapeutic_app', tests:['therapeutic application'] },
+  { key:'therapeutic_area', tests:['therapeutic area'] },
+  { key:'mechanism', tests:['mechanism'] },
+  { key:'clinical_status', tests:['clinical status'] },
+  { key:'organism', tests:['organism'] },
+  { key:'approved_by', tests:['approved by'] },
+  { key:'patents', tests:['patents'] },
+  { key:'drugbank_id', tests:['drugbank id'] },
+  { key:'chembl_id', tests:['chembl id'] },
+  { key:'pubchem_id', tests:['pubchem id'] },
+  { key:'modomics_id', tests:['modomics id'] },
+  { key:'references', tests:['references apa'] },
+  { key:'ref_link', tests:['link apa'] },
+  { key:'doi', tests:['doi'] },
+  { key:'pubmed_id', tests:['pubmed id'] },
+  { key:'doc_chembl_id', tests:['document chembl id'] },
+  { key:'title', tests:['title'] },
+  { key:'journal', tests:['journal'] },
+  { key:'year', tests:['year'] },
+  { key:'authors', tests:['authors'] },
+  { key:'pdbs', tests:['pdbs', 'pdb id', 'pdb ids'] }
+];
+
+function normText(value) {
+  return String(value || '')
+    .replace(/\u00a0/g, ' ')
+    .replace(/[\n\r]+/g, ' ')
+    .replace(/[()]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function cleanCellValue(value) {
+  const txt = String(value ?? '').replace(/\u00a0/g, ' ').trim();
+  if (!txt) return '';
+  if (/^(none|n\/a|null|nil)$/i.test(txt)) return '';
+  if (txt === '-') return '';
+  return txt;
+}
+
+function titleCaseLabel(value) {
+  return String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .map(part => part ? part.charAt(0).toUpperCase() + part.slice(1) : '')
+    .join(' ');
+}
+
+function getThemePalette() {
+  return CURRENT_THEME === 'light'
+    ? { viewer:'#f7f9fc', note:'#40566f', atom:'#17324d', surf:'#6b7280' }
+    : { viewer:'#060a14', note:'#94a3b8', atom:'#c8d3e8', surf:'#ffffff' };
+}
+
+function applyTheme(theme) {
+  CURRENT_THEME = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', CURRENT_THEME);
+  localStorage.setItem('nucligs-theme', CURRENT_THEME);
+  const label = document.getElementById('theme-toggle-label');
+  if (label) label.textContent = CURRENT_THEME === 'light' ? 'Light' : 'Dark';
+  if (CURRENT_IDX >= 0) {
+    draw2D(ALL_COMPOUNDS[CURRENT_IDX]);
+    last3D = '';
+    fetch3D(ALL_COMPOUNDS[CURRENT_IDX]);
+  }
+}
+
+function toggleTheme() {
+  applyTheme(CURRENT_THEME === 'dark' ? 'light' : 'dark');
+}
+
+function getPrimaryId(c) {
+  return c?.nl || c?.pdbs || '';
+}
+
+function getDisplayName(c) {
+  return c?.trade_name || c?.compound_name || c?.iupac_name || getPrimaryId(c) || '';
+}
+
+function buildHeaderGrid(ws, headerRows = EXCEL_HEADER_ROWS) {
+  const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:A1');
+  const width = range.e.c - range.s.c + 1;
+  const grid = Array.from({ length: headerRows }, () => Array(width).fill(''));
+  for (let r = 0; r < headerRows; r++) {
+    for (let c = 0; c < width; c++) {
+      const addr = XLSX.utils.encode_cell({ r: range.s.r + r, c: range.s.c + c });
+      const cell = ws[addr];
+      grid[r][c] = cleanCellValue(cell ? cell.w ?? cell.v : '');
+    }
+  }
+  (ws['!merges'] || []).forEach(merge => {
+    if (merge.s.r >= headerRows) return;
+    const topValue = grid[merge.s.r]?.[merge.s.c - range.s.c] || '';
+    for (let r = merge.s.r; r <= Math.min(merge.e.r, headerRows - 1); r++) {
+      for (let c = merge.s.c; c <= merge.e.c; c++) {
+        if (c - range.s.c >= 0 && c - range.s.c < width) {
+          grid[r][c - range.s.c] = topValue || grid[r][c - range.s.c];
+        }
+      }
+    }
+  });
+  return { grid, range };
+}
+
+function resolveFieldKey(parts) {
+  const normalizedParts = parts.map(normText).filter(Boolean);
+  const joined = normalizedParts.join(' | ');
+  for (const alias of FIELD_ALIASES) {
+    if (alias.tests.some(test => joined.includes(test))) return alias.key;
+  }
+  return '';
+}
+
+function buildColumnDefinitions(ws) {
+  const { grid, range } = buildHeaderGrid(ws);
+  const width = range.e.c - range.s.c + 1;
+  const defs = [];
+  for (let i = 0; i < width; i++) {
+    const parts = [grid[0][i], grid[1][i], grid[2][i]].map(cleanCellValue);
+    const deepest = [...parts].reverse().find(Boolean) || `Column ${i + 1}`;
+    const fieldKey = resolveFieldKey(parts);
+    defs.push({
+      index: i,
+      excelCol: XLSX.utils.encode_col(range.s.c + i),
+      section: parts[0] || '',
+      sub: parts[1] || '',
+      label: deepest,
+      parts,
+      fieldKey: fieldKey || `extra_${i + 1}`,
+      known: !!fieldKey
+    });
+  }
+  return defs;
+}
+
+function detectBestSheet(workbook) {
+  const scored = workbook.SheetNames.map(name => {
+    const ws = workbook.Sheets[name];
+    const defs = buildColumnDefinitions(ws);
+    const keys = defs.filter(d => d.known).map(d => d.fieldKey);
+    let score = keys.length;
+    if (keys.includes('smiles')) score += 15;
+    if (keys.includes('pdbs')) score += 18;
+    if (keys.includes('iupac_name')) score += 12;
+    if (keys.includes('journal')) score += 6;
+    if (keys.includes('authors')) score += 6;
+    return { name, ws, defs, score };
+  }).sort((a, b) => b.score - a.score);
+  return scored[0];
+}
+
+function parseWorkbookSheet(sheetCandidate) {
+  const { ws, defs, name } = sheetCandidate;
+  const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:A1');
+  const compounds = [];
+  ACTIVE_COLUMNS = defs.filter(d => d.known);
+  EXTRA_COLUMNS = defs.filter(d => !d.known && d.label && !/^column\s+\d+$/i.test(d.label));
+  for (let r = range.s.r + EXCEL_HEADER_ROWS; r <= range.e.r; r++) {
+    const obj = { __extra: {} };
+    let hasData = false;
+    defs.forEach(def => {
+      const addr = XLSX.utils.encode_cell({ r, c: range.s.c + def.index });
+      const cell = ws[addr];
+      const value = cleanCellValue(cell ? cell.w ?? cell.v : '');
+      if (!value) return;
+      hasData = true;
+      if (def.known) obj[def.fieldKey] = value;
+      else obj.__extra[def.fieldKey] = value;
+    });
+    if (!hasData) continue;
+    obj.structure_id = getPrimaryId(obj);
+    if (!obj.structure_id && obj.smiles) obj.structure_id = `ROW_${r + 1}`;
+    if (!obj.nl && obj.structure_id) obj.nl = obj.structure_id;
+    if (!obj.pdbs && obj.structure_id) obj.pdbs = obj.structure_id;
+    if (obj.structure_id) compounds.push(obj);
+  }
+  if (!compounds.length) throw new Error(`No compound rows found in ${name}.`);
+  return compounds;
+}
+
+function getColumnLabel(fieldKey) {
+  const found = ACTIVE_COLUMNS.find(col => col.fieldKey === fieldKey) || EXTRA_COLUMNS.find(col => col.fieldKey === fieldKey);
+  return found ? found.label : titleCaseLabel(fieldKey.replace(/_/g, ' '));
+}
+
+// ─── DRAG & DROP ─────────────────────────────────────────────────
+function handleDragOver(e) {
+  e.preventDefault(); e.stopPropagation();
+  const zone = document.getElementById('upload-zone');
+  if(zone) zone.classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  const zone = document.getElementById('upload-zone');
+  if(zone) zone.classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault(); e.stopPropagation();
+  const zone = document.getElementById('upload-zone');
+  if(zone) zone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processExcelFile(file);
+}
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processExcelFile(file);
+  e.target.value = '';
+}
+
+// ─── EXCEL PARSING & AUTO LOAD ───────────────────────────────────
+async function autoLoadDatabase() {
+  const parseUi = document.getElementById('parse-ui');
+  const uploadUi = document.getElementById('upload-ui');
+  const errEl = document.getElementById('upload-error');
+
+  if(uploadUi) uploadUi.style.display = 'none';
+  if(parseUi) parseUi.style.display = 'flex';
+  
+  const fill = document.getElementById('prog-fill');
+  const msg  = document.getElementById('load-msg');
+
+  try {
+    if(fill) fill.style.width = '10%'; 
+    if(msg) msg.textContent = 'Fetching database from GitHub...';
+
+    let response = await fetch('https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs_metadata.xlsx');
+    
+    if (!response.ok) {
+      response = await fetch('https://raw.githubusercontent.com/tushar1298/nucligs_db/master/NucLigs_metadata.xlsx');
+    }
+    
+    if (!response.ok) {
+      throw new Error(`Database unavailable (Status: ${response.status})`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    await processExcelBuffer(arrayBuffer);
+    
+  } catch (error) {
+    console.error("Initialization error:", error);
+    if(parseUi) parseUi.style.display = 'none';
+    if(uploadUi) uploadUi.style.display = 'flex';
+    if(errEl) {
+      errEl.textContent = 'Auto-load failed. Please upload the metadata file manually.';
+      errEl.style.display = 'block';
+    }
+  }
+}
+
+async function processExcelFile(file) {
+  const errEl = document.getElementById('upload-error');
+  if(errEl) errEl.style.display = 'none';
+  if (!/\.(xlsx|xls)$/i.test(file.name)) {
+    if(errEl) {
+      errEl.textContent = 'Please upload an Excel file (.xlsx or .xls).';
+      errEl.style.display = 'block';
+    }
+    return;
+  }
+  document.getElementById('upload-ui').style.display = 'none';
+  const parseUi = document.getElementById('parse-ui');
+  if(parseUi) parseUi.style.display = 'flex';
+  const fill = document.getElementById('prog-fill');
+  const msg  = document.getElementById('load-msg');
+  try {
+    if(fill) fill.style.width = '10%'; 
+    if(msg) msg.textContent = 'Reading file…';
+    await tick();
+    const buffer = await file.arrayBuffer();
+    await processExcelBuffer(buffer);
+  } catch(e) {
+    if(parseUi) parseUi.style.display = 'none';
+    document.getElementById('upload-ui').style.display = 'flex';
+    if(errEl) {
+      errEl.textContent = '⚠ Error: ' + e.message;
+      errEl.style.display = 'block';
+    }
+    console.error(e);
+  }
+}
+
+async function processExcelBuffer(buffer) {
+  const fill = document.getElementById('prog-fill');
+  const msg  = document.getElementById('load-msg');
+
+  if(fill) fill.style.width = '30%'; 
+  if(msg) msg.textContent = 'Parsing workbook…';
+  await tick();
+  const workbook = XLSX.read(buffer, { type:'array', cellText:false, raw:false });
+  const bestSheet = detectBestSheet(workbook);
+  
+  if(fill) fill.style.width = '52%'; 
+  if(msg) msg.textContent = `Mapping ${bestSheet.name}…`;
+  await tick();
+  const compounds = parseWorkbookSheet(bestSheet);
+  
+  if(fill) fill.style.width = '78%'; 
+  if(msg) msg.textContent = 'Loaded ' + compounds.length.toLocaleString() + ' records — building index…';
+  await tick();
+  
+  ALL_COMPOUNDS = compounds;
+  FILTERED      = [...ALL_COMPOUNDS];
+  buildPredictionIndex();
+  buildSearchIndex();
+  populateFilterDropdowns();
+  populateSortDropdown();
+  
+  if(fill) fill.style.width = '100%';
+  await tick(200);
+  
+  const analogs = ALL_COMPOUNDS.filter(c => c.analog_status === 'Analog').length;
+  const natural = ALL_COMPOUNDS.filter(c => c.analog_status === 'Natural').length;
+  
+  const pillTotal = document.getElementById('pill-total');
+  const pillAnalogs = document.getElementById('pill-analogs');
+  const pillNatural = document.getElementById('pill-natural');
+  
+  if(pillTotal) pillTotal.textContent   = ALL_COMPOUNDS.length.toLocaleString() + ' compounds';
+  if(pillAnalogs) pillAnalogs.textContent = (analogs || '—') + (analogs ? ' analogs' : '');
+  if(pillNatural) pillNatural.textContent = (natural || '—') + (natural ? ' natural' : '');
+  
+  const dataLoading = document.getElementById('data-loading');
+  if(dataLoading) dataLoading.style.display = 'none';
+  
+  const rangeStart = document.getElementById('range-start');
+  const rangeEnd = document.getElementById('range-end');
+  if(rangeStart) rangeStart.value = '1';
+  if(rangeEnd) rangeEnd.value = String(Math.min(50, ALL_COMPOUNDS.length));
+  
+  renderList();
+}
+
+function tick(ms=30) { return new Promise(r => setTimeout(r, ms)); }
+
+function populateFilterDropdowns() {
+  function repopulate(id, values, placeholder) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const cur = el.value;
+    el.innerHTML = '<option value="">' + placeholder + '</option>' +
+      values.map(v => '<option value="' + esc(v) + '"' + (v===cur?' selected':'') + '>' + esc(v) + '</option>').join('');
+  }
+  const bases    = [...new Set(ALL_COMPOUNDS.map(c=>c.mod_base).filter(Boolean))].sort();
+  const statuses = [...new Set(ALL_COMPOUNDS.map(c=>c.analog_status).filter(Boolean))].sort();
+  const regions  = [...new Set(ALL_COMPOUNDS.map(c=>c.mod_region).filter(Boolean))].sort();
+  repopulate('filt-base',   bases,   'All Bases');
+  repopulate('filt-status', statuses,'All Types');
+  repopulate('filt-region', regions, 'All Regions');
+
+  const yearSet = new Set();
+  ALL_COMPOUNDS.forEach(c => {
+    const yearValue = c.year || predictMissing(c).imputed.year || '';
+    if (yearValue) {
+      yearValue.split('|').forEach(y => {
+        const n = parseInt(y.trim());
+        if (!isNaN(n) && n > 1900 && n <= new Date().getFullYear() + 1) yearSet.add(n);
+      });
+    }
+  });
+  const years = [...yearSet].sort((a,b) => a - b);
+  repopulate('filt-year-from', years.map(String), 'From');
+  repopulate('filt-year-to',   years.map(String), 'To');
+
+  const journalSet = new Set();
+  ALL_COMPOUNDS.forEach(c => {
+    const journalValue = c.journal || predictMissing(c).imputed.journal || '';
+    if (journalValue) {
+      journalValue.split('|').forEach(j => {
+        const jt = j.trim();
+        if (jt) journalSet.add(jt);
+      });
+    }
+  });
+  const journals = [...journalSet].sort((a,b) => a.localeCompare(b));
+  repopulate('filt-journal', journals, 'All Journals');
+}
+
+function populateSortDropdown() {
+  const select = document.getElementById('sort-select');
+  if (!select) return;
+  const preferred = ['pdbs','nl','trade_name','compound_name','iupac_name','authors','year','journal','analog_status','mod_base','mod_region','mol_weight','logp','chembl_id','pubchem_id','primary_target'];
+  const knownOptions = preferred
+    .map(key => ACTIVE_COLUMNS.find(col => col.fieldKey === key))
+    .filter(Boolean);
+  const remainingKnown = ACTIVE_COLUMNS.filter(col => !preferred.includes(col.fieldKey));
+  SORTABLE_COLUMNS = [...knownOptions, ...remainingKnown, ...EXTRA_COLUMNS];
+  const current = SORT_FIELD || 'default';
+  select.innerHTML = '<option value="default">Sort: Workbook order</option>' +
+    SORTABLE_COLUMNS.map(col => `<option value="${esc(col.fieldKey)}"${col.fieldKey===current?' selected':''}>${esc(getColumnLabel(col.fieldKey))}</option>`).join('');
+  updateSortDirectionButton();
+}
+
+function buildSearchIndex() {
+  SEARCH_INDEX = ALL_COMPOUNDS.map((c, i) => ({
+    i,
+    text: [
+      c.pdbs, c.nl, c.compound_name, c.iupac_name, c.trade_name, c.synonyms,
+      c.smiles, c.mod_base, c.mod_sugar, c.mod_detail, c.mod_region,
+      c.analog_status, c.primary_target, c.receptor, c.enzyme,
+      c.kinase, c.virus, c.bacteria, c.mechanism, c.therapeutic_area,
+      c.therapeutic_app, c.clinical_status, c.chembl_id, c.pubchem_id,c.modomics_id,
+      c.drugbank_id, c.inchi_key, c.moa_role, c.cancer_cell_line,
+      c.authors, c.year, c.journal, c.title, c.doi, c.pubmed_id,
+      ...Object.values(c.__extra || {})
+    ].filter(Boolean).join(' ').toLowerCase()
+  }));
+}
+
+function doSearch(q) {
+  if (!q || !q.trim()) return ALL_COMPOUNDS;
+  const terms = q.trim().toLowerCase().split(/\s+/).filter(t => t.length >= 2);
+  if (!terms.length) return ALL_COMPOUNDS;
+  return SEARCH_INDEX
+    .filter(e => terms.every(t => e.text.includes(t)))
+    .map(e => ALL_COMPOUNDS[e.i]);
+}
+
+function applyFilters() {
+  const qStr = document.getElementById('search-input')?.value || '';
+  const base = document.getElementById('filt-base')?.value || '';
+  const status = document.getElementById('filt-status')?.value || '';
+  const region = document.getElementById('filt-region')?.value || '';
+  const sortBy = document.getElementById('sort-select')?.value || 'default';
+  
+  const author = (document.getElementById('filt-author')?.value || '').trim().toLowerCase();
+  const yearFrom = document.getElementById('filt-year-from')?.value || '';
+  const yearTo = document.getElementById('filt-year-to')?.value || '';
+  const journal = document.getElementById('filt-journal')?.value || '';
+
+  const clearBtn = document.getElementById('search-clear');
+  if(clearBtn) clearBtn.classList.toggle('visible', !!qStr);
+
+  let results = doSearch(qStr);
+
+  if (base)   results = results.filter(c => c.mod_base === base);
+  if (status) results = results.filter(c => c.analog_status === status);
+  if (region) {
+    if (region === 'Combination') {
+      results = results.filter(c => c.mod_region && c.mod_region.includes('Combination'));
+    } else {
+      results = results.filter(c => c.mod_region === region);
+    }
+  }
+
+  if (author) {
+    results = results.filter(c => {
+      const a = (c.authors || predictMissing(c).imputed.authors || '').toLowerCase();
+      return author.split(',').map(s=>s.trim()).filter(Boolean)
+        .every(term => a.includes(term));
+    });
+  }
+  if (yearFrom) {
+    const yf = parseInt(yearFrom);
+    results = results.filter(c => {
+      const years = (c.year || predictMissing(c).imputed.year || '').split('|').map(y => parseInt(y.trim())).filter(n => !isNaN(n));
+      return years.length ? Math.max(...years) >= yf : false;
+    });
+  }
+  if (yearTo) {
+    const yt = parseInt(yearTo);
+    results = results.filter(c => {
+      const years = (c.year || predictMissing(c).imputed.year || '').split('|').map(y => parseInt(y.trim())).filter(n => !isNaN(n));
+      return years.length ? Math.min(...years) <= yt : false;
+    });
+  }
+  if (journal) {
+    results = results.filter(c => {
+      return (c.journal || predictMissing(c).imputed.journal || '').toLowerCase().split('|').map(s=>s.trim())
+        .some(j => j === journal.toLowerCase());
+    });
+  }
+
+  const biCount = [author, yearFrom, yearTo, journal].filter(Boolean).length;
+  const badge = document.getElementById('biblio-active-count');
+  if (badge) {
+    badge.textContent = biCount ? biCount : '';
+    badge.style.display = biCount ? 'inline' : 'none';
+    document.getElementById('biblio-toggle')?.classList.toggle('active', biCount > 0);
+  }
+
+  SORT_FIELD = sortBy;
+  results = sortResults(results, sortBy, SORT_DESC);
+  updateSortDirectionButton();
+
+  FILTERED = results;
+  renderList();
+}
+
+let BIBLIO_TIMER = null;
+function debouncedApply() {
+  clearTimeout(BIBLIO_TIMER);
+  BIBLIO_TIMER = setTimeout(applyFilters, 200);
+}
+
+function toggleBiblioFilters() {
+  const panel = document.getElementById('biblio-filters');
+  const btn   = document.getElementById('biblio-toggle');
+  if(!panel || !btn) return;
+  const open  = panel.classList.toggle('open');
+  btn.classList.toggle('active', open || [
+    document.getElementById('filt-author')?.value,
+    document.getElementById('filt-year-from')?.value,
+    document.getElementById('filt-year-to')?.value,
+    document.getElementById('filt-journal')?.value
+  ].some(Boolean));
+}
+
+function sortResults(arr, sortBy, desc = SORT_DESC) {
+  const copy = [...arr];
+  if (sortBy === 'default') return desc ? copy.reverse() : copy;
+  return copy.sort((a, b) => compareCompoundValues(a, b, sortBy, desc));
+}
+
+function compareCompoundValues(a, b, fieldKey, desc) {
+  const av = getComparableValue(a, fieldKey, desc);
+  const bv = getComparableValue(b, fieldKey, desc);
+  if (av == null && bv == null) return 0;
+  if (av == null) return 1;
+  if (bv == null) return -1;
+  if (typeof av === 'number' && typeof bv === 'number') return desc ? bv - av : av - bv;
+  const cmp = String(av).localeCompare(String(bv), undefined, { numeric:true, sensitivity:'base' });
+  return desc ? -cmp : cmp;
+}
+
+function getComparableValue(record, fieldKey, desc) {
+  let raw = record[fieldKey]
+    || record.__extra?.[fieldKey]
+    || (predictMissing(record).imputed[fieldKey] || '');
+  if (!raw && fieldKey === 'nl') raw = getPrimaryId(record);
+  if (!raw && fieldKey === 'trade_name') raw = getDisplayName(record);
+  if (!raw) return null;
+  const text = String(raw).trim();
+  if (!text) return null;
+  if (['mol_weight','logp','psa','pka','ic50','ec50','kd'].includes(fieldKey)) {
+    const n = parseFloat(text.replace(/[^0-9eE.+-]/g, ''));
+    return Number.isFinite(n) ? n : null;
+  }
+  if (fieldKey === 'year') {
+    const years = text.split('|').map(v => parseInt(v.trim(), 10)).filter(v => !Number.isNaN(v));
+    if (!years.length) return null;
+    return desc ? Math.max(...years) : Math.min(...years);
+  }
+  return text.split('|')[0].trim().toLowerCase();
+}
+
+function updateSortDirectionButton() {
+  const btn = document.getElementById('sort-dir-btn');
+  if (!btn) return;
+  btn.textContent = SORT_DESC ? '↓' : '↑';
+  btn.title = SORT_DESC ? 'Descending' : 'Ascending';
+}
+
+function toggleSortDirection() {
+  SORT_DESC = !SORT_DESC;
+  applyFilters();
+}
+
+function applyShowN() {
+  const val = document.getElementById('show-n-select')?.value;
+  if(val) SHOW_N = val === 'all' ? Infinity : parseInt(val);
+  renderList();
+}
+
+function applyViewMode() {
+  const val = document.getElementById('view-mode-select')?.value;
+  if(val) VIEW_MODE = val;
+  renderList();
+}
+
+function clearSearch() {
+  const searchInp = document.getElementById('search-input');
+  if(searchInp) searchInp.value = '';
+  const searchClr = document.getElementById('search-clear');
+  if(searchClr) searchClr.classList.remove('visible');
+  applyFilters();
+}
+
+function clearBiblioFilters() {
+  const ids = ['filt-author','filt-year-from','filt-year-to','filt-journal'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  applyFilters();
+}
+
+function renderList() {
+  const list   = document.getElementById('result-list');
+  const noRes  = document.getElementById('no-results');
+  const footer = document.getElementById('list-footer');
+  const exportSelectedBtn = document.getElementById('export-selected-btn');
+  const exportFilteredBtn = document.getElementById('export-filtered-btn');
+  const rangeStart = document.getElementById('range-start');
+  const rangeEnd = document.getElementById('range-end');
+  const loadingData = document.getElementById('loading-data');
+  
+  if(!list) return;
+  if(loadingData) loadingData.style.display = 'none';
+
+  const total   = FILTERED.length;
+  const showing = SHOW_N === Infinity ? total : Math.min(SHOW_N, total);
+  const visible = FILTERED.slice(0, showing);
+
+  const rcNum = document.getElementById('rc-num');
+  if(rcNum) rcNum.textContent = total.toLocaleString();
+  
+  if (exportSelectedBtn) exportSelectedBtn.disabled = CURRENT_IDX < 0;
+  if (exportFilteredBtn) exportFilteredBtn.disabled = total === 0;
+  if (rangeStart) rangeStart.max = String(Math.max(total, 1));
+  if (rangeEnd) rangeEnd.max = String(Math.max(total, 1));
+  if (rangeStart) rangeStart.value = String(Math.min(Math.max(parseInt(rangeStart.value || '1', 10) || 1, 1), Math.max(total, 1)));
+  if (rangeEnd && !rangeEnd.value) rangeEnd.value = String(Math.min(50, Math.max(total, 1)));
+  if (rangeEnd) rangeEnd.value = String(Math.min(Math.max(parseInt(rangeEnd.value || rangeStart?.value || '1', 10) || 1, parseInt(rangeStart?.value || '1', 10) || 1), Math.max(total, 1)));
+
+  if (!total) {
+    if(noRes) noRes.style.display = 'flex';
+    list.querySelectorAll('.result-item,.view-table,.table-wrap').forEach(el => el.remove());
+    if(footer) footer.style.display = 'none';
+    return;
+  }
+  if(noRes) noRes.style.display = 'none';
+
+  if (footer) {
+    if (total > showing) {
+      footer.style.display = 'block';
+      footer.innerHTML = `Showing <b>${showing.toLocaleString()}</b> of <b>${total.toLocaleString()}</b> — change "Show N" to see more`;
+    } else {
+      footer.style.display = total > 0 ? 'block' : 'none';
+      footer.innerHTML = `All <b>${total.toLocaleString()}</b> results shown`;
+    }
+  }
+
+  list.querySelectorAll('.result-item,.table-wrap').forEach(el => el.remove());
+
+  if (VIEW_MODE === 'table') {
+    renderTableView(list, visible);
+  } else if (VIEW_MODE === 'compact') {
+    renderCompactView(list, visible);
+  } else {
+    renderCardView(list, visible);
+  }
+}
+
+function renderCardView(list, compounds) {
+  const frag = document.createDocumentFragment();
+  compounds.forEach((c, localIdx) => {
+    const realIdx = ALL_COMPOUNDS.indexOf(c);
+    const el = document.createElement('div');
+    el.className = 'result-item' + (realIdx === CURRENT_IDX ? ' active' : '');
+    el.dataset.idx = realIdx;
+    el.onclick = () => selectCompound(realIdx);
+
+    const name  = shortenStr(getDisplayName(c), 50) || getPrimaryId(c);
+    const iupac = c.iupac_name || '';
+    const mw    = c.mol_weight ? parseFloat(c.mol_weight).toFixed(1) : '';
+    const base  = c.mod_base || '';
+    const status= c.analog_status || '';
+    const mod   = c.mod_detail || '';
+    const region= c.mod_region || '';
+    const bCls  = baseBadgeCls(base);
+
+    el.innerHTML = `
+      <div class="ri-top">
+        <span class="ri-nl">${esc(getPrimaryId(c))}</span>
+        <span class="ri-name" title="${esc(getDisplayName(c)||iupac)}">${esc(name)}</span>
+      </div>
+      ${iupac && iupac !== name ? `<div class="ri-iupac" title="${esc(iupac)}">${esc(iupac)}</div>` : ''}
+      <div class="ri-badges">
+        ${base   ? `<span class="ri-badge ${bCls}">${esc(base)}</span>` : ''}
+        ${status ? `<span class="ri-badge ${status==='Natural'?'badge-natural':'badge-analog'}">${esc(status)}</span>` : ''}
+        ${mod    ? `<span class="ri-badge badge-mod-region">${esc(shortenStr(mod,18))}</span>` : ''}
+        ${region && region !== mod ? `<span class="ri-badge badge-mod-region" style="opacity:.7">${esc(region)}</span>` : ''}
+        ${mw     ? `<span class="ri-badge badge-mw">${mw}Da</span>` : ''}
+      </div>`;
+    frag.appendChild(el);
+  });
+  list.appendChild(frag);
+}
+
+function renderCompactView(list, compounds) {
+  const frag = document.createDocumentFragment();
+  compounds.forEach((c, localIdx) => {
+    const realIdx = ALL_COMPOUNDS.indexOf(c);
+    const el = document.createElement('div');
+    el.className = 'result-item' + (realIdx === CURRENT_IDX ? ' active' : '');
+    el.dataset.idx = realIdx;
+    el.style.padding = '6px 12px';
+    el.onclick = () => selectCompound(realIdx);
+
+    const name = shortenStr(getDisplayName(c), 42) || getPrimaryId(c);
+    const bCls = baseBadgeCls(c.mod_base||'');
+
+    el.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="ri-nl" style="min-width:80px;flex-shrink:0">${esc(getPrimaryId(c))}</span>
+        <span style="flex:1;font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text)">${esc(name)}</span>
+        ${c.mod_base ? `<span class="ri-badge ${bCls}" style="flex-shrink:0">${esc(c.mod_base)}</span>` : ''}
+        ${c.analog_status ? `<span class="ri-badge ${c.analog_status==='Natural'?'badge-natural':'badge-analog'}" style="flex-shrink:0">${c.analog_status==='Natural'?'NAT':'ANA'}</span>` : ''}
+      </div>
+      <div class="ri-rownum">${localIdx+1}</div>`;
+    frag.appendChild(el);
+  });
+  list.appendChild(frag);
+}
+
+function renderTableView(list, compounds) {
+  const wrap = document.createElement('div');
+  wrap.className = 'table-wrap';
+  wrap.style.cssText = 'overflow-x:auto;overflow-y:visible;';
+
+  const table = document.createElement('table');
+  table.className = 'view-table';
+
+  const thead = document.createElement('thead');
+  const tr1 = document.createElement('tr');
+  let lastSection = '__NONE__';
+  let sectionColspan = 0;
+  let sectionCells = [];
+  TABLE_COLS.forEach((col, i) => {
+    const sec = col.subhead ? col.subhead.split(' — ')[0] : null;
+    if (sec !== lastSection) {
+      if (lastSection !== '__NONE__' && lastSection) {
+        sectionCells.push({label: lastSection, colspan: sectionColspan});
+      } else if (lastSection !== '__NONE__') {
+        sectionCells.push({label: '', colspan: sectionColspan});
+      }
+      lastSection = sec;
+      sectionColspan = 1;
+    } else { sectionColspan++; }
+  });
+  if (lastSection !== '__NONE__') sectionCells.push({label: lastSection||'', colspan: sectionColspan});
+
+  sectionCells.forEach(sc => {
+    const th = document.createElement('th');
+    th.colSpan = sc.colspan;
+    th.className = 'th-group';
+    th.textContent = sc.label || '';
+    tr1.appendChild(th);
+  });
+
+  const tr2 = document.createElement('tr');
+  TABLE_COLS.forEach(col => {
+    const th = document.createElement('th');
+    th.className = 'sub';
+    th.textContent = col.subhead ? col.subhead.split(' — ').slice(-1)[0] : '';
+    tr2.appendChild(th);
+  });
+
+  const tr3 = document.createElement('tr');
+  TABLE_COLS.forEach(col => {
+    const th = document.createElement('th');
+    th.textContent = col.label;
+    th.style.minWidth = col.w;
+    th.onclick = () => sortByCol(col.col);
+    tr3.appendChild(th);
+  });
+
+  thead.append(tr1, tr2, tr3);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  compounds.forEach((c, localIdx) => {
+    const realIdx = ALL_COMPOUNDS.indexOf(c);
+    const tr = document.createElement('tr');
+    tr.className = realIdx === CURRENT_IDX ? 'active-row' : '';
+    tr.dataset.idx = realIdx;
+    tr.onclick = () => selectCompound(realIdx);
+
+    TABLE_COLS.forEach(col => {
+      const td = document.createElement('td');
+      const val = col.col === 'nl' ? getPrimaryId(c) : (c[col.col] || '');
+      if (col.col === 'pdbs') {
+        td.innerHTML = `<span style="font-family:var(--ff-mono);font-size:9.5px;color:var(--c-accent)">${esc(val)}</span>`;
+      } else if (col.col === 'trade_name') {
+        const display = getDisplayName(c);
+        td.textContent = display ? shortenStr(display, 32) : '';
+        if (display) td.title = display;
+      } else if (col.col === 'analog_status') {
+        td.innerHTML = val ? `<span class="ri-badge ${val==='Natural'?'badge-natural':'badge-analog'}">${esc(val)}</span>` : '';
+      } else if (col.col === 'mod_base') {
+        td.innerHTML = val ? `<span class="ri-badge ${baseBadgeCls(val)}">${esc(val)}</span>` : '';
+      } else if (col.col === 'clinical_status') {
+        td.innerHTML = val ? `<span class="tag ${getStatusBadgeClass(val)}" style="font-size:9.5px;padding:2px 7px">${esc(val)}</span>` : '';
+      } else if (col.col === 'ic50' || col.col === 'ec50') {
+        td.innerHTML = val ? `<span class="bio-val">${esc(fmtActivity(val))}</span>` : '';
+      } else if (col.col === 'chembl_id' && val) {
+        td.innerHTML = `<a href="https://www.ebi.ac.uk/chembl/compound_report_card/${esc(val)}" target="_blank" style="color:var(--c-orange);font-family:var(--ff-mono);font-size:9.5px">${esc(val)}</a>`;
+      } else {
+        td.textContent = val ? shortenStr(val, 28) : '';
+        if (val) td.title = val;
+      }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  list.appendChild(wrap);
+}
+
+function sortByCol(colKey) {
+  const el = document.getElementById('sort-select');
+  if(!el) return;
+  if (SORT_FIELD === colKey) {
+    SORT_DESC = !SORT_DESC;
+  } else {
+    SORT_FIELD = colKey;
+    SORT_DESC = false;
+  }
+  el.value = colKey;
+  applyFilters();
+}
+
+function selectCompound(idx) {
+  CURRENT_IDX = idx;
+  const c = ALL_COMPOUNDS[idx];
+  if (!c) return;
+
+  document.querySelectorAll('.result-item').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.idx) === idx);
+  });
+  document.querySelectorAll('.active-row').forEach(el => el.classList.remove('active-row'));
+  const activeRow = document.querySelector(`tr[data-idx="${idx}"]`);
+  if (activeRow) activeRow.classList.add('active-row');
+
+  const splash = document.getElementById('splash');
+  if(splash) splash.style.display = 'none';
+  const det = document.getElementById('detail');
+  if(det) det.style.display = 'flex';
+
+  const name = getDisplayName(c) || getPrimaryId(c);
+  const compNl = document.getElementById('comp-nl');
+  if(compNl) compNl.textContent    = getPrimaryId(c);
+  const compName = document.getElementById('comp-name');
+  if(compName) compName.textContent  = name;
+  const compIupac = document.getElementById('comp-iupac');
+  if(compIupac) compIupac.textContent = c.iupac_name || '';
+  
+  const expBtn = document.getElementById('export-selected-btn');
+  if(expBtn) expBtn.disabled = false;
+
+  const badges = document.getElementById('comp-badges');
+  if(badges) {
+      badges.innerHTML = '';
+      if (c.analog_status) addBadge(badges, c.analog_status, c.analog_status==='Natural'?'cb-natural':'cb-analog');
+      if (c.mod_base)      addBadge(badges, c.mod_base + ' base', 'cb-base');
+      if (c.mod_sugar)     addBadge(badges, c.mod_sugar, 'cb-sugar');
+      if (c.mod_region)    addBadge(badges, c.mod_region + ' mod', 'cb-region');
+  }
+
+  draw2D(c);
+  fetch3D(c);
+  renderOverview(c);
+  renderModification(c);
+  renderProps(c);
+  renderTargets(c);
+  renderBioactivity(c);
+  renderClinical(c);
+  renderRefs(c);
+  renderIdentifiers(c);
+}
+
+function addBadge(parent, text, cls) {
+  const b = document.createElement('span');
+  b.className = 'comp-badge ' + cls;
+  b.textContent = text;
+  parent.appendChild(b);
+}
+
+const SCAFFOLDS = {
+  Adenine:  { base:'Nc1ncnc2ncnc12',         sugar:'OCC1OC(O)C(O)C1' },
+  Guanine:  { base:'Nc1nc(=O)c2ncnc2[nH]1',   sugar:'OCC1OC(O)C(O)C1' },
+  Cytosine: { base:'Nc1ccnc(=O)[nH]1',        sugar:'OCC1OC(O)C(O)C1' },
+  Uracil:   { base:'O=c1cc[nH]c(=O)[nH]1',    sugar:'OCC1OC(O)C(O)C1' },
+  Thymine:  { base:'Cc1c[nH]c(=O)[nH]c1=O',   sugar:'OCC1OCC(O)C1'    },
+};
+
+function draw2D(c) {
+  const box = document.getElementById('viewer2d');
+  if(!box) return;
+  const palette = getThemePalette();
+  if (!c.smiles) { box.innerHTML = '<div class="vp-empty"><span>No SMILES</span></div>'; return; }
+  if (!RDKIT)     { box.innerHTML = '<div class="vp-empty"><div class="spinner"></div><span>RDKit loading…</span></div>'; return; }
+  try {
+    const mol = RDKIT.get_mol(c.smiles);
+    if (!mol || !mol.is_valid()) { box.innerHTML = '<div class="vp-empty"><span>Invalid SMILES</span></div>'; return; }
+    const atomCount = document.getElementById('atom-count');
+    if(atomCount) atomCount.textContent = mol.get_num_atoms() + ' atoms';
+
+    const base=c.mod_base||'', bAtoms=[], sAtoms=[], pAtoms=[], mAtoms=[];
+    let bestScore=0;
+    for (const [nm,data] of Object.entries(SCAFFOLDS)) {
+      if (base && !nm.toLowerCase().startsWith(base.toLowerCase().slice(0,3))) continue;
+      let ba=[],sa=[],sc=0;
+      try {
+        const bq=RDKIT.get_qmol(data.base); if(bq&&bq.is_valid()){const m=JSON.parse(mol.get_substruct_match(bq));if(m&&m.atoms){ba=m.atoms;sc+=m.atoms.length*2;}bq.delete();}
+        const sq=RDKIT.get_qmol(data.sugar);if(sq&&sq.is_valid()){const m=JSON.parse(mol.get_substruct_match(sq));if(m&&m.atoms){sa=m.atoms;sc+=m.atoms.length;}sq.delete();}
+      } catch(e){}
+      if(sc>bestScore){bestScore=sc;bAtoms.push(...ba);sAtoms.push(...sa);}
+    }
+    if(!bAtoms.length){
+      for(const data of Object.values(SCAFFOLDS)){
+        try{const bq=RDKIT.get_qmol(data.base);if(bq&&bq.is_valid()){const m=JSON.parse(mol.get_substruct_match(bq));if(m&&m.atoms&&m.atoms.length>bestScore){bestScore=m.atoms.length;bAtoms.push(...m.atoms);}bq.delete();}}catch(e){}
+      }
+    }
+    try{const pq=RDKIT.get_qmol('P(=O)(O)O');if(pq&&pq.is_valid()){const ms=JSON.parse(mol.get_substruct_matches(pq));if(ms)ms.forEach(m=>{if(m.atoms)pAtoms.push(...m.atoms);});pq.delete();}}catch(e){}
+
+    const known=new Set([...bAtoms,...sAtoms,...pAtoms]);
+    if(known.size>0){for(let i=0;i<mol.get_num_atoms();i++){if(!known.has(i))mAtoms.push(i);}}
+
+    const aC={}, allA=[...bAtoms,...sAtoms,...pAtoms,...mAtoms];
+    bAtoms.forEach(a=>aC[a]=[.43,.67,1.0]);
+    sAtoms.forEach(a=>aC[a]=[.24,1.0,.63]);
+    pAtoms.forEach(a=>aC[a]=[1.0,.67,.25]);
+    mAtoms.forEach(a=>aC[a]=[1.0,.42,.48]);
+
+    const w=Math.min(box.clientWidth||500,660), h=Math.min((box.clientHeight||280)-4,330);
+    const det={width:w,height:h,backgroundColour:[0,0,0,0],bondLineWidth:1.6,padding:.1,atoms:allA,highlightAtomColors:aC,highlightBondColors:{},highlightAtomRadii:Object.fromEntries(mAtoms.map(a=>[a,.5]))};
+    let svg=mol.get_svg_with_highlights(JSON.stringify(det));
+    svg=svg.replace(/fill:#FFFFFF/g,'fill:transparent').replace(/fill:#ffffff/g,'fill:transparent').replace(/stroke:#000000/g,`stroke:${palette.atom}`).replace(/stroke:#0F0F0F/g,`stroke:${palette.atom}`);
+    box.innerHTML=svg;
+    mol.delete();
+  } catch(e){ box.innerHTML=`<div class="vp-empty"><span>Render error</span></div>`; console.error(e); }
+}
+function toggle2D(btn){ btn.classList.toggle('active'); if(CURRENT_IDX>=0) draw2D(ALL_COMPOUNDS[CURRENT_IDX]); }
+
+let last3D='';
+async function fetch3D(c) {
+  const viewerKey = `${getPrimaryId(c)}|${c.pdbs || ''}|${c.smiles || ''}|${CURRENT_THEME}`;
+  const hasPdbCandidate = !!(c.pdbs && c.pdbs.split(/[|,;\s]+/).some(v => /^[A-Za-z0-9]{4}$/.test(v.trim())));
+  if((!c.smiles && !hasPdbCandidate) || viewerKey===last3D) return;
+  last3D=viewerKey;
+  const palette = getThemePalette();
+  const empty=document.getElementById('3d-empty'), note=document.getElementById('3d-note');
+  if(empty) empty.style.display='flex'; 
+  if(note) note.textContent='Fetching from PubChem…';
+  
+  const v3dEl = document.getElementById('viewer3d-el');
+  if(!v3dEl) return;
+
+  if(!VIEWER3D){VIEWER3D=$3Dmol.createViewer(v3dEl,{backgroundColor:palette.viewer,antialias:true});}
+  else{VIEWER3D.clear();}
+  
+  if (c.pdbs && /^[A-Za-z0-9|,\s-]{4,}$/.test(c.pdbs)) {
+    const pdbCandidates = c.pdbs.split(/[|,;\s]+/).map(v => v.trim()).filter(v => /^[A-Za-z0-9]{4}$/.test(v));
+    if (pdbCandidates.length) {
+      try {
+        const pdbId = pdbCandidates[0].toUpperCase();
+        const r0 = await fetch(`https://files.rcsb.org/download/${pdbId}.pdb`, { signal: AbortSignal.timeout(12000) });
+        if (r0.ok) {
+          const pdbText = await r0.text();
+          VIEWER3D.addModel(pdbText, 'pdb');
+          apply3DStyle();
+          VIEWER3D.zoomTo();
+          VIEWER3D.render();
+          if(empty) empty.style.display='none';
+          if(note) note.textContent=`3D from RCSB PDB ${pdbId}`;
+          return;
+        }
+      } catch(e) {}
+    }
+  }
+  try {
+    const r=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/${encodeURIComponent(c.smiles)}/SDF?record_type=3d`,{signal:AbortSignal.timeout(12000)});
+    if(!r.ok) throw new Error(r.status);
+    const sdf=await r.text();
+    VIEWER3D.addModel(sdf,'sdf'); apply3DStyle(); VIEWER3D.zoomTo(); VIEWER3D.render();
+    if(empty) empty.style.display='none'; 
+    if(note) note.textContent='3D from PubChem · drag · scroll to zoom';
+  } catch(e) {
+    try{
+      const r2=await fetch(`https://cactus.nci.nih.gov/chemical/structure/${encodeURIComponent(c.smiles)}/file?format=sdf&get3d=true`,{signal:AbortSignal.timeout(10000)});
+      if(!r2.ok) throw new Error('cactus');
+      const sdf2=await r2.text();
+      VIEWER3D.addModel(sdf2,'sdf'); apply3DStyle(); VIEWER3D.zoomTo(); VIEWER3D.render();
+      if(empty) empty.style.display='none'; 
+      if(note) note.textContent='3D from NCI Cactus · drag · scroll to zoom';
+    }catch(e2){ 
+      if(note) note.textContent='3D unavailable for this structure'; 
+    }
+  }
+}
+function apply3DStyle(){
+  if(!VIEWER3D) return; VIEWER3D.setBackgroundColor(getThemePalette().viewer); VIEWER3D.removeAllSurfaces();
+  if(STYLE3D==='stick'){VIEWER3D.setStyle({},{stick:{colorscheme:'Jmol',radius:.12},sphere:{colorscheme:'Jmol',scale:.28}});}
+  else if(STYLE3D==='sphere'){VIEWER3D.setStyle({},{sphere:{colorscheme:'Jmol',scale:.55}});}
+  else{VIEWER3D.setStyle({},{stick:{colorscheme:'Jmol',radius:.1}});VIEWER3D.addSurface($3Dmol.SurfaceType.VWS,{opacity:.5,colorscheme:'whiteCarbon'});}
+  VIEWER3D.render();
+}
+function set3DStyle(s){
+  STYLE3D=s;
+  ['stick','sphere','surf'].forEach(k=>{
+      const btn = document.getElementById('btn3-'+k);
+      if(btn) btn.classList.toggle('active',k===s);
+  });
+  apply3DStyle();
+}
+
+function showTab(name) {
+  const tabs=['overview','structure','props','targets','bioactivity','clinical','refs','identifiers'];
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===name));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  const tab = document.getElementById('tab-'+name);
+  if(tab) tab.classList.add('active');
+}
+
+function renderOverview(c) {
+  const pred = predictMissing(c);
+  let html = '';
+
+  html += sec('Quick Facts', `<div class="info-grid">
+    <div class="ig-card highlight"><div class="ig-key">Structure Identifier</div><div class="ig-val mono">${esc(getPrimaryId(c))}</div></div>
+    ${getDisplayName(c) && getDisplayName(c) !== getPrimaryId(c) ? card('Trade / Common Name', esc(getDisplayName(c))) : ''}
+    ${c.analog_status? card('Type', badge(c.analog_status, c.analog_status==='Natural'?'tag-green':'tag-purple')) : ''}
+    ${c.mol_formula ? card('Molecular Formula', `<span class="ig-val mono">${esc(c.mol_formula)}</span>`) : ''}
+    ${c.mol_weight  ? card('Molecular Weight', `<span class="ig-val large">${parseFloat(c.mol_weight).toFixed(2)} <small style="color:var(--c-text3)">g/mol</small></span>`) : ''}
+    ${c.logp        ? card('LogP', `<span class="ig-val large ${parseFloat(c.logp)>5?'warn':''}">${parseFloat(c.logp).toFixed(3)}</span>`) : pred.logp ? card('LogP (predicted)', `<span class="ig-val large predicted">${pred.logp}</span><div class="ig-predicted-label">⚡ RDKit</div>`) : ''}
+    ${c.chembl_id   ? card('ChEMBL ID', `<a href="https://www.ebi.ac.uk/chembl/compound_report_card/${esc(c.chembl_id)}" target="_blank" style="font-family:var(--ff-mono);font-size:11px;color:#e8a45a">${esc(c.chembl_id)}</a>`) : ''}
+    ${c.pubchem_id  ? card('PubChem CID', `<a href="https://pubchem.ncbi.nlm.nih.gov/compound/${esc(c.pubchem_id)}" target="_blank" style="font-family:var(--ff-mono);font-size:11px;color:#5b8dee">${esc(c.pubchem_id)}</a>`) : ''}
+  </div>`);
+
+  if (c.mod_base || c.mod_sugar || c.mod_detail) {
+    html += sec('Nucleoside Scaffold',
+      `<div class="subhead">Modification group (I–M)</div>
+       <div class="mod-grid">
+         <div class="mod-card"><div class="mod-card-type">Base (col I)</div><div class="mod-card-value">${c.mod_base||'—'}</div><div class="mod-card-detail">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
+         <div class="mod-card"><div class="mod-card-type">Sugar (col J)</div><div class="mod-card-value">${c.mod_sugar||'—'}</div><div class="mod-card-detail">${c.mod_phosphate?'Phosphate: '+c.mod_phosphate:''}</div></div>
+         <div class="mod-card"><div class="mod-card-type">Modification (col L–M)</div><div class="mod-card-value">${c.mod_detail||badge(pred.mod_predicted||'—',c.mod_detail?'tag-red':'tag-gray')}</div><div class="mod-card-detail">${c.mod_region?`<span class="tag ${getRegionCls(c.mod_region)}" style="font-size:9px">${c.mod_region}</span>`:''}</div></div>
+       </div>`
+    );
+  }
+
+  const primaryTarget = c.primary_target || pred.imputed.primary_target || c.receptor || pred.imputed.receptor || c.enzyme || pred.imputed.enzyme;
+  if (primaryTarget) {
+    html += sec('Target (W–AM)',
+      `<div class="subhead">Compound &amp; Target (col W)</div>
+       <div class="tag-list">${(primaryTarget).split(',').map(t=>`<span class="tag tag-blue">${esc(t.trim())}</span>`).join('')}</div>`
+    );
+  } else {
+    html += sec('Target', `<div class="status-bar" style="background:var(--c-yellow-dim);border:1px solid rgba(251,191,36,.15)">
+      <div class="sb-dot" style="background:var(--c-yellow)"></div>
+      <div class="sb-text">${pred.predicted_target?'<b>Linked prediction: '+esc(pred.predicted_target)+'</b>':'Target fields populate only when linked evidence is strong enough to support them.'}</div></div>`);
+  }
+
+  if (c.ic50 || c.ec50 || c.kd) {
+    html += sec('Bioactivity (cols AO–AQ)',
+      `<div class="subhead">Biological Activity Data</div>
+       <div class="info-grid">
+         ${c.ic50 ? card('IC₅₀', `<span class="bio-val">${fmtActivity(c.ic50)}</span>`) : ''}
+         ${c.ec50 ? card('EC₅₀', `<span class="bio-val">${fmtActivity(c.ec50)}</span>`) : ''}
+         ${c.kd   ? card('Kd',   `<span class="bio-val">${fmtActivity(c.kd)}</span>`) : ''}
+       </div>`
+    );
+  }
+
+  const ovContent = document.getElementById('ov-content');
+  if(ovContent) ovContent.innerHTML = html;
+}
+
+function renderModification(c) {
+  const pred = predictMissing(c);
+  let html = '';
+
+  const isCanon = c.analog_status==='Natural' && !c.mod_detail;
+  html += `<div class="status-bar" style="background:${isCanon?'var(--c-green-dim)':'var(--c-orange-dim)'};border:1px solid ${isCanon?'rgba(74,222,128,.15)':'rgba(251,146,60,.15)'}">
+    <div class="sb-dot" style="background:${isCanon?'var(--c-green)':'var(--c-orange)'}"></div>
+    <div class="sb-text">${isCanon?'<b>Canonical / Natural</b> — No structural modifications detected':'<b>'+esc(c.analog_status||'Analog')+'</b> — Modified '+esc(c.mod_region||'')+(c.mod_detail?' : <b>'+esc(c.mod_detail)+'</b>':'')}</div></div>`;
+
+  html += sec('Scaffold Components — Modification group (cols I–M)',
+    `<div class="subhead">Merged header: "Modification" spans columns I–M</div>
+     <div class="info-grid">
+       <div class="ig-card"><div class="ig-key">Base (col I)</div><div class="ig-val">${c.mod_base||'—'}</div><div style="font-size:9.5px;color:var(--c-text3);margin-top:2px">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
+       <div class="ig-card"><div class="ig-key">Sugar (col J)</div><div class="ig-val">${c.mod_sugar||'—'}</div><div style="font-size:9.5px;color:var(--c-text3);margin-top:2px">${getSugarDesc(c.mod_sugar)}</div></div>
+       <div class="ig-card"><div class="ig-key">Phosphate (col K)</div><div class="ig-val">${c.mod_phosphate||''}</div></div>
+       <div class="ig-card ${c.mod_detail?'highlight':''}"><div class="ig-key">Modification Detail (col L)</div><div class="ig-val">${c.mod_detail?badge(c.mod_detail,'tag-red'):pred.mod_predicted?badge(pred.mod_predicted,'tag-yellow'):''}${!c.mod_detail&&pred.mod_predicted?'<div class="ig-predicted-label">⚡ Predicted</div>':''}</div></div>
+       <div class="ig-card"><div class="ig-key">Modified Region (col M)</div><div class="ig-val">${c.mod_region?`<span class="tag ${getRegionCls(c.mod_region)}">${c.mod_region}</span>`:''}</div></div>
+     </div>`
+  );
+
+  const missPred = [];
+  if (!c.logp && pred.logp) missPred.push({k:'LogP',v:pred.logp,note:'RDKit CrippenClogP'});
+  if (!c.psa  && pred.psa)  missPred.push({k:'PSA (Å²)',v:pred.psa,note:'RDKit tPSA'});
+  if (!c.primary_target && pred.predicted_target) missPred.push({k:'Predicted Target',v:pred.predicted_target,note:'Linked records / scaffold consensus'});
+  if (!c.mod_detail && pred.mod_predicted) missPred.push({k:'Modification type',v:pred.mod_predicted,note:'SMARTS detection'});
+  if (!c.solubility && pred.solubility) missPred.push({k:'Solubility class',v:pred.solubility,note:'From LogP'});
+
+  if (missPred.length) {
+    html += sec('⚡ Predicted / Inferred Data',
+      `<div class="status-bar" style="background:var(--c-yellow-dim);border:1px solid rgba(251,191,36,.15)">
+         <div class="sb-dot" style="background:var(--c-yellow)"></div>
+         <div class="sb-text" style="font-size:10.5px">Values are emitted only when deterministic descriptors or strong linked evidence support them.</div></div>
+       <div class="info-grid">`
+      + missPred.map(m=>`<div class="ig-card"><div class="ig-key">${esc(m.k)}</div><div class="ig-val predicted">${esc(m.v)}</div><div class="ig-predicted-label">⚡ ${esc(m.note)}</div></div>`).join('')
+      + '</div>'
+    );
+  }
+
+  if (c.smiles && RDKIT) {
+    const pats = detectPatterns(c.smiles);
+    if (pats.length) {
+      html += sec('Detected Structural Patterns (SMARTS)', `<div class="tag-list">${pats.map(p=>`<span class="tag ${p.cls}" title="${esc(p.desc)}">${esc(p.name)}</span>`).join('')}</div>`);
+    }
+  }
+
+  const modContent = document.getElementById('mod-content');
+  if(modContent) modContent.innerHTML = html;
+}
+
+function renderProps(c) {
+  const pred = predictMissing(c);
+  let html = '';
+
+  html += sec('Key Property Cards', `<div class="prop-ring">
+    ${c.mol_weight ? `<div class="prop-card"><div class="prop-val">${parseFloat(c.mol_weight).toFixed(1)}</div><div class="prop-label">MW g/mol</div></div>` : ''}
+    ${(c.logp||pred.logp) ? `<div class="prop-card"><div class="prop-val ${!c.logp?'pred':parseFloat(c.logp)>5?'warn':'good'}">${c.logp?parseFloat(c.logp).toFixed(2):pred.logp}</div><div class="prop-label">LogP</div>${!c.logp?'<div class="prop-predicted">⚡ Predicted</div>':''}</div>` : ''}
+    ${c.pka ? `<div class="prop-card"><div class="prop-val">${c.pka}</div><div class="prop-label">pKa</div></div>` : ''}
+    ${(c.psa||pred.psa)   ? `<div class="prop-card"><div class="prop-val ${!c.psa?'pred':parseFloat(c.psa||pred.psa)>140?'warn':'good'}">${c.psa||pred.psa}</div><div class="prop-label">PSA Å²</div>${!c.psa?'<div class="prop-predicted">⚡ RDKit</div>':''}</div>` : ''}
+    ${pred.hbd!=null ? `<div class="prop-card"><div class="prop-val good">${pred.hbd}</div><div class="prop-label">H-Bond Donors</div><div class="prop-predicted">⚡ RDKit</div></div>` : ''}
+    ${pred.hba!=null ? `<div class="prop-card"><div class="prop-val good">${pred.hba}</div><div class="prop-label">H-Bond Acceptors</div><div class="prop-predicted">⚡ RDKit</div></div>` : ''}
+  </div>`);
+
+  html += sec('All Physicochemical Data', `<div class="info-grid">
+    ${c.mol_formula ? card('Molecular Formula',`<span class="mono">${esc(c.mol_formula)}</span>`) : ''}
+    ${c.mol_weight  ? card('Molecular Weight', parseFloat(c.mol_weight).toFixed(4)+' g/mol') : ''}
+    ${c.logp        ? card('LogP', parseFloat(c.logp).toFixed(4)) : pred.logp ? card('LogP (predicted)', `<span class="predicted">${pred.logp}</span><div class="ig-predicted-label">⚡ RDKit</div>`) : ''}
+    ${c.pka         ? card('pKa', esc(c.pka)) : ''}
+    ${c.psa         ? card('Polar Surface Area', esc(c.psa)+' Å²') : pred.psa ? card('PSA (predicted)', `<span class="predicted">${pred.psa} Å²</span><div class="ig-predicted-label">⚡ RDKit tPSA</div>`) : ''}
+    ${c.melting_point ? card('Melting Point', esc(c.melting_point)) : ''}
+    ${c.boiling_point ? card('Boiling Point', esc(c.boiling_point)) : ''}
+    ${c.solubility  ? card('Solubility', esc(c.solubility)) : pred.solubility ? card('Solubility (estimated)', `<span class="predicted">${pred.solubility}</span><div class="ig-predicted-label">⚡ From LogP</div>`) : ''}
+  </div>`);
+
+  if (c.mol_weight || c.logp) {
+    const mw=parseFloat(c.mol_weight||0), lp=parseFloat(c.logp||pred.logp||0);
+    const rules=[
+      {n:'MW ≤ 500 g/mol', ok:mw<=500,v:mw.toFixed(1)+' g/mol'},
+      {n:'LogP ≤ 5',       ok:lp<=5,  v:lp.toFixed(2)},
+      pred.hbd!=null ? {n:'HBD ≤ 5',  ok:parseInt(pred.hbd)<=5, v:String(pred.hbd)} : null,
+      pred.hba!=null ? {n:'HBA ≤ 10', ok:parseInt(pred.hba)<=10, v:String(pred.hba)} : null,
+    ].filter(Boolean);
+    html += sec('Lipinski Rule of 5', `<div class="info-grid">`
+      + rules.map(r=>`<div class="ig-card"><div class="ig-key">${esc(r.n)}</div><div class="ig-val" style="color:${r.ok===true?'var(--c-green)':r.ok===false?'var(--c-red)':'var(--c-text3)'}">${r.ok===true?'✓ ':r.ok===false?'✗ ':''}${esc(String(r.v))}</div></div>`).join('')
+      + '</div>'
+    );
+  }
+
+  const propsContent = document.getElementById('props-content');
+  if(propsContent) propsContent.innerHTML = html;
+}
+
+function renderTargets(c) {
+  const pred = predictMissing(c);
+  const getVal = key => c[key] || pred.imputed[key] || '';
+  let html = '';
+
+  const groups = [
+    { subhead: 'Compound & Target (col W)',               items: [ {k:'primary_target',l:'Primary Target',cls:'tag-blue'} ] },
+    { subhead: 'Molecular Targets (cols X–AD)',      items: [ {k:'receptor',l:'Receptors',cls:'tag-teal'},{k:'kinase',l:'Kinases',cls:'tag-purple'},{k:'cdk',l:'CDK/Cyclins',cls:'tag-pink'},{k:'enzyme',l:'Enzymes',cls:'tag-green'},{k:'transporter',l:'Transporters',cls:'tag-orange'},{k:'ion_channel',l:'Ion Channels',cls:'tag-yellow'},{k:'protein_signaling',l:'Proteins/Signaling',cls:'tag-gray'} ] },
+    { subhead: 'Cell Lines (cols AE–AF)',             items: [ {k:'cancer_cell_line',l:'Cancer Cell Lines',cls:'tag-red'},{k:'non_cancer_cell_line',l:'Non-Cancer Cell Lines',cls:'tag-gray'} ] },
+    { subhead: 'Pathogens (cols AG–AJ)',              items: [ {k:'virus',l:'Viruses',cls:'tag-red'},{k:'bacteria',l:'Bacteria',cls:'tag-orange'},{k:'fungi',l:'Fungi',cls:'tag-yellow'},{k:'parasite',l:'Parasites',cls:'tag-teal'} ] },
+    { subhead: 'Organisms & Tissues (cols AK–AL)',   items: [ {k:'model_organism',l:'Model Organisms',cls:'tag-green'},{k:'tissue',l:'Tissues/Fluids',cls:'tag-gray'} ] },
+    { subhead: 'Miscellaneous (col AM)',              items: [ {k:'other_bio',l:'Other',cls:'tag-gray'} ] },
+  ];
+
+  let hasAny = false;
+  groups.forEach(g => {
+    const hasGroup = g.items.some(it => getVal(it.k));
+    if (!hasGroup) return;
+    html += `<div class="subhead">${esc(g.subhead)}</div>`;
+    g.items.forEach(it => {
+      const value = getVal(it.k);
+      if (!value) return;
+      hasAny = true;
+      const tags = value.split(',').map(t=>t.trim()).filter(Boolean);
+      const predLabel = !c[it.k] && pred.imputed[it.k] ? `<div class="ig-predicted-label">Linked prediction${pred.support[it.k] ? ` (${esc(pred.support[it.k])})` : ''}</div>` : '';
+      html += sec(it.l, `<div class="tag-list">${tags.map(t=>`<span class="tag ${it.cls}">${esc(t)}</span>`).join('')}</div>${predLabel}`);
+    });
+  });
+
+  if (!hasAny) {
+    html += `<div class="status-bar" style="background:var(--c-yellow-dim);border:1px solid rgba(251,191,36,.15)">
+      <div class="sb-dot" style="background:var(--c-yellow)"></div>
+      <div class="sb-text">${pred.predicted_target?`High-confidence linked target: <b>${esc(pred.predicted_target)}</b>`:'Target information is not emitted unless linked records or strong scaffold consensus support it.'}</div></div>`;
+  }
+
+  if (getVal('organism')) {
+    html += `<div class="subhead">Organism (col AV)</div>`;
+    html += sec('Organism Context', `<div class="tag-list">${getVal('organism').split(',').map(t=>`<span class="tag tag-green">${esc(t.trim())}</span>`).join('')}</div>${!c.organism && pred.imputed.organism?'<div class="ig-predicted-label">Linked prediction</div>':''}`);
+  }
+
+  const tgtContent = document.getElementById('targets-content');
+  if(tgtContent) tgtContent.innerHTML = html;
+}
+
+function renderBioactivity(c) {
+  let html = '';
+  if (!c.ic50 && !c.ec50 && !c.kd && !c.moa_role && !c.mechanism && !c.therapeutic_app) {
+    html = `<div class="status-bar" style="background:var(--c-panel2);border:1px solid var(--c-border)"><div class="sb-dot" style="background:var(--c-text3)"></div><div class="sb-text">No quantitative bioactivity data for this compound.</div></div>`;
+  } else {
+    if (c.ic50||c.ec50||c.kd) {
+      html += `<div class="subhead">Biological Activity Data (cols AO–AQ)</div>`;
+      html += sec('Activity Values', `<table class="bio-table"><thead><tr><th>Type</th><th>Value</th><th>Target</th></tr></thead><tbody>
+        ${c.ic50?`<tr><td>IC₅₀</td><td><span class="bio-val">${esc(fmtActivity(c.ic50))}</span></td><td>${esc(c.primary_target||'')}</td></tr>`:''}
+        ${c.ec50?`<tr><td>EC₅₀</td><td><span class="bio-val">${esc(fmtActivity(c.ec50))}</span></td><td>${esc(c.primary_target||'')}</td></tr>`:''}
+        ${c.kd  ?`<tr><td>Kd</td><td><span class="bio-val">${esc(fmtActivity(c.kd))}</span></td><td>${esc(c.primary_target||'')}</td></tr>`:''}
+      </tbody></table>`);
+    }
+    if (c.moa_role||c.mechanism) {
+      html += `<div class="subhead">Mechanism of Action (col AN)</div>`;
+      html += sec('Mechanism', `<div class="info-grid wide">
+        ${c.moa_role   ? card('Role &amp; Target', esc(c.moa_role)) : ''}
+        ${c.mechanism  ? card('Mechanism', esc(c.mechanism)) : ''}
+      </div>`);
+    }
+    if (c.therapeutic_app) {
+      html += sec('Therapeutic Application', `<div class="ig-card full"><div class="ig-val">${esc(c.therapeutic_app)}</div></div>`);
+    }
+  }
+  const bioContent = document.getElementById('bio-content');
+  if(bioContent) bioContent.innerHTML = html;
+}
+
+function renderClinical(c) {
+  let html = '';
+  if (c.clinical_status||c.therapeutic_area||c.approved_by||c.patents) {
+    html += `<div class="subhead">Clinical Data (cols AR–AU)</div>`;
+    html += sec('Status', `<div class="info-grid">
+      ${c.clinical_status ? card('Clinical Status', badge(c.clinical_status, getStatusBadgeClass(c.clinical_status))) : ''}
+      ${c.therapeutic_area? card('Therapeutic Area', esc(c.therapeutic_area)) : ''}
+      ${c.approved_by     ? card('Approved By', esc(c.approved_by)) : ''}
+    </div>`);
+    if (c.patents) {
+      html += `<div class="subhead">Regulatory (cols AW–AX)</div>`;
+      html += sec('Patent Information', `<div class="ig-card full"><div class="ig-key">Patent(s)</div><div class="ig-val" style="font-family:var(--ff-mono);font-size:10.5px">${esc(c.patents)}</div></div>`);
+    }
+  } else {
+    html = `<div class="status-bar" style="background:var(--c-panel2);border:1px solid var(--c-border)"><div class="sb-dot" style="background:var(--c-text4)"></div><div class="sb-text">No clinical or regulatory data. Likely a research/preclinical compound.</div></div>`;
+  }
+  const clinicalContent = document.getElementById('clinical-content');
+  if(clinicalContent) clinicalContent.innerHTML = html;
+}
+
+function buildRefCard(r) {
+  const srcLabel = r.source === 'ChEMBL' ? `<span class="ref-source-badge ref-source-chembl">⬡ ChEMBL</span>`
+                 : r.source === 'PubMed'  ? `<span class="ref-source-badge ref-source-pubmed">◈ PubMed</span>`
+                 : r.source === 'database' ? `<span class="ref-source-badge ref-source-db">✓ Database</span>`
+                 : '';
+  return `<div class="ref-item">
+    ${srcLabel}
+    ${r.title ? `<div class="ref-title">${esc(r.title)}</div>` : ''}
+    <div class="ref-fields">
+      ${r.authors  ? `<div class="ref-field"><span class="ref-field-label">Authors</span><span class="ref-field-val ref-authors-val">${esc(r.authors)}</span></div>` : ''}
+      ${r.year     ? `<div class="ref-field"><span class="ref-field-label">Year</span><span class="ref-field-val ref-year-val">${esc(r.year)}</span></div>` : ''}
+      ${r.journal  ? `<div class="ref-field"><span class="ref-field-label">Journal</span><span class="ref-field-val ref-journal-val">${esc(r.journal)}</span></div>` : ''}
+      ${r.doi      ? `<div class="ref-field"><span class="ref-field-label">DOI</span><a class="ref-doi" href="https://doi.org/${esc(r.doi)}" target="_blank">↗ ${esc(r.doi)}</a></div>` : ''}
+      ${r.pmid     ? `<div class="ref-field"><span class="ref-field-label">PubMed</span><a href="https://pubmed.ncbi.nlm.nih.gov/${esc(r.pmid)}" target="_blank" class="ref-pmid">PMID: ${esc(r.pmid)}</a></div>` : ''}
+    </div>
+  </div>`;
+}
+
+async function fetchRefsFromIDs(c) {
+  const results = [];
+  if (c.chembl_id) {
+    try {
+      const resp = await fetch(
+        `https://www.ebi.ac.uk/chembl/api/data/document.json?molecule_chembl_id=${encodeURIComponent(c.chembl_id)}&limit=6`,
+        {signal: AbortSignal.timeout(9000)}
+      );
+      if (resp.ok) {
+        const data = await resp.json();
+        for (const doc of (data.documents || []).slice(0, 6)) {
+          if (!doc.title && !doc.doi) continue;
+          results.push({
+            title:   doc.title || '',
+            journal: doc.journal || '',
+            year:    doc.year ? String(doc.year) : '',
+            authors: doc.authors || '',
+            doi:     doc.doi || '',
+            pmid:    doc.pubmed_id ? String(doc.pubmed_id) : '',
+            source:  'ChEMBL'
+          });
+        }
+      }
+    } catch(e) {}
+  }
+
+  if (!results.length && c.pubchem_id) {
+    try {
+      const r1 = await fetch(
+        `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${encodeURIComponent(c.pubchem_id)}/xrefs/PubMedID/JSON`,
+        {signal: AbortSignal.timeout(8000)}
+      );
+      if (r1.ok) {
+        const d1 = await r1.json();
+        const pmids = d1.InformationList?.Information?.[0]?.PubMedID || [];
+        if (pmids.length) {
+          const ids = pmids.slice(0, 4).join(',');
+          const r2 = await fetch(
+            `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids}&retmode=json`,
+            {signal: AbortSignal.timeout(9000)}
+          );
+          if (r2.ok) {
+            const d2 = await r2.json();
+            for (const pmid of pmids.slice(0, 4)) {
+              const art = d2.result?.[pmid];
+              if (!art) continue;
+              const doiRaw = (art.articleids || []).find(x => x.idtype === 'doi')?.value || '';
+              results.push({
+                title:   art.title || '',
+                journal: art.source || '',
+                year:    art.pubdate ? art.pubdate.slice(0, 4) : '',
+                authors: (art.authors || []).map(a => a.name).join(', '),
+                doi:     doiRaw,
+                pmid:    String(pmid),
+                source:  'PubMed'
+              });
+            }
+          }
+        }
+      }
+    } catch(e) {}
+  }
+  return results;
+}
+
+async function renderRefs(c) {
+  const pred = predictMissing(c);
+  const el = document.getElementById('refs-content');
+  if(!el) return;
+  let html = '';
+  const titles  = split(c.title || pred.imputed.title),  journals = split(c.journal || pred.imputed.journal),
+        years   = split(c.year || pred.imputed.year),   authors  = split(c.authors || pred.imputed.authors),
+        dois    = split(c.doi || pred.imputed.doi),    pmids    = split(c.pubmed_id || pred.imputed.pubmed_id);
+  const total = Math.max(titles.length, dois.length, years.length, journals.length);
+
+  if (!total) {
+    el.innerHTML = `<div class="ref-fetch-loading"><div class="spinner"></div>Fetching publication data from ChEMBL / PubMed…</div>`;
+    const fetched = await fetchRefsFromIDs(c);
+    if (fetched.length) {
+      html += `<div class="subhead">Bibliography — fetched from external databases</div>`;
+      html += sec(`${fetched.length} Literature Reference${fetched.length!==1?'s':''}`,
+        fetched.map(r => buildRefCard(r)).join('')
+      );
+    } else {
+      html = `<div class="status-bar" style="background:var(--c-panel2);border:1px solid var(--c-border)"><div class="sb-dot" style="background:var(--c-text4)"></div>
+        <div class="sb-text">No references found in database or via ChEMBL / PubMed lookup.
+          ${c.chembl_id  ? `&nbsp;<a href="https://www.ebi.ac.uk/chembl/compound_report_card/${esc(c.chembl_id)}" target="_blank" style="font-size:10px">ChEMBL ↗</a>` : ''}
+          ${c.pubchem_id ? `&nbsp;<a href="https://pubchem.ncbi.nlm.nih.gov/compound/${esc(c.pubchem_id)}" target="_blank" style="font-size:10px">PubChem ↗</a>` : ''}
+        </div>
+      </div>`;
+    }
+  } else {
+    html += `<div class="subhead">Bibliography (cols BB–BJ)</div>`;
+    const refs = [];
+    for (let i=0; i<Math.min(total,25); i++) {
+      refs.push({
+        title:   titles[i]  || '',
+        journal: journals[i]|| '',
+        year:    years[i]   || '',
+        authors: authors[i] || '',
+        doi:     dois[i]    || '',
+        pmid:    pmids[i]   || '',
+        source:  'database'
+      });
+    }
+    html += sec(`${total} Literature Reference${total!==1?'s':''}`,
+      refs.map(r => buildRefCard(r)).join('')
+    );
+    if (total > 25) html += `<div style="font-size:11px;color:var(--c-text3);padding:6px">…and ${total-25} more references</div>`;
+  }
+
+  if (c.chembl_doc_id) {
+    const dids = split(c.chembl_doc_id);
+    html += sec('ChEMBL Document IDs', `<div class="tag-list">${dids.slice(0,12).map(d=>`<a href="https://www.ebi.ac.uk/chembl/document_report_card/${esc(d)}" target="_blank" class="tag tag-orange">${esc(d)}</a>`).join('')}${dids.length>12?`<span class="tag tag-gray">+${dids.length-12} more</span>`:''}</div>`);
+  }
+
+  el.innerHTML = html;
+}
+
+function renderIdentifiers(c) {
+  let html = '';
+  const safeSmiles = esc((c.smiles || '').split('\\').join('\\\\').split("'").join("\\'"));
+  html += `<div class="subhead">Cross References (cols AY–BA)</div>`;
+  html += sec('Database IDs', `<div class="xref-row">
+    ${c.chembl_id  ? `<div class="xref-chip"><div><div class="xref-label">ChEMBL</div><div class="xref-val chembl">${esc(c.chembl_id)}</div></div><a href="https://www.ebi.ac.uk/chembl/compound_report_card/${esc(c.chembl_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
+    ${c.pubchem_id ? `<div class="xref-chip"><div><div class="xref-label">PubChem CID</div><div class="xref-val pubchem">${esc(c.pubchem_id)}</div></div><a href="https://pubchem.ncbi.nlm.nih.gov/compound/${esc(c.pubchem_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
+    ${c.drugbank_id? `<div class="xref-chip"><div><div class="xref-label">DrugBank</div><div class="xref-val drugbank">${esc(c.drugbank_id)}</div></div><a href="https://go.drugbank.com/drugs/${esc(c.drugbank_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
+    ${c.nl         ? `<div class="xref-chip"><div><div class="xref-label">Structure ID</div><div class="xref-val" style="color:var(--c-pink)">${esc(c.nl)}</div></div></div>` : ''}
+    ${c.modomics_id  ? `<div class="xref-chip"><div><div class="xref-label">MODOMICS</div><div class="xref-val chembl">${esc(c.modomics_id)}</div></div><a href="https://genesilico.pl/modomics/modifications/${esc(c.modomics_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
+  </div>`);
+
+  if (c.smiles) {
+    html += `<div class="subhead">SMILES (col F)</div>`;
+    html += sec('SMILES', `<div class="ig-card full">
+      <div class="ig-key">Input SMILES</div>
+      <div style="font-family:var(--ff-mono);font-size:10.5px;color:var(--c-accent);word-break:break-all;line-height:1.8">${esc(c.smiles)}</div>
+      <button class="copy-btn" id="cb-smi" onclick="copyText('${safeSmiles}','cb-smi')">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy SMILES
+      </button>
+    </div>`);
+  }
+
+  if (c.inchi || c.inchi_key) {
+    html += `<div class="subhead">InChI Identifiers (cols G–H)</div>`;
+    html += sec('InChI', `<div class="info-grid full">
+      ${c.inchi     ? `<div class="ig-card"><div class="ig-key">InChI</div><div style="font-family:var(--ff-mono);font-size:9.5px;color:var(--c-text2);word-break:break-all;line-height:1.65">${esc(c.inchi)}</div></div>` : ''}
+      ${c.inchi_key ? `<div class="ig-card"><div class="ig-key">InChI Key</div><div style="font-family:var(--ff-mono);font-size:12px;color:var(--c-teal);letter-spacing:.8px">${esc(c.inchi_key)}</div><button class="copy-btn" id="cb-ik" onclick="copyText('${esc(c.inchi_key)}','cb-ik')">Copy</button></div>` : ''}
+    </div>`);
+  }
+
+  if (c.synonyms) {
+    html += sec('Synonyms (col E)', `<div class="tag-list">${c.synonyms.split(/[,;]/).map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag tag-gray">${esc(s)}</span>`).join('')}</div>`);
+  }
+
+  const identContent = document.getElementById('ident-content');
+  if(identContent) identContent.innerHTML = html;
+}
+
+const LINK_SOURCE_FIELDS = ['doi','pubmed_id','doc_chembl_id','chembl_id','pubchem_id','title','pdbs'];
+const IMPUTABLE_FIELDS = ['authors','year','journal','title','doi','pubmed_id','doc_chembl_id','primary_target','receptor','kinase','enzyme','transporter','protein_signaling','cancer_cell_line','non_cancer_cell_line','virus','bacteria','fungi','parasite','model_organism','tissue','other_bio','organism'];
+
+function buildPredictionIndex() {
+  const linked = {};
+  LINK_SOURCE_FIELDS.forEach(field => linked[field] = new Map());
+  const signatures = new Map();
+
+  ALL_COMPOUNDS.forEach(record => {
+    LINK_SOURCE_FIELDS.forEach(field => {
+      const values = field === 'pdbs' ? [getPrimaryId(record)] : split(record[field]);
+      values.forEach(value => {
+        const key = normText(value);
+        if (!key) return;
+        if (!linked[field].has(key)) linked[field].set(key, []);
+        linked[field].get(key).push(record);
+      });
+    });
+
+    const signature = [record.mod_base, record.mod_sugar, record.mod_detail, record.mod_region, record.analog_status]
+      .map(normText)
+      .filter(Boolean)
+      .join('|');
+    if (signature) {
+      if (!signatures.has(signature)) signatures.set(signature, []);
+      signatures.get(signature).push(record);
+    }
+  });
+
+  PREDICTION_INDEX = { linked, signatures };
+}
+
+function getLinkedRecords(record, field) {
+  if (!PREDICTION_INDEX) return [];
+  const values = field === 'pdbs' ? [getPrimaryId(record)] : split(record[field]);
+  const pool = new Set();
+  values.forEach(value => {
+    const key = normText(value);
+    if (!key) return;
+    (PREDICTION_INDEX.linked[field].get(key) || []).forEach(match => {
+      if (match !== record) pool.add(match);
+    });
+  });
+  return [...pool];
+}
+
+function getSignatureRecords(record) {
+  if (!PREDICTION_INDEX) return [];
+  const signature = [record.mod_base, record.mod_sugar, record.mod_detail, record.mod_region, record.analog_status]
+    .map(normText)
+    .filter(Boolean)
+    .join('|');
+  if (!signature) return [];
+  return (PREDICTION_INDEX.signatures.get(signature) || []).filter(match => match !== record);
+}
+
+function getConsensusValue(records, field, threshold = 0.8, minCount = 2) {
+  const counts = new Map();
+  records.forEach(record => {
+    const value = cleanCellValue(record[field]);
+    if (!value) return;
+    counts.set(value, (counts.get(value) || 0) + 1);
+  });
+  const entries = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  if (!entries.length) return null;
+  const [value, count] = entries[0];
+  const total = entries.reduce((sum, entry) => sum + entry[1], 0);
+  if (count < minCount) return null;
+  if ((count / total) < threshold) return null;
+  return { value, confidence: count / total, support: `${count}/${total}` };
+}
+
+const PATS=[
+  {name:"2'-Fluoro",   smarts:'[F][C@@H]1O',     site:'sugar',     desc:"Fluorine at 2'",    cls:'tag-teal'},
+  {name:"3'-Azido",    smarts:'N=[N+]=[N-]',      site:'sugar',     desc:"3'-Azido (AZT)",    cls:'tag-red'},
+  {name:"2'-OMe",      smarts:'[C@@H](OC)[C@H]1O',site:'sugar',     desc:"2'-O-Methyl",       cls:'tag-teal'},
+  {name:'Phosphate',   smarts:'P(=O)(O)O',        site:'phosphate', desc:'Phosphate ester',   cls:'tag-orange'},
+  {name:'Thio-P',      smarts:'P(=S)',            site:'phosphate', desc:'Phosphorothioate',  cls:'tag-orange'},
+  {name:'5-Halogen',   smarts:'[F,Cl,Br,I]c1c[nH]',site:'base',     desc:'5-Halogenation',    cls:'tag-blue'},
+  {name:'N-alkyl',     smarts:'[nH0;r6]',          site:'base',     desc:'N-alkylation',      cls:'tag-blue'},
+  {name:'Cyano',       smarts:'C#N',               site:'other',    desc:'Nitrile group',     cls:'tag-gray'},
+  {name:'Bicyclic LNA',smarts:'C1OCC2OC12',        site:'sugar',    desc:'LNA bicyclic sugar',cls:'tag-purple'},
+  {name:'Vinyl',       smarts:'C=C[C@@H]1O',       site:'sugar',    desc:'Vinyl/alkene',      cls:'tag-teal'},
+  {name:'Trifluoro',   smarts:'FC(F)F',            site:'other',    desc:'Trifluoromethyl',   cls:'tag-gray'},
+];
+
+function detectPatterns(smiles) {
+  if (!RDKIT || !smiles) return [];
+  let mol; try { mol=RDKIT.get_mol(smiles); if(!mol.is_valid()) return []; } catch(e){ return []; }
+  const found=[];
+  for (const p of PATS) {
+    try{const q=RDKIT.get_qmol(p.smarts);if(q&&q.is_valid()){const m=JSON.parse(mol.get_substruct_match(q));if(m&&m.atoms&&m.atoms.length)found.push(p);q.delete();}}catch(e){}
+  }
+  mol.delete(); return found;
+}
+
+function predictMissing(c) {
+  if (c.__predictions) return c.__predictions;
+  const pred={ imputed:{}, methods:{}, confidence:{}, support:{} };
+  const smiles=c.smiles||'';
+  if (RDKIT && smiles) {
+    try {
+      const mol=RDKIT.get_mol(smiles);
+      if(mol&&mol.is_valid()){
+        const d=JSON.parse(mol.get_descriptors());
+        if(!c.logp) pred.logp = d.CrippenClogP!=null?d.CrippenClogP.toFixed(3):null;
+        pred.psa  = d.tpsa!=null?d.tpsa.toFixed(1):null;
+        pred.hbd  = d.NumHBD;
+        pred.hba  = d.NumHBA;
+        mol.delete();
+      }
+    }catch(e){}
+  }
+  if (!c.solubility) {
+    const lp=parseFloat(c.logp||pred.logp||0);
+    pred.solubility = lp<0?'High (polar)':lp<2?'Moderate':lp<4?'Low-Moderate':'Low (lipophilic)';
+  }
+  if (!c.mod_detail && c.analog_status==='Analog') {
+    const pats = detectPatterns(smiles);
+    if (pats.length) pred.mod_predicted = pats.slice(0,2).map(p => p.name).join(' + ');
+  }
+  if (!c.mod_sugar) {
+    const s=c.smiles||'';
+    pred.sugar_class=s.includes('F')?"Fluorinated furanose (likely 2'-F or 2',2'-diF)":s.includes('O[C@@H]1')?"Ribose-type furanose":s.includes('OC')?"Likely ribose":"Acyclic or modified";
+  }
+  IMPUTABLE_FIELDS.forEach(field => {
+    if (c[field]) return;
+    for (const sourceField of LINK_SOURCE_FIELDS) {
+      const linkedRecords = getLinkedRecords(c, sourceField);
+      const consensus = getConsensusValue(linkedRecords, field, 0.8, 1);
+      if (consensus) {
+        pred.imputed[field] = consensus.value;
+        pred.methods[field] = `linked-${sourceField}`;
+        pred.confidence[field] = consensus.confidence;
+        pred.support[field] = consensus.support;
+        break;
+      }
+    }
+    if (!pred.imputed[field] && ['primary_target','receptor','kinase','enzyme','transporter','protein_signaling','virus','cancer_cell_line'].includes(field)) {
+      const signatureConsensus = getConsensusValue(getSignatureRecords(c), field, 0.85, 3);
+      if (signatureConsensus) {
+        pred.imputed[field] = signatureConsensus.value;
+        pred.methods[field] = 'scaffold-cluster';
+        pred.confidence[field] = signatureConsensus.confidence;
+        pred.support[field] = signatureConsensus.support;
+      }
+    }
+  });
+  if (!c.primary_target && pred.imputed.primary_target) pred.predicted_target = pred.imputed.primary_target;
+  c.__predictions = pred;
+  return pred;
+}
+
+function sec(title, inner) {
+  return `<div class="sec"><div class="sec-title">${esc(title)}</div>${inner}</div>`;
+}
+function card(k, v) {
+  return `<div class="ig-card"><div class="ig-key">${k}</div><div class="ig-val">${v}</div></div>`;
+}
+function badge(text, cls) {
+  return `<span class="tag ${cls}">${esc(text)}</span>`;
+}
+function split(val) {
+  if (!val) return [];
+  return val.split('|').map(s=>s.trim()).filter(Boolean);
+}
+function esc(s) {
+  return String(s||'')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;');
+}
+function shortenStr(s,n) {
+  if (!s) return '';
+  return s.length > n ? s.slice(0,n-1)+'…' : s;
+}
+function fmtActivity(val) {
+  if(!val) return '—';
+  const n=parseFloat(val);
+  if(!isNaN(n)){
+    const unit=String(val).replace(/[\d.e+\-\s]/gi,'').trim()||'nM';
+    if(n>=1e6) return (n/1e6).toFixed(2)+' mM';
+    if(n>=1e3) return (n/1e3).toFixed(2)+' µM';
+    return n.toFixed(2)+' '+unit;
+  }
+  return String(val);
+}
+function baseBadgeCls(base) {
+  return {'Adenine':'badge-adenine','Uracil':'badge-uracil','Cytosine':'badge-cytosine','Guanine':'badge-guanine','Thymine':'badge-thymine','Modified':'badge-modified-base'}[base]||'badge-mw';
+}
+function getBaseClass(b){ return {'Adenine':'Purine','Guanine':'Purine','Cytosine':'Pyrimidine','Uracil':'Pyrimidine','Thymine':'Pyrimidine','Modified':'Modified scaffold'}[b]||''; }
+function getBaseType(b) { return {'Adenine':'6-aminopurine','Guanine':'2-amino-6-oxopurine','Cytosine':'4-aminopyrimidine','Uracil':'2,4-dioxopyrimidine','Thymine':'5-methyl-2,4-dioxopyrimidine'}[b]||''; }
+function getSugarDesc(s){ return {'Ribose':'5-membered furanose ring, 3 OH groups','2\'-Deoxyribose':"5-membered furanose, missing 2'-OH",'Modified furanose':'Structurally altered furanose ring'}[s]||''; }
+function getRegionCls(r){ if(!r)return 'tag-gray'; if(r==='Base')return 'tag-blue'; if(r==='Sugar')return 'tag-teal'; if(r==='Phosphate')return 'tag-orange'; if(r.includes('Combination'))return 'tag-purple'; return 'tag-gray'; }
+function getStatusBadgeClass(s){ if(!s)return 'tag-gray'; if(s.includes('Approved'))return 'tag-green'; if(s.includes('Clinical'))return 'tag-yellow'; if(s.includes('Research')||s.includes('Experimental'))return 'tag-blue'; return 'tag-gray'; }
+function copyText(text, btnId) {
+  navigator.clipboard.writeText(text).then(()=>{
+    const b=document.getElementById(btnId);
+    if(b){b.classList.add('ok');const orig=b.innerHTML;b.textContent='✓ Copied';setTimeout(()=>{b.classList.remove('ok');b.innerHTML=orig;},1500);}
+  });
+}
+
+function buildExportRecord(record) {
+  const pred = predictMissing(record);
+  const row = {};
+  ACTIVE_COLUMNS.forEach(col => {
+    let value = record[col.fieldKey] || '';
+    if (!value && pred.imputed[col.fieldKey]) value = pred.imputed[col.fieldKey];
+    if (!value && col.fieldKey === 'pdbs') value = getPrimaryId(record);
+    if (!value && col.fieldKey === 'trade_name') value = getDisplayName(record);
+    if (!value && col.fieldKey === 'logp' && pred.logp) value = pred.logp;
+    if (!value && col.fieldKey === 'psa' && pred.psa) value = pred.psa;
+    if (!value && col.fieldKey === 'solubility' && pred.solubility) value = pred.solubility;
+    if (!value && col.fieldKey === 'mod_detail' && pred.mod_predicted) value = pred.mod_predicted;
+    if (!value && col.fieldKey === 'primary_target' && pred.predicted_target) value = pred.predicted_target;
+    row[col.label] = value;
+  });
+  Object.entries(record.__extra || {}).forEach(([fieldKey, value]) => {
+    row[getColumnLabel(fieldKey)] = value;
+  });
+  row['Predicted HBD'] = pred.hbd ?? '';
+  row['Predicted HBA'] = pred.hba ?? '';
+  row['Prediction Summary'] = Object.entries(pred.imputed)
+    .map(([field, value]) => `${getColumnLabel(field)} = ${value}`)
+    .join(' | ');
+  row['Prediction Methods'] = Object.entries(pred.methods)
+    .map(([field, method]) => `${getColumnLabel(field)}: ${method}${pred.support[field] ? ` (${pred.support[field]})` : ''}`)
+    .join(' | ');
+  return row;
+}
+
+// --- EXCEL DATA EXPORT ---
+function exportRows(records, label) {
+  if (!records.length) {
+    alert('There are no records to export for this selection.');
+    return;
+  }
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(records.map(buildExportRecord)), 'Records');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([
+    { Metric:'Export label', Value:label },
+    { Metric:'Record count', Value:records.length },
+    { Metric:'Generated at', Value:new Date().toISOString() },
+    { Metric:'Theme', Value:CURRENT_THEME },
+    { Metric:'Filtered results at export', Value:FILTERED.length }
+  ]), 'Export Notes');
+  const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+  XLSX.writeFile(wb, `nucligs_${label}_${stamp}.xlsx`);
+}
+
+function exportSelected() {
+  if (CURRENT_IDX < 0 || !ALL_COMPOUNDS[CURRENT_IDX]) {
+    alert('Select a structure first.');
+    return;
+  }
+  exportRows([ALL_COMPOUNDS[CURRENT_IDX]], 'selected');
+}
+
+function exportFiltered() {
+  exportRows(FILTERED, 'filtered');
+}
+
+function exportRange() {
+  if (!FILTERED.length) {
+    alert('There are no filtered records to export.');
+    return;
+  }
+  const start = parseInt(document.getElementById('range-start').value || '1', 10);
+  const end = parseInt(document.getElementById('range-end').value || String(start), 10);
+  if (Number.isNaN(start) || Number.isNaN(end) || start < 1 || end < start) {
+    alert('Enter a valid inclusive range, for example 1 to 50.');
+    return;
+  }
+  exportRows(FILTERED.slice(start - 1, end), `range_${start}_${end}`);
+}
+
+
+// ─── HIGH-PRECISION STRUCTURE ZIP EXPORT ENGINE ────────────────────
+
+async function loadJSZip() {
+  if (window.JSZip) return window.JSZip;
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    script.onload = () => resolve(window.JSZip);
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+async function exportStructures(compounds, label) {
+  if (!compounds || !compounds.length) {
+    alert('No compounds to export.');
+    return;
+  }
+  if (!RDKIT) {
+    alert('RDKit is not loaded yet. Please wait for the cheminformatics engine to initialize.');
+    return;
+  }
+  
+  // UX Notification Toast
+  const loadingMsg = document.createElement('div');
+  loadingMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:var(--c-accent);color:white;padding:12px 20px;border-radius:8px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-family:var(--ff-body);font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;';
+  loadingMsg.innerHTML = `<div class="spinner" style="width:16px;height:16px;border-width:2px;border-color:rgba(255,255,255,0.3);border-left-color:#fff"></div> Packaging ${compounds.length} structures... Please wait.`;
+  document.body.appendChild(loadingMsg);
+
+  try {
+    const JSZip = await loadJSZip();
+    const zip = new JSZip();
+    const sdfFolder = zip.folder("SDF_3D_Structures");
+    const svgFolder = zip.folder("SVG_2D_HighRes");
+
+    let count = 0;
+    compounds.forEach(c => {
+      if (!c.smiles) return;
+      try {
+        const mol = RDKIT.get_mol(c.smiles);
+        if (mol && mol.is_valid()) {
+          // Clean filename
+          let rawId = getPrimaryId(c) || `Compound_${count + 1}`;
+          let id = rawId.replace(/[^a-zA-Z0-9_-]/g, '_');
+          
+          // 1. High-Precision SVG (2D Vector - High resolution base 800x800)
+          const svgOpts = { width: 800, height: 800, bondLineWidth: 2.0, clearBackground: false };
+          const svg = mol.get_svg_with_highlights(JSON.stringify(svgOpts));
+          svgFolder.file(`${id}.svg`, svg);
+
+          // 2. SDF (Structure-Data File) deeply enriched with metadata properties
+          let sdf = mol.get_molblock();
+          const props = buildExportRecord(c);
+          
+          Object.entries(props).forEach(([key, val]) => {
+            if(val !== '') {
+              sdf += `>  <${key.replace(/[^a-zA-Z0-9_]/g, '_')}>\n${val}\n\n`;
+            }
+          });
+          sdf += `$$$$\n`;
+          sdfFolder.file(`${id}.sdf`, sdf);
+
+          mol.delete();
+          count++;
+        }
+      } catch(e) { 
+        console.warn('Structure export failed for:', c); 
+      }
+    });
+
+    if (count === 0) {
+      alert('No valid structural SMILES found to generate properties.');
+      document.body.removeChild(loadingMsg);
+      return;
+    }
+
+    const content = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+    a.download = `NucLigs_Structures_${label}_${stamp}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+  } catch(e) {
+    alert('Failed to generate ZIP file. Ensure you have an internet connection so JSZip can load.');
+    console.error(e);
+  } finally {
+    if(document.body.contains(loadingMsg)) {
+      document.body.removeChild(loadingMsg);
+    }
+  }
+}
+
+function exportStructuresSelected() {
+  if (CURRENT_IDX < 0 || !ALL_COMPOUNDS[CURRENT_IDX]) {
+    alert('Select a structure first.');
+    return;
+  }
+  exportStructures([ALL_COMPOUNDS[CURRENT_IDX]], 'Selected');
+}
+
+function exportStructuresFiltered() {
+  exportStructures(FILTERED, 'Filtered');
+}
+
+function exportStructuresRange() {
+  if (!FILTERED.length) {
+    alert('There are no filtered records to export.');
+    return;
+  }
+  const start = parseInt(document.getElementById('range-start').value || '1', 10);
+  const end = parseInt(document.getElementById('range-end').value || String(start), 10);
+  if (Number.isNaN(start) || Number.isNaN(end) || start < 1 || end < start) {
+    alert('Enter a valid inclusive range, for example 1 to 50.');
+    return;
+  }
+  exportStructures(FILTERED.slice(start - 1, end), `Range_${start}_${end}`);
+}
+
+// ─── INITIALIZATION LISTENERS ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(localStorage.getItem('nucligs-theme') || 'dark');
+  updateSortDirectionButton();
+  
+  const searchInput = document.getElementById('search-input');
+  if(searchInput) {
+    searchInput.addEventListener('input', () => {
+      clearTimeout(SEARCH_TIMER);
+      SEARCH_TIMER = setTimeout(applyFilters, 160);
+    });
+    searchInput.addEventListener('keydown', e => {
+      if (e.key==='Escape') clearSearch();
+      if (e.key==='ArrowDown') { e.preventDefault(); navigateList(1); }
+      if (e.key==='ArrowUp')   { e.preventDefault(); navigateList(-1); }
+    });
+  }
+  
+  window.addEventListener('keydown', e => {
+    if (document.activeElement===document.getElementById('search-input')) return;
+    if (e.key==='ArrowDown') navigateList(1);
+    if (e.key==='ArrowUp')   navigateList(-1);
+  });
+  
+  window.addEventListener('resize', () => {
+    if(CURRENT_IDX>=0&&RDKIT) draw2D(ALL_COMPOUNDS[CURRENT_IDX]);
+    if(VIEWER3D){VIEWER3D.resize();VIEWER3D.render();}
+  });
+  
+  window.initRDKitModule().then(rdk => {
+    RDKIT=rdk;
+    const rdkitPill = document.getElementById('rdkit-pill');
+    if(rdkitPill) {
+      rdkitPill.textContent='RDKit '+rdk.version();
+      rdkitPill.className='ok';
+    }
+    if(CURRENT_IDX>=0) draw2D(ALL_COMPOUNDS[CURRENT_IDX]);
+    
+    // --> AUTO-LOAD INITIATED AFTER RDKIT COMPLETES <--
+    autoLoadDatabase();
+    
+  }).catch(()=>{
+    const rdkitPill = document.getElementById('rdkit-pill');
+    if(rdkitPill) {
+      rdkitPill.textContent='RDKit unavailable';
+      rdkitPill.className='err';
+    }
+  });
+});
+
+function navigateList(dir) {
+  if (!FILTERED.length) return;
+  const ci = FILTERED.indexOf(ALL_COMPOUNDS[CURRENT_IDX]);
+  let ni = ci + dir;
+  if (ni<0) ni=0; if(ni>=FILTERED.length) ni=FILTERED.length-1;
+  selectCompound(ALL_COMPOUNDS.indexOf(FILTERED[ni]));
+  const items = document.querySelectorAll('.result-item');
+  if (items[ni]) items[ni].scrollIntoView({block:'nearest'});
+}
+</script>
+</body>
+</html>
