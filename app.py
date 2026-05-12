@@ -110,7 +110,7 @@ st.markdown("""
     text-align:center;
     color:#060a14;
     #margin-top:2px;
-    font-size:14px;
+    font-size:20px;
     font-family:Arial;
     border-top:1px solid rgba(99,130,191,.1);
 ">
