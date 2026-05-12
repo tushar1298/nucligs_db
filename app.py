@@ -108,7 +108,7 @@ else:
 st.markdown("""
 <div style="
     text-align:center;
-    color:#94a3b8;
+    color:#060a14;
     margin-top:6px;
     font-size:14px;
     font-family:Arial;
