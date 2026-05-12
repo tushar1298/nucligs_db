@@ -118,7 +118,7 @@ st.markdown("""
 </div>
 <div style="
     text-align:center;
-    #padding:10px;
+    padding:10px;
     color:#94a3b8;
     font-size:12px;
     background:#060a14;
