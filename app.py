@@ -110,7 +110,7 @@ st.markdown("""
     text-align:center;
     color:#060a14;
     #margin-top:2px;
-    font-size:20px;
+    font-size:14px;
     font-family:Arial;
     border-top:1px solid rgba(99,130,191,.1);
 ">
@@ -118,7 +118,7 @@ st.markdown("""
 </div>
 <div style="
     text-align:center;
-    padding:10px;
+    #padding:10px;
     color:#94a3b8;
     font-size:12px;
     background:#060a14;
