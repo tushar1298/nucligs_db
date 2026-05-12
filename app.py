@@ -107,6 +107,14 @@ else:
 # -------------------------------------------------------
 st.markdown("""
 <div style="
+    color:#94a3b8;
+    margin-top:6px;
+    font-size:14px;
+    font-family:Arial;
+">
+    Designed by Tushar Gupta and Dr. Pradeep Pant
+</div>
+<div style="
     text-align:center;
     padding:10px;
     color:#94a3b8;
@@ -115,13 +123,5 @@ st.markdown("""
     border-top:1px solid rgba(99,130,191,.1);
 ">
     NucLigs Database 2026 Version 1.0
-</div>
-<div style="
-    color:#94a3b8;
-    margin-top:6px;
-    font-size:14px;
-    font-family:Arial;
-">
-    Designed by Tushar Gupta and Dr. Pradeep Pant
 </div>
 """, unsafe_allow_html=True)
