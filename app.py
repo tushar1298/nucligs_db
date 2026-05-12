@@ -107,10 +107,12 @@ else:
 # -------------------------------------------------------
 st.markdown("""
 <div style="
+    text-align:center;
     color:#94a3b8;
     margin-top:6px;
     font-size:14px;
     font-family:Arial;
+    border-top:1px solid rgba(99,130,191,.1);
 ">
     Designed by Tushar Gupta and Dr. Pradeep Pant
 </div>
