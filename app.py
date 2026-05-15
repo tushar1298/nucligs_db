@@ -7,6 +7,7 @@ from pathlib import Path
 # -------------------------------------------------------
 st.set_page_config(
     page_title="NucLigs Database",
+    page_icon="NucLigs.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
