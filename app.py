@@ -66,7 +66,7 @@ st.markdown("""
             font-family:Arial;
             letter-spacing:1px;
         ">
-            NucLigs Database : A Nucleotide and Nucleoside Database
+            NucLigs Database : A Nucleotide and Nucleoside Analog Database
         </h2>
     </div>
 </div>
