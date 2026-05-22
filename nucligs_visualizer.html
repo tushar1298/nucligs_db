@@ -998,7 +998,7 @@ data:[
       <button class="top-btn" id="theme-toggle" onclick="toggleTheme()" title="Switch dark or light theme">Theme: <strong id="theme-toggle-label">Dark</strong></button>
       <button class="top-btn" onclick="document.getElementById('file-input').click()" title="Load a different workbook">Upload Workbook</button>
       <button class="top-btn" onclick="document.getElementById('landing-page').style.display='flex'"><strong>About NucLigs</strong></button>
-      <a href="https://colab.research.google.com/drive/1BcPqW-ROHAv9BbTFHh0tFqFbiABTZoeL?usp=sharing" target="_blank" class="top-generate-pdb-btn">Generate PDBs</a>
+      <a href="https://colab.research.google.com/drive/1BcPqW-ROHAv9BbTFHh0tFqFbiABTZoeL?usp=sharing" target="_blank" class="top-generate-pdb-btn">Generate PDB</a>
     </div>
   </div>
 
@@ -2399,7 +2399,23 @@ function renderOverview(c) {
     ${c.mol_formula ? card('Molecular Formula', `<span class="ig-val mono">${esc(c.mol_formula)}</span>`) : ''}
     ${c.mol_weight  ? card('Molecular Weight', `<span class="ig-val large">${parseFloat(c.mol_weight).toFixed(2)} <small style="color:var(--c-text3)">g/mol</small></span>`) : ''}
     ${c.logp        ? card('LogP', `<span class="ig-val large ${parseFloat(c.logp)>5?'warn':''}">${parseFloat(c.logp).toFixed(3)}</span>`) : pred.logp ? card('LogP (predicted)', `<span class="ig-val large predicted">${pred.logp}</span><div class="ig-predicted-label">⚡ RDKit</div>`) : ''}
-    ${c.chembl_id   ? card('ChEMBL ID', `<a href="https://www.ebi.ac.uk/chembl/compound_report_card/${esc(c.chembl_id)}" target="_blank" style="font-family:var(--ff-mono);font-size:11px;color:#e8a45a">${esc(c.chembl_id)}</a>`) : ''}
+    ${c.chembl_id ? card(
+  'ChEMBL ID',
+  c.chembl_id
+    .toString()
+    .split(/[,;|\n]/)
+    .map(id => id.trim())
+    .filter(Boolean)
+    .map(id => `
+      <div style="margin-bottom:4px">
+        <a href="https://www.ebi.ac.uk/chembl/explore/document/${encodeURIComponent(id)}"
+           target="_blank"
+           style="font-family:var(--ff-mono);font-size:11px;color:#e8a45a">
+           ${esc(id)}
+        </a>
+      </div>
+    `).join('')
+) : ''}
     ${c.pubchem_id  ? card('PubChem CID', `<a href="https://pubchem.ncbi.nlm.nih.gov/compound/${esc(c.pubchem_id)}" target="_blank" style="font-family:var(--ff-mono);font-size:11px;color:#5b8dee">${esc(c.pubchem_id)}</a>`) : ''}
   </div>`);
 
@@ -2760,13 +2776,38 @@ async function renderRefs(c) {
 
   el.innerHTML = html;
 }
+// ===== Split and render multiple ChEMBL IDs =====
+function renderChemblLinks(chemblValue) {
+  if (!chemblValue) return '';
+
+  // split by comma, semicolon, pipe, or newline
+  const chemblIds = chemblValue
+    .toString()
+    .split(/[,;|\n]/)
+    .map(id => id.trim())
+    .filter(id => id.length > 0);
+
+  return chemblIds.map(id => `
+    <div class="xref-chip">
+      <div>
+        <div class="xref-label">ChEMBL</div>
+        <div class="xref-val chembl">${esc(id)}</div>
+      </div>
+      <a href="https://www.ebi.ac.uk/chembl/explore/document/${encodeURIComponent(id)}"
+         target="_blank"
+         style="font-size:10px;color:var(--c-text3);margin-left:8px">
+         ↗
+      </a>
+    </div>
+  `).join('');
+}
 
 function renderIdentifiers(c) {
   let html = '';
   const safeSmiles = esc((c.smiles || '').split('\\').join('\\\\').split("'").join("\\'"));
   html += `<div class="subhead">Cross References (cols AY–BA)</div>`;
   html += sec('Database IDs', `<div class="xref-row">
-    ${c.chembl_id  ? `<div class="xref-chip"><div><div class="xref-label">ChEMBL</div><div class="xref-val chembl">${esc(c.chembl_id)}</div></div><a href="https://www.ebi.ac.uk/chembl/compound_report_card/${esc(c.chembl_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
+    ${c.chembl_id ? renderChemblLinks(c.chembl_id) : ''}
     ${c.pubchem_id ? `<div class="xref-chip"><div><div class="xref-label">PubChem CID</div><div class="xref-val pubchem">${esc(c.pubchem_id)}</div></div><a href="https://pubchem.ncbi.nlm.nih.gov/compound/${esc(c.pubchem_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
     ${c.drugbank_id? `<div class="xref-chip"><div><div class="xref-label">DrugBank</div><div class="xref-val drugbank">${esc(c.drugbank_id)}</div></div><a href="https://go.drugbank.com/drugs/${esc(c.drugbank_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
     ${c.nl         ? `<div class="xref-chip"><div><div class="xref-label">Structure ID</div><div class="xref-val" style="color:var(--c-pink)">${esc(c.nl)}</div></div></div>` : ''}
