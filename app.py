@@ -98,13 +98,10 @@ st.markdown("""
         "
         onmouseover="this.style.background='#0ea5e9'"
         onmouseout="this.style.background='#38bdf8'">
-    
-        📘 Tutorial
-    
-    </button>
-    
+          Tutorial
+     </button>
     </div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 # -------------------------------------------------------
 # Cache HTML File
 # -------------------------------------------------------
