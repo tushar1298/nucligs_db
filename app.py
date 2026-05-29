@@ -62,7 +62,6 @@ st.markdown("""
             margin-right:12px;
         "
     >
-
     <!-- Title -->
     <div>
         <h2 style="
@@ -75,7 +74,6 @@ st.markdown("""
             NucLigs Database : A Nucleotide and Nucleoside Analog Database
         </h2>
     </div>
-
     <!-- Tutorial Button TOP RIGHT -->
     <a
         href="https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf"
@@ -103,10 +101,8 @@ st.markdown("""
         onmouseout="this.style.background='#38bdf8'">
 
              Tutorial
-
         </button>
     </a>
-
 </div>
 """, unsafe_allow_html=True)
 # -------------------------------------------------------
