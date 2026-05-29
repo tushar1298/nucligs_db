@@ -96,7 +96,7 @@ st.markdown("""
             "
             onmouseover="this.style.background='#0ea5e9'"
             onmouseout="this.style.background='#38bdf8'">
-            📘 Tutorial
+             Tutorial
         </button>
     </div>
 </div>
