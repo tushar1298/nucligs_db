@@ -81,7 +81,7 @@ st.markdown("""
         top:18px;
         right:25px;
         z-index:999;
-        ">
+    ">
     
     <button
         onclick="window.open('https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf','_blank')"
