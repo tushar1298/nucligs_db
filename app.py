@@ -71,6 +71,34 @@ st.markdown("""
         </h2>
     </div>
 </div>
+    <!-- Right Side Tutorial Button -->
+    <a
+        href="https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf"
+        target="_blank"
+        style="
+            text-decoration:none;
+        "
+    >
+        <button style="
+            background:#38bdf8;
+            color:white;
+            border:none;
+            padding:12px 22px;
+            border-radius:10px;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            box-shadow:0 4px 12px rgba(56,189,248,.25);
+        "
+        onmouseover="this.style.background='#0ea5e9'"
+        onmouseout="this.style.background='#38bdf8'">
+            📘 Tutorial
+        </button>
+    </a>
+
+</div>
+""", unsafe_allow_html=True)
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------
