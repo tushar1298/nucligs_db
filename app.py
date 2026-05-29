@@ -50,37 +50,29 @@ st.markdown("""
     border-bottom:1px solid rgba(99,130,191,.2);
     display:flex;
     align-items:center;
-    justify-content:space-between;
+    gap:10px;
 ">
-
-    <!-- Left Side -->
-    <div style="
-        display:flex;
-        align-items:center;
-        gap:12px;
-    ">
-        <img
-            src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
-            style="
-                height:68px;
-                width:auto;
-                border-radius:10px;
-            "
-        >
-
-        <div>
-            <h2 style="
-                color:#38bdf8;
-                margin:0;
-                font-family:Arial;
-                letter-spacing:1px;
-                font-size:28px;
-            ">
-                NucLigs Database : A Nucleotide and Nucleoside Analog Database
-            </h2>
-        </div>
+    <img
+        src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
+        style="
+            height:68px;
+            width:auto;
+            border-radius:10px;
+        "
+    >
+    <div>
+        <h2 style="
+            color:#38bdf8;
+            margin:0;
+            font-family:Arial;
+            letter-spacing:1px;
+        ">
+            NucLigs Database : A Nucleotide and Nucleoside Analog Database
+        </h2>
     </div>
+</div>
 """, unsafe_allow_html=True)
+
 # -------------------------------------------------------
 # Cache HTML File
 # -------------------------------------------------------
