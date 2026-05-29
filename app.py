@@ -74,19 +74,18 @@ st.markdown("""
             NucLigs Database : A Nucleotide and Nucleoside Analog Database
         </h2>
     </div>
-    <!-- Tutorial Button TOP RIGHT -->
-    <a
-        href="https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf"
-        target="_blank"
+    # Tutorial Button TOP RIGHT
+    st.markdown("""
+    <div style="
+        position:absolute;
+        top:18px;
+        right:25px;
+        z-index:999;
+    ">
+    
+    <button
+        onclick="window.open('https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf','_blank')"
         style="
-            position:absolute;
-            top:18px;
-            right:25px;
-            text-decoration:none;
-            z-index:999;
-        "
-    >
-        <button style="
             background:#38bdf8;
             color:white;
             border:none;
@@ -99,11 +98,13 @@ st.markdown("""
         "
         onmouseover="this.style.background='#0ea5e9'"
         onmouseout="this.style.background='#38bdf8'">
-             Tutorial
-        </button>
-    </a>
-</div>
-""", unsafe_allow_html=True)
+    
+        📘 Tutorial
+    
+    </button>
+    
+    </div>
+    """, unsafe_allow_html=True)
 # -------------------------------------------------------
 # Cache HTML File
 # -------------------------------------------------------
