@@ -52,7 +52,6 @@ st.markdown("""
     display:flex;
     align-items:center;
 ">
-
     <!-- Logo -->
     <img
         src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
@@ -63,7 +62,6 @@ st.markdown("""
             margin-right:12px;
         "
     >
-
     <!-- Title -->
     <div>
         <h2 style="
@@ -76,7 +74,6 @@ st.markdown("""
             NucLigs Database : A Nucleotide and Nucleoside Analog Database
         </h2>
     </div>
-
     <!-- Tutorial Button -->
     <div style="
         position:absolute;
@@ -84,7 +81,6 @@ st.markdown("""
         right:20px;
         z-index:999;
     ">
-
         <button
             onclick="window.open('https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf','_blank')"
             style="
@@ -100,13 +96,9 @@ st.markdown("""
             "
             onmouseover="this.style.background='#0ea5e9'"
             onmouseout="this.style.background='#38bdf8'">
-
             📘 Tutorial
-
         </button>
-
     </div>
-
 </div>
 """, unsafe_allow_html=True)
 # -------------------------------------------------------
