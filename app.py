@@ -52,6 +52,7 @@ st.markdown("""
     display:flex;
     align-items:center;
 ">
+
     <!-- Logo -->
     <img
         src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
@@ -62,43 +63,50 @@ st.markdown("""
             margin-right:12px;
         "
     >
-<!-- Title -->
-<div>
-    <h2 style="
-        color:#38bdf8;
-        margin:0;
-        font-family:Arial;
-        letter-spacing:1px;
-        font-size:28px;
-    ">
-        NucLigs Database : A Nucleotide and Nucleoside Analog Database
-    </h2>
-</div>
-# Tutorial Button TOP RIGHT
-st.markdown("""
-<div style="
-    position:absolute;
-    top:18px;
-    right:25px;
-    z-index:999;">
 
-<button
-    onclick="window.open('https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf','_blank')"
-    style="
-        background:#38bdf8;
-        color:white;
-        border:none;
-        padding:12px 22px;
-        border-radius:10px;
-        font-size:16px;
-        font-weight:600;
-        cursor:pointer;
-        box-shadow:0 4px 12px rgba(56,189,248,.25);
-    "
-    onmouseover="this.style.background='#0ea5e9'"
-    onmouseout="this.style.background='#38bdf8'">
-      Tutorial
- </button>
+    <!-- Title -->
+    <div>
+        <h2 style="
+            color:#38bdf8;
+            margin:0;
+            font-family:Arial;
+            letter-spacing:1px;
+            font-size:28px;
+        ">
+            NucLigs Database : A Nucleotide and Nucleoside Analog Database
+        </h2>
+    </div>
+
+    <!-- Tutorial Button -->
+    <div style="
+        position:absolute;
+        top:14px;
+        right:20px;
+        z-index:999;
+    ">
+
+        <button
+            onclick="window.open('https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf','_blank')"
+            style="
+                background:#38bdf8;
+                color:white;
+                border:none;
+                padding:12px 22px;
+                border-radius:10px;
+                font-size:16px;
+                font-weight:600;
+                cursor:pointer;
+                box-shadow:0 4px 12px rgba(56,189,248,.25);
+            "
+            onmouseover="this.style.background='#0ea5e9'"
+            onmouseout="this.style.background='#38bdf8'">
+
+            📘 Tutorial
+
+        </button>
+
+    </div>
+
 </div>
 """, unsafe_allow_html=True)
 # -------------------------------------------------------
