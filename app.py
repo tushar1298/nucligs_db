@@ -68,8 +68,7 @@ st.markdown("""
             letter-spacing:1px;
         ">
             NucLigs Database : A Nucleotide and Nucleoside Analog Database
-        </h2>
-            <!-- Right Side Tutorial Button -->
+                    <!-- Right Side Tutorial Button -->
     <a
         href="https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf"
         target="_blank"
@@ -91,11 +90,13 @@ st.markdown("""
         "
         onmouseover="this.style.background='#0ea5e9'"
         onmouseout="this.style.background='#38bdf8'">
-            📘 Tutorial
+             Tutorial
         </button>
     </a>
 
 </div>
+        </h2>
+
     </div>
 </div>
 """, unsafe_allow_html=True)
