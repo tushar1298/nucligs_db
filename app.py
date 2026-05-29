@@ -52,7 +52,6 @@ st.markdown("""
     display:flex;
     align-items:center;
 ">
-
     <!-- Logo -->
     <img
         src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
