@@ -48,32 +48,45 @@ st.markdown("""
     background:#060a14;
     padding:12px 20px;
     border-bottom:1px solid rgba(99,130,191,.2);
+    position:relative;
     display:flex;
     align-items:center;
-    gap:10px;
 ">
+
+    <!-- Logo -->
     <img
         src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
         style="
             height:68px;
             width:auto;
             border-radius:10px;
+            margin-right:12px;
         "
     >
+
+    <!-- Title -->
     <div>
         <h2 style="
             color:#38bdf8;
             margin:0;
             font-family:Arial;
             letter-spacing:1px;
+            font-size:28px;
         ">
             NucLigs Database : A Nucleotide and Nucleoside Analog Database
-                    <!-- Right Side Tutorial Button -->
+        </h2>
+    </div>
+
+    <!-- Tutorial Button TOP RIGHT -->
     <a
         href="https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf"
         target="_blank"
         style="
+            position:absolute;
+            top:18px;
+            right:25px;
             text-decoration:none;
+            z-index:999;
         "
     >
         <button style="
@@ -85,19 +98,18 @@ st.markdown("""
             font-size:16px;
             font-weight:600;
             cursor:pointer;
-            transition:0.3s;
             box-shadow:0 4px 12px rgba(56,189,248,.25);
         "
         onmouseover="this.style.background='#0ea5e9'"
         onmouseout="this.style.background='#38bdf8'">
+
              Tutorial
+
         </button>
     </a>
-    </h2>
-        
+
 </div>
 """, unsafe_allow_html=True)
-
 # -------------------------------------------------------
 # Cache HTML File
 # -------------------------------------------------------
