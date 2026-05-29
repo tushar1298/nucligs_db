@@ -50,29 +50,65 @@ st.markdown("""
     border-bottom:1px solid rgba(99,130,191,.2);
     display:flex;
     align-items:center;
-    gap:10px;
+    justify-content:space-between;
 ">
-    <img
-        src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
+
+    <!-- Left Side -->
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+    ">
+        <img
+            src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
+            style="
+                height:68px;
+                width:auto;
+                border-radius:10px;
+            "
+        >
+
+        <div>
+            <h2 style="
+                color:#38bdf8;
+                margin:0;
+                font-family:Arial;
+                letter-spacing:1px;
+                font-size:28px;
+            ">
+                NucLigs Database : A Nucleotide and Nucleoside Analog Database
+            </h2>
+        </div>
+    </div>
+
+    <!-- Right Side Tutorial Button -->
+    <a
+        href="https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf"
+        target="_blank"
         style="
-            height:68px;
-            width:auto;
-            border-radius:10px;
+            text-decoration:none;
         "
     >
-    <div>
-        <h2 style="
-            color:#38bdf8;
-            margin:0;
-            font-family:Arial;
-            letter-spacing:1px;
-        ">
-            NucLigs Database : A Nucleotide and Nucleoside Analog Database
-        </h2>
-    </div>
+        <button style="
+            background:#38bdf8;
+            color:white;
+            border:none;
+            padding:12px 22px;
+            border-radius:10px;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            box-shadow:0 4px 12px rgba(56,189,248,.25);
+        "
+        onmouseover="this.style.background='#0ea5e9'"
+        onmouseout="this.style.background='#38bdf8'">
+            📘 Tutorial
+        </button>
+    </a>
+
 </div>
 """, unsafe_allow_html=True)
-
 # -------------------------------------------------------
 # Cache HTML File
 # -------------------------------------------------------
