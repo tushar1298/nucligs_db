@@ -50,31 +50,44 @@ st.markdown("""
     border-bottom:1px solid rgba(99,130,191,.2);
     display:flex;
     align-items:center;
-    gap:10px;
+    justify-content:space-between;
 ">
-    <img
-        src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
-        style="
-            height:68px;
-            width:auto;
-            border-radius:10px;
-        "
-    >
-    <div>
-        <h2 style="
-            color:#38bdf8;
-            margin:0;
-            font-family:Arial;
-            letter-spacing:1px;
-        ">
-            NucLigs Database : A Nucleotide and Nucleoside Analog Database
-                    <!-- Right Side Tutorial Button -->
+
+    <!-- Left Section -->
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+    ">
+
+        <img
+            src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
+            style="
+                height:68px;
+                width:auto;
+                border-radius:10px;
+            "
+        >
+
+        <div>
+            <h2 style="
+                color:#38bdf8;
+                margin:0;
+                font-family:Arial;
+                letter-spacing:1px;
+                font-size:28px;
+            ">
+                NucLigs Database : A Nucleotide and Nucleoside Analog Database
+            </h2>
+        </div>
+
+    </div>
+
+    <!-- Tutorial Button -->
     <a
         href="https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf"
         target="_blank"
-        style="
-            text-decoration:none;
-        "
+        style="text-decoration:none;"
     >
         <button style="
             background:#38bdf8;
@@ -90,14 +103,12 @@ st.markdown("""
         "
         onmouseover="this.style.background='#0ea5e9'"
         onmouseout="this.style.background='#38bdf8'">
-             Tutorial
+
+            📘 Tutorial
+
         </button>
     </a>
 
-    </div>
-        </h2>
-
-    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -137,20 +148,21 @@ else:
 st.markdown("""
 <div style="
     text-align:center;
-    color:#060a14;
-    #margin-top:2px;
+    color:#94a3b8;
     font-size:14px;
     font-family:Arial;
-    border-top:1px solid rgba(99,130,191,.1);
+    padding:8px;
 ">
     Designed by Tushar Gupta and Dr. Pradeep Pant
 </div>
+
 <div style="
     text-align:center;
     padding:10px;
     color:#94a3b8;
     font-size:12px;
     background:#060a14;
+    border-top:1px solid rgba(99,130,191,.1);
 ">
     © NucLigs Database 2026 Version 1.0
 </div>
