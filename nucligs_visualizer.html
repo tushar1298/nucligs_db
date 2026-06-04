@@ -2353,7 +2353,7 @@ async function fetch3D(c) {
     if(note) note.textContent='Fetching 3D · drag · scroll to zoom';
   } catch(e) {
     try{
-      const r2=await fetch(`https://cactus.nci.nih.gov/chemical/structure/${encodeURIComponent(c.smiles)}/file?format=sdf&get3d=true`,{signal:AbortSignal.timeout(10000)});
+      const r2=await fetch(`https://cactus.nci.nih.gov/chemical/structure/${encodeURIComponent(c.smiles)}/file?format=sdf&get3d=true`,{signal:AbortSignal.timeout(12000)});
       if(!r2.ok) throw new Error('cactus');
       const sdf2=await r2.text();
       VIEWER3D.addModel(sdf2,'sdf'); apply3DStyle(); VIEWER3D.zoomTo(); VIEWER3D.render();
