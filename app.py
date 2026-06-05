@@ -149,9 +149,9 @@ st.markdown("""
     color:#94a3b8;
     font-size:28px;
     font-family:Arial;
-    border-top:1px solid rgba(99,130,191,.1);
+    border-top:0px solid rgba(99,130,191,.1);
     background:#060a14;
-    padding-top:15px;
+    padding-top:0px;
 ">
     Designed by Tushar Gupta and Dr. Pradeep Pant
 </div>
