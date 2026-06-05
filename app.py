@@ -146,7 +146,7 @@ st.markdown("""
 <div style="
     text-align:center;
     color:#94a3b8;
-    font-size:140px;
+    font-size:50px;
     font-family:Arial;
     border-top:1px solid rgba(99,130,191,.1);
     background:#060a14;
