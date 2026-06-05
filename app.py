@@ -58,9 +58,10 @@ div.stLinkButton > a {
     background-color: #38bdf8 !important;
     color: white !important;
     border: none !important;
+    font-size: 28px !important;
     border-radius: 10px !important;
     padding: 12px 22px !important;
-    font-weight: 6000 !important;
+    font-weight: 600 !important;
     box-shadow: 0 4px 12px rgba(56,189,248,.25) !important;
     transition: background 0.2s ease !important;
 }
