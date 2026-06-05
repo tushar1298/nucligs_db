@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------------
-# Hide Streamlit UI
+# Hide Streamlit UI & Global Styles
 # -------------------------------------------------------
 st.markdown("""
 <style>
@@ -37,70 +37,75 @@ iframe{
     border:none !important;
 }
 
+/* Custom styling to fix Streamlit's default column alignment for our header */
+[data-testid="stHorizontalBlock"] {
+    background: #060a14;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(99,130,191,.2);
+    margin: 0 !important;
+    align-items: center;
+}
+
+/* Optional: Customize the native Streamlit link button to match your color palette */
+div.stLinkButton > a {
+    background-color: #38bdf8 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px 22px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(56,189,248,.25) !important;
+    transition: background 0.2s ease !important;
+}
+
+div.stLinkButton > a:hover {
+    background-color: #0ea5e9 !important;
+    color: white !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------
-# Header
+# Header Layout using Streamlit Columns
 # -------------------------------------------------------
-st.markdown("""
-<div style="
-    background:#060a14;
-    padding:12px 20px;
-    border-bottom:1px solid rgba(99,130,191,.2);
-    position:relative;
-    display:flex;
-    align-items:center;
-">
-    <!-- Logo -->
-    <img
-        src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
-        style="
-            height:68px;
-            width:auto;
-            border-radius:10px;
-            margin-right:12px;
-        "
-    >
-    <!-- Title -->
-    <div>
-        <h2 style="
-            color:#38bdf8;
-            margin:0;
-            font-family:Arial;
-            letter-spacing:1px;
-            font-size:28px;
-        ">
-            NucLigs Database : A Nucleotide and Nucleoside Analog Database
-        </h2>
-    </div>
-    <!-- Tutorial Button -->
-    <div style="
-        position:absolute;
-        top:14px;
-        right:20px;
-        z-index:999;
-    ">
-        <button
-            onclick="window.open('https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf','_blank')"
+# Splitting header into Left side (Logo + Title) and Right side (Button)
+header_left, header_right = st.columns([0.85, 0.15])
+
+with header_left:
+    st.markdown("""
+    <div style="display:flex; align-items:center;">
+        <img
+            src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
             style="
-                background:#38bdf8;
-                color:white;
-                border:none;
-                padding:12px 22px;
+                height:68px;
+                width:auto;
                 border-radius:10px;
-                font-size:16px;
-                font-weight:600;
-                cursor:pointer;
-                box-shadow:0 4px 12px rgba(56,189,248,.25);
+                margin-right:12px;
             "
-            onmouseover="this.style.background='#0ea5e9'"
-            onmouseout="this.style.background='#38bdf8'">
-             Tutorial
-        </button>
+        >
+        <div>
+            <h2 style="
+                color:#38bdf8;
+                margin:0;
+                font-family:Arial;
+                letter-spacing:1px;
+                font-size:28px;
+            ">
+                NucLigs Database : A Nucleotide and Nucleoside Analog Database
+            </h2>
+        </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+
+with header_right:
+    # Native Streamlit Link Button running natively via Python/Streamlit
+    st.link_button(
+        label="Tutorial", 
+        url="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/tutorial.pdf",
+        use_container_width=True
+    )
+
 # -------------------------------------------------------
 # Cache HTML File
 # -------------------------------------------------------
@@ -119,13 +124,11 @@ html_content = load_html()
 # Render HTML
 # -------------------------------------------------------
 if html_content:
-
     components.html(
         html_content,
         height=1200,
         scrolling=True
     )
-
 else:
     st.error(
         "nucligs_visualizer.html not found in app directory"
