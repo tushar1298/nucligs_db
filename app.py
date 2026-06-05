@@ -75,7 +75,13 @@ st.markdown("""
         </h2>
     </div>
     <!-- Tutorial Button -->
-
+        with open("tutorial.pdf", "rb") as pdf_file:
+            st.download_button(
+                "📘 Tutorial",
+                pdf_file,
+                file_name="tutorial.pdf",
+                mime="application/pdf"
+            )
     </div>
 </div>
 """, unsafe_allow_html=True)
