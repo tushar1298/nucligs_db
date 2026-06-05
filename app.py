@@ -47,7 +47,7 @@ iframe {
 /* Style and bind the header flex layout row safely */
 [data-testid="stHorizontalBlock"] {
     background: #060a14 !important;
-    padding: 10px 20px !important;
+    padding: 0px 20px !important;
     border-bottom: 1px solid rgba(99,130,191,.2) !important;
     margin: 0 !important;
     gap: 0px !important;
