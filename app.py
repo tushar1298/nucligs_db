@@ -82,7 +82,7 @@ st.markdown("""
         z-index:999;
     ">
         <button
-            onclick="window.open('https://github.com/tushar1298/nucligs_db/raw/main/tutorial.pdf')"
+            onclick="window.open('https://raw.githubusercontent.com/tushar1298/nucligs_db/main/tutorial.pdf')"
             style="
                 background:#38bdf8;
                 color:white;
