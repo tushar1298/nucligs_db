@@ -46,7 +46,7 @@ iframe{
     align-items: center;
 }
 
-/* Optional: Customize the native Streamlit link button to match your color palette */
+/* Customize the native Streamlit link button to match your color palette */
 div.stLinkButton > a {
     background-color: #38bdf8 !important;
     color: white !important;
@@ -69,7 +69,6 @@ div.stLinkButton > a:hover {
 # -------------------------------------------------------
 # Header Layout using Streamlit Columns
 # -------------------------------------------------------
-# Splitting header into Left side (Logo + Title) and Right side (Button)
 header_left, header_right = st.columns([0.85, 0.15])
 
 with header_left:
@@ -99,10 +98,10 @@ with header_left:
     """, unsafe_allow_html=True)
 
 with header_right:
-    # Native Streamlit Link Button running natively via Python/Streamlit
+    # Native Streamlit Link Button using a CDN URL so it views in-browser rather than downloading
     st.link_button(
         label="Tutorial", 
-        url="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/tutorial.pdf",
+        url="https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf",
         use_container_width=True
     )
 
