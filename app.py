@@ -146,7 +146,7 @@ st.markdown("""
 <div style="
     text-align:center;
     color:#94a3b8;
-    font-size:14px;
+    font-size:28px;
     font-family:Arial;
     border-top:1px solid rgba(99,130,191,.1);
     background:#060a14;
@@ -158,7 +158,7 @@ st.markdown("""
     text-align:center;
     padding:10px 10px 20px 10px;
     color:#64748b;
-    font-size:12px;
+    font-size:18px;
     background:#060a14;
 ">
     © NucLigs Database 2026 Version 1.0
