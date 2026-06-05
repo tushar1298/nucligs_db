@@ -13,47 +13,54 @@ st.set_page_config(
 )
 
 # -------------------------------------------------------
-# Hide Streamlit UI & Global Styles
+# Hide Streamlit UI & Strip Extra Borders/Margins
 # -------------------------------------------------------
 st.markdown("""
 <style>
 
+/* Hide native Streamlit layout infrastructure completely */
 #MainMenu {visibility:hidden;}
 footer {visibility:hidden;}
 header {visibility:hidden;}
 .stDeployButton {display:none;}
+[data-testid="stHeader"] {background: rgba(0,0,0,0); height: 0rem;}
 
-.block-container{
-    padding:0rem;
-    max-width:100%;
+/* Remove all padding from the main app container frame */
+.block-container {
+    padding: 0rem !important;
+    max-width: 100% !important;
+    margin: 0px !important;
 }
 
-html, body, [class*="css"]{
-    margin:0;
-    padding:0;
-}
-
-iframe{
-    border:none !important;
-}
-
-/* Custom styling to fix Streamlit's default column alignment for our header */
-[data-testid="stHorizontalBlock"] {
-    background: #060a14;
-    padding: 12px 20px;
-    border-bottom: 1px solid rgba(99,130,191,.2);
+/* Eliminate browser canvas boundary spaces */
+html, body, [class*="css"], [data-testid="stAppViewContainer"] {
     margin: 0 !important;
-    align-items: center;
+    padding: 0 !important;
+    background-color: #060a14 !important; /* Forces the root page body background to seamlessly blend */
 }
 
-/* Customize the native Streamlit link button to match your color palette */
+iframe {
+    border: none !important;
+    display: block;
+}
+
+/* Style and bind the header flex layout row safely */
+[data-testid="stHorizontalBlock"] {
+    background: #060a14 !important;
+    padding: 12px 20px !important;
+    border-bottom: 1px solid rgba(99,130,191,.2) !important;
+    margin: 0 !important;
+    gap: 0px !important;
+}
+
+/* Customize the native Streamlit link button */
 div.stLinkButton > a {
     background-color: #38bdf8 !important;
     color: white !important;
     border: none !important;
     border-radius: 10px !important;
     padding: 12px 22px !important;
-    font-weight: 6000 !important;
+    font-weight: 600 !important;
     box-shadow: 0 4px 12px rgba(56,189,248,.25) !important;
     transition: background 0.2s ease !important;
 }
@@ -73,7 +80,7 @@ header_left, header_right = st.columns([0.85, 0.15])
 
 with header_left:
     st.markdown("""
-    <div style="display:flex; align-items:center;">
+    <div style="display:flex; align-items:center; background:#060a14;">
         <img
             src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
             style="
@@ -98,7 +105,6 @@ with header_left:
     """, unsafe_allow_html=True)
 
 with header_right:
-    # Native Streamlit Link Button using a CDN URL so it views in-browser rather than downloading
     st.link_button(
         label="Tutorial", 
         url="https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf",
@@ -139,18 +145,19 @@ else:
 st.markdown("""
 <div style="
     text-align:center;
-    color:#060a14;
-    #margin-top:2px;
+    color:#94a3b8;
     font-size:14px;
     font-family:Arial;
     border-top:1px solid rgba(99,130,191,.1);
+    background:#060a14;
+    padding-top:15px;
 ">
     Designed by Tushar Gupta and Dr. Pradeep Pant
 </div>
 <div style="
     text-align:center;
-    padding:10px;
-    color:#94a3b8;
+    padding:10px 10px 20px 10px;
+    color:#64748b;
     font-size:12px;
     background:#060a14;
 ">
