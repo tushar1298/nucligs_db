@@ -36,7 +36,7 @@ header {visibility:hidden;}
 html, body, [class*="css"], [data-testid="stAppViewContainer"] {
     margin: 0 !important;
     padding: 0 !important;
-    background-color: #060a14 !important;
+    background-color: #060a14 !important; /* Forces the root page body background to seamlessly blend */
 }
 
 iframe {
@@ -51,43 +51,18 @@ iframe {
     border-bottom: 1px solid rgba(99,130,191,.2) !important;
     margin: 0 !important;
     gap: 0px !important;
-    align-items: center !important;
 }
 
-/* Target column container to align button block to the right */
-[data-testid="column"] {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-/* Customize and reduce the box size of the native Streamlit link button */
-div.stLinkButton {
-    display: flex;
-    justify-content: flex-end;
-    width: auto !important;
-}
-
+/* Customize the native Streamlit link button */
 div.stLinkButton > a {
     background-color: #38bdf8 !important;
     color: white !important;
     border: none !important;
     border-radius: 10px !important;
-    
-    /* Reduced padding inside the box to shrink its height and width */
-    padding: 8px 18px !important; 
-    font-size: 14px !important;
+    padding: 12px 22px !important;
     font-weight: 600 !important;
-    
-    /* Limit the max width profile of the button box */
-    max-width: 110px !important;
-    width: 110px !important;
-    
     box-shadow: 0 4px 12px rgba(56,189,248,.25) !important;
     transition: background 0.2s ease !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }
 
 div.stLinkButton > a:hover {
@@ -99,9 +74,9 @@ div.stLinkButton > a:hover {
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------
-# Header Layout using Streamlit Columns (Tweaked layout ratios)
+# Header Layout using Streamlit Columns
 # -------------------------------------------------------
-header_left, header_right = st.columns([0.88, 0.12])
+header_left, header_right = st.columns([0.85, 0.15])
 
 with header_left:
     st.markdown("""
@@ -133,7 +108,7 @@ with header_right:
     st.link_button(
         label="Tutorial", 
         url="https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf",
-        use_container_width=False  # Disabled full container expansion stretching
+        use_container_width=True
     )
 
 # -------------------------------------------------------
