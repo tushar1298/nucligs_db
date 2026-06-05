@@ -148,7 +148,7 @@ st.markdown("""
     color:#94a3b8;
     font-size:28px;
     font-family:Arial;
-    border-top:1px solid rgba(99,130,191,.1);
+    border-top:1px solid rgba(99,130,191,.2);
     background:#060a14;
     padding-top:15px;
 ">
