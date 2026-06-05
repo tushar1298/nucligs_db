@@ -1,130 +1,191 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from pathlib import Path
 
-# --- Page Config ---
+# -------------------------------------------------------
+# Page Config
+# -------------------------------------------------------
 st.set_page_config(
     page_title="NucLigs Database",
-    page_icon="NucLigs.png",  # Ensure this file exists or use st.image
+    page_icon="NucLigs.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# --- Define Paths ---
-# Adjust this to point to your NucLigs logo file
-logo_path = Path(__file__).parent / "NucLigs.png"
-if logo_path.exists():
-    logo_src = str(logo_path)
-else:
-    logo_src = "https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png" # Fallback to URL
-
-# --- Custom CSS (Hide Streamlit UI & Style Elements) ---
-# We use this section to also style the Tutorial button text size
+# -------------------------------------------------------
+# Hide Streamlit UI & Strip Extra Borders/Margins
+# -------------------------------------------------------
 st.markdown("""
 <style>
-    /* Hide Streamlit components */
-    #MainMenu {visibility:hidden;}
-    footer {visibility:hidden;}
-    header {visibility:hidden;}
-    .stDeployButton {display:none;}
 
-    /* Adjust main container padding */
-    .block-container {
-        padding: 0rem 1rem;
-        max-width: 100%;
-    }
+/* Hide native Streamlit layout infrastructure completely */
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+header {visibility:hidden;}
+.stDeployButton {display:none;}
+[data-testid="stHeader"] {background: rgba(0,0,0,0); height: 0rem;}
 
-    /* Standardize typography (optional but recommended for a dark theme) */
-    html, body, [class*="css"] {
-        font-family: Arial, sans-serif;
-    }
+/* Remove all padding from the main app container frame */
+.block-container {
+    padding: 0rem !important;
+    max-width: 100% !important;
+    margin: 0px !important;
+}
 
-    /* --- Custom Styling for the Tutorial Button --- */
-    /* Target the link in the native Streamlit button to increase text size */
-    .stLinkButton a {
-        background-color: #38bdf8 !important;
-        color: white !important;
-        font-size: 24px !important;  /* CRITICAL: Increased font size here */
-        font-weight: 700 !important; /* Bold for readability */
-        padding: 15px 30px !important; /* Adjust padding to accommodate larger text */
-        border-radius: 12px !important; /* Match your image's style */
-        text-decoration: none !important;
-        transition: background-color 0.2s ease;
-    }
+/* Eliminate browser canvas boundary spaces */
+html, body, [class*="css"], [data-testid="stAppViewContainer"] {
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #060a14 !important;
+}
 
-    .stLinkButton a:hover {
-        background-color: #0ea5e9 !important;
-    }
+iframe {
+    border: none !important;
+    display: block;
+}
 
-    /* Custom Header and Title style to match input image color */
-    .database-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 0;
-    }
+/* Style and bind the header flex layout row safely */
+[data-testid="stHorizontalBlock"] {
+    background: #060a14 !important;
+    padding: 12px 20px !important;
+    border-bottom: 1px solid rgba(99,130,191,.2) !important;
+    margin: 0 !important;
+    gap: 0px !important;
+    align-items: center !important;
+}
 
-    .logo-title-group {
-        display: flex;
-        align-items: center;
-    }
+/* Target column container to align button block to the right */
+[data-testid="column"] {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
 
-    .app-title {
-        color: #38bdf8; /* The requested blue color */
-        margin-left: 15px;
-        font-size: 28px; /* Standardize font size for the main title */
-        font-weight: bold;
-    }
+/* Customize and reduce the box size of the native Streamlit link button */
+div.stLinkButton {
+    display: flex;
+    justify-content: flex-end;
+    width: auto !important;
+}
+
+div.stLinkButton > a {
+    background-color: #38bdf8 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    
+    /* Reduced padding inside the box to shrink its height and width */
+    padding: 8px 18px !important; 
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    
+    /* Limit the max width profile of the button box */
+    max-width: 110px !important;
+    width: 110px !important;
+    
+    box-shadow: 0 4px 12px rgba(56,189,248,.25) !important;
+    transition: background 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+div.stLinkButton > a:hover {
+    background-color: #0ea5e9 !important;
+    color: white !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
+# -------------------------------------------------------
+# Header Layout using Streamlit Columns (Tweaked layout ratios)
+# -------------------------------------------------------
+header_left, header_right = st.columns([0.88, 0.12])
 
-# --- Header Layout (Manual Layout instead of markdown to allow link_button) ---
-# Column layout allows st.link_button to work natively
-col_logo_title, col_button = st.columns([0.8, 0.2])
-
-with col_logo_title:
-    header_html = f"""
-    <div class="database-header">
-        <div class="logo-title-group">
-            <img src="{logo_src}" style="height: 60px; border-radius: 10px;" alt="NucLigs Logo">
-            <h1 class="app-title">NucLigs Database : A Nucleotide and Nucleoside Analog Database</h1>
+with header_left:
+    st.markdown("""
+    <div style="display:flex; align-items:center; background:#060a14;">
+        <img
+            src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
+            style="
+                height:68px;
+                width:auto;
+                border-radius:10px;
+                margin-right:12px;
+            "
+        >
+        <div>
+            <h2 style="
+                color:#38bdf8;
+                margin:0;
+                font-family:Arial;
+                letter-spacing:1px;
+                font-size:28px;
+            ">
+                NucLigs Database : A Nucleotide and Nucleoside Analog Database
+            </h2>
         </div>
     </div>
-    """
-    st.markdown(header_html, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-with col_button:
-    # Use native st.link_button to ensure it opens in a new tab correctly.
-    # The CSS defined above targets this button.
+with header_right:
     st.link_button(
-        "Tutorial", 
-        "https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf", 
-        use_container_width=True # Fills the column width for a prominent box
+        label="Tutorial", 
+        url="https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf",
+        use_container_width=False  # Disabled full container expansion stretching
     )
 
-# --- Subheader stats (Example placeholders for image fidelity) ---
+# -------------------------------------------------------
+# Cache HTML File
+# -------------------------------------------------------
+@st.cache_data(show_spinner=False)
+def load_html():
+    html_path = Path("nucligs_visualizer.html")
+
+    if not html_path.exists():
+        return None
+
+    return html_path.read_text(encoding="utf-8")
+
+html_content = load_html()
+
+# -------------------------------------------------------
+# Render HTML
+# -------------------------------------------------------
+if html_content:
+    components.html(
+        html_content,
+        height=1200,
+        scrolling=True
+    )
+else:
+    st.error(
+        "nucligs_visualizer.html not found in app directory"
+    )
+
+# -------------------------------------------------------
+# Footer
+# -------------------------------------------------------
 st.markdown("""
-<div style="color: grey; padding-bottom: 20px;">
-    11,897 compounds | 6,122 analysis | 6,418 analysis
+<div style="
+    text-align:center;
+    color:#94a3b8;
+    font-size:14px;
+    font-family:Arial;
+    border-top:1px solid rgba(99,130,191,.1);
+    background:#060a14;
+    padding-top:15px;
+">
+    Designed by Tushar Gupta and Dr. Pradeep Pant
 </div>
-""", unsafe_allow_html=True)
-
-
-# --- Main App Logic (Place your visualizer/search logic here) ---
-# Example visual elements from the input image to build structure.
-if st.button("Download PDF"):
-    st.info("PDF Generation requested (functionality depends on implementation).")
-
-col_search, col_spacer = st.columns([0.8, 0.2])
-with col_search:
-    search_query = st.text_input("Search", placeholder="Search name, no, PDB ID, etc...")
-    st.markdown("""<div style="color: red;">CR</div>""", unsafe_allow_html=True) # Placeholder CR indicator
-
-st.warning("Database visualizer and compound exploration content is missing. Ensure the backend logic is correctly implemented.")
-
-# --- Footer or Other content ---
-st.markdown("""
-<div style="text-align: center; color: grey; padding-top: 50px;">
-    Developed by Tushar Gupta and Dr. Pradeep Pant
+<div style="
+    text-align:center;
+    padding:10px 10px 20px 10px;
+    color:#64748b;
+    font-size:12px;
+    background:#060a14;
+">
+    © NucLigs Database 2026 Version 1.0
 </div>
 """, unsafe_allow_html=True)
