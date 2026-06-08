@@ -1,7 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from pathlib import Path
-import time # Imported to generate the unique non-cached string profiles
 
 # -------------------------------------------------------
 # Page Config
@@ -52,31 +51,19 @@ iframe {
     border-bottom: 1px solid rgba(99,130,191,.2) !important;
     margin: 0 !important;
     gap: 0px !important;
-    align-items: center !important;
 }
 
 /* Customize the native Streamlit link button */
-div.stLinkButton {
-    display: flex;
-    justify-content: flex-end;
-    width: auto !important;
-}
-
 div.stLinkButton > a {
     background-color: #38bdf8 !important;
     color: white !important;
     border: none !important;
     font-size: 28px !important;
     border-radius: 10px !important;
-    padding: 8px 18px !important; /* Reduced padding inside to control box size profile */
+    padding: 12px 22px !important;
     font-weight: 600 !important;
-    max-width: 140px !important; /* Forces the box container boundaries tight */
-    width: 140px !important;
     box-shadow: 0 4px 12px rgba(56,189,248,.25) !important;
     transition: background 0.2s ease !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }
 
 div.stLinkButton > a:hover {
@@ -90,7 +77,7 @@ div.stLinkButton > a:hover {
 # -------------------------------------------------------
 # Header Layout using Streamlit Columns
 # -------------------------------------------------------
-header_left, header_right = st.columns([0.88, 0.12]) # Modified ratios for clean button right-alignment space
+header_left, header_right = st.columns([0.85, 0.15])
 
 with header_left:
     st.markdown("""
@@ -119,14 +106,10 @@ with header_left:
     """, unsafe_allow_html=True)
 
 with header_right:
-    # Generates custom dynamic endpoint configuration 
-    nocache_suffix = str(int(time.time()))
-    fresh_url = f"https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf?cb={nocache_suffix}"
-
     st.link_button(
         label="Tutorial", 
-        url=fresh_url,
-        use_container_width=False # Set to false to reject broad wrapper stretching
+        url="https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf",
+        use_container_width=True
     )
 
 # -------------------------------------------------------
