@@ -1,167 +1,124 @@
 import streamlit as st
-import streamlit.components.v1 as components
+import time  # Imported to generate unique cache-busting strings
 from pathlib import Path
 
-# -------------------------------------------------------
-# Page Config
-# -------------------------------------------------------
+# --- Page Config ---
 st.set_page_config(
     page_title="NucLigs Database",
-    page_icon="NucLigs.png",
+    page_icon="NucLigs.png", 
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# -------------------------------------------------------
-# Hide Streamlit UI & Strip Extra Borders/Margins
-# -------------------------------------------------------
+# --- Define Paths ---
+logo_path = Path(__file__).parent / "NucLigs.png"
+if logo_path.exists():
+    logo_src = str(logo_path)
+else:
+    logo_src = "https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
+
+# --- Custom CSS (Hide Streamlit UI & Style Elements) ---
 st.markdown("""
 <style>
+    /* Hide Streamlit components */
+    #MainMenu {visibility:hidden;}
+    footer {visibility:hidden;}
+    header {visibility:hidden;}
+    .stDeployButton {display:none;}
 
-/* Hide native Streamlit layout infrastructure completely */
-#MainMenu {visibility:hidden;}
-footer {visibility:hidden;}
-header {visibility:hidden;}
-.stDeployButton {display:none;}
-[data-testid="stHeader"] {background: rgba(0,0,0,0); height: 0rem;}
+    /* Adjust main container padding */
+    .block-container {
+        padding: 0rem 1rem;
+        max-width: 100%;
+    }
 
-/* Remove all padding from the main app container frame */
-.block-container {
-    padding: 0rem !important;
-    max-width: 100% !important;
-    margin: 0px !important;
-}
+    html, body, [class*="css"] {
+        font-family: Arial, sans-serif;
+    }
 
-/* Eliminate browser canvas boundary spaces */
-html, body, [class*="css"], [data-testid="stAppViewContainer"] {
-    margin: 0 !important;
-    padding: 0 !important;
-    background-color: #060a14 !important; /* Forces the root page body background to seamlessly blend */
-}
+    /* --- Custom Styling for the Tutorial Button --- */
+    .stLinkButton a {
+        background-color: #38bdf8 !important;
+        color: white !important;
+        font-size: 24px !important;  
+        font-weight: 700 !important; 
+        padding: 15px 30px !important; 
+        border-radius: 12px !important; 
+        text-decoration: none !important;
+        transition: background-color 0.2s ease;
+    }
 
-iframe {
-    border: none !important;
-    display: block;
-}
+    .stLinkButton a:hover {
+        background-color: #0ea5e9 !important;
+    }
 
-/* Style and bind the header flex layout row safely */
-[data-testid="stHorizontalBlock"] {
-    background: #060a14 !important;
-    padding: 0px 20px !important;
-    border-bottom: 1px solid rgba(99,130,191,.2) !important;
-    margin: 0 !important;
-    gap: 0px !important;
-}
+    .database-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+    }
 
-/* Customize the native Streamlit link button */
-div.stLinkButton > a {
-    background-color: #38bdf8 !important;
-    color: white !important;
-    border: none !important;
-    font-size: 28px !important;
-    border-radius: 10px !important;
-    padding: 12px 22px !important;
-    font-weight: 600 !important;
-    box-shadow: 0 4px 12px rgba(56,189,248,.25) !important;
-    transition: background 0.2s ease !important;
-}
+    .logo-title-group {
+        display: flex;
+        align-items: center;
+    }
 
-div.stLinkButton > a:hover {
-    background-color: #0ea5e9 !important;
-    color: white !important;
-}
-
+    .app-title {
+        color: #38bdf8; 
+        margin-left: 15px;
+        font-size: 28px; 
+        font-weight: bold;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# -------------------------------------------------------
-# Header Layout using Streamlit Columns
-# -------------------------------------------------------
-header_left, header_right = st.columns([0.85, 0.15])
 
-with header_left:
-    st.markdown("""
-    <div style="display:flex; align-items:center; background:#060a14;">
-        <img
-            src="https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs.png"
-            style="
-                height:68px;
-                width:auto;
-                border-radius:10px;
-                margin-right:12px;
-            "
-        >
-        <div>
-            <h2 style="
-                color:#38bdf8;
-                margin:0;
-                font-family:Arial;
-                letter-spacing:1px;
-                font-size:28px;
-            ">
-                NucLigs Database : A Nucleotide and Nucleoside Analog Database
-            </h2>
+# --- Header Layout ---
+col_logo_title, col_button = st.columns([0.8, 0.2])
+
+with col_logo_title:
+    header_html = f"""
+    <div class="database-header">
+        <div class="logo-title-group">
+            <img src="{logo_src}" style="height: 60px; border-radius: 10px;" alt="NucLigs Logo">
+            <h1 class="app-title">NucLigs Database : A Nucleotide and Nucleoside Analog Database</h1>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """
+    st.markdown(header_html, unsafe_allow_html=True)
 
-with header_right:
+with col_button:
+    # 1. Generate a unique epoch timestamp string (e.g., "1717871234")
+    nocache_suffix = str(int(time.time()))
+    
+    # 2. Append it to the URL as a query parameter.
+    # This tricks the CDN and browser into thinking it's a completely brand new request every page load.
+    fresh_url = f"https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf?cb={nocache_suffix}"
+
     st.link_button(
-        label="Tutorial", 
-        url="https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf",
-        use_container_width=True
+        "Tutorial", 
+        fresh_url, 
+        use_container_width=True 
     )
 
-# -------------------------------------------------------
-# Cache HTML File
-# -------------------------------------------------------
-@st.cache_data(show_spinner=False)
-def load_html():
-    html_path = Path("nucligs_visualizer.html")
-
-    if not html_path.exists():
-        return None
-
-    return html_path.read_text(encoding="utf-8")
-
-html_content = load_html()
-
-# -------------------------------------------------------
-# Render HTML
-# -------------------------------------------------------
-if html_content:
-    components.html(
-        html_content,
-        height=1200,
-        scrolling=True
-    )
-else:
-    st.error(
-        "nucligs_visualizer.html not found in app directory"
-    )
-
-# -------------------------------------------------------
-# Footer
-# -------------------------------------------------------
+# --- Subheader stats ---
 st.markdown("""
-<div style="
-    text-align:center;
-    color:#94a3b8;
-    font-size:28px;
-    font-family:Arial;
-    border-top:0px solid rgba(99,130,191,.1);
-    background:#060a14;
-    padding-top:0px;
-">
-    Designed by Tushar Gupta and Dr. Pradeep Pant
+<div style="color: grey; padding-bottom: 20px;">
+    11,897 compounds | 6,122 analysis | 6,418 analysis
 </div>
-<div style="
-    text-align:center;
-    padding:10px 10px 20px 10px;
-    color:#64748b;
-    font-size:18px;
-    background:#060a14;
-">
-    © NucLigs Database 2026 Version 1.0
+""", unsafe_allow_html=True)
+
+# --- Main App Logic Placeholder ---
+col_search, col_spacer = st.columns([0.8, 0.2])
+with col_search:
+    search_query = st.text_input("Search", placeholder="Search name, no, PDB ID, etc...")
+
+st.warning("Database visualizer and compound exploration content is missing. Ensure the backend logic is correctly implemented.")
+
+# --- Footer ---
+st.markdown("""
+<div style="text-align: center; color: grey; padding-top: 50px;">
+    Developed by Tushar Gupta and Dr. Pradeep Pant
 </div>
 """, unsafe_allow_html=True)
