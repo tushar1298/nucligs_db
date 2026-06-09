@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from pathlib import Path
+import time  # Imported exclusively to generate unique cache-busting strings
 
 # -------------------------------------------------------
 # Page Config
@@ -106,9 +107,13 @@ with header_left:
     """, unsafe_allow_html=True)
 
 with header_right:
+    # Generates a dynamic timestamp parameter to bypass cache environments completely
+    nocache_suffix = str(int(time.time()))
+    fresh_url = f"https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf?cb={nocache_suffix}"
+
     st.link_button(
         label="Tutorial", 
-        url="https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf",
+        url=fresh_url,
         use_container_width=True
     )
 
