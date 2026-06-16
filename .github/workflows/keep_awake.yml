@@ -2,8 +2,8 @@ name: Keep NucLigs Streamlit App Alive
 
 on:
   schedule:
-    # Every 6 hours
-    - cron: "0 */6 * * *"
+    # Every 3 days at 12:00 UTC
+    - cron: "0 */6 * * *"  
   workflow_dispatch:
 
 jobs:
@@ -11,38 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wake Streamlit App
+      - name: Ping Streamlit App (safe)
         run: |
-          echo "Pinging NucLigs app..."
+          echo "Pinging NucLigs Streamlit app..."
 
-          URL="https://nucligs.streamlit.app/"
+          HTTP_STATUS=$(curl -L \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
+            --connect-timeout 30 \
+            --max-time 60 \
+            -o /dev/null \
+            -s \
+            -w "%{http_code}" \
+            https://nucligs.streamlit.app/ || true)
 
-          for i in {1..3}
-          do
-            echo "Attempt $i"
-
-            HTTP_STATUS=$(curl -L \
-              -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
-              --connect-timeout 30 \
-              --max-time 120 \
-              -o /dev/null \
-              -s \
-              -w "%{http_code}" \
-              "$URL")
-
-            echo "HTTP Status: $HTTP_STATUS"
-
-            # Success
-            if [ "$HTTP_STATUS" = "200" ]; then
-              echo "App is awake."
-              exit 0
-            fi
-
-            echo "Waiting before retry..."
-            sleep 40
-          done
-
-          echo "Finished keep-alive ping."
+          echo "HTTP Status: $HTTP_STATUS"
+          echo "Ping completed (non-fatal)."
 
       - name: Done
-        run: echo "Workflow completed."
+        run: echo "Keep-alive workflow finished successfully."
