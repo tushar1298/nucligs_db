@@ -2092,7 +2092,7 @@ function generate3DConformation(c) {
   }
 
   if (empty) empty.style.display = 'flex';
-  if (note) note.textContent = 'Computing 3D energy-minimized conformation…';
+  if (note) note.textContent = 'Computing 3D conformation…';
 
   const v3dEl = document.getElementById('viewer3d-el');
   if (!v3dEl) return;
@@ -2115,7 +2115,7 @@ function generate3DConformation(c) {
       const sdf3D = build3DConformationEngine(c.smiles);
       if (sdf3D) {
         CACHE_3D.set(cacheKey, sdf3D);
-        render3DModel(sdf3D, 'sdf', 'Fetching 3D');
+        render3DModel(sdf3D, 'sdf', '3D conformation');
       } else {
         if (empty) empty.style.display = 'flex';
         if (note) note.textContent = 'Could not generate 3D model for this SMILES';
