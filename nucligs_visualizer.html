@@ -2219,7 +2219,7 @@ function renderOverview(c) {
 
   const primaryTarget = c.primary_target || pred.imputed.primary_target || c.receptor || pred.imputed.receptor || c.enzyme || pred.imputed.enzyme;
   if (primaryTarget) {
-    html += sec('Target (W–AM)',
+    html += sec('Target',
       `<div class="subhead">Compound &amp; Target</div>
        <div class="tag-list">${(primaryTarget).split(',').map(t=>`<span class="tag tag-blue">${esc(t.trim())}</span>`).join('')}</div>`
     );
