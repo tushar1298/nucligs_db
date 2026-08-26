@@ -2208,7 +2208,7 @@ function renderOverview(c) {
 
   if (c.mod_base || c.mod_sugar || c.mod_detail) {
     html += sec('Nucleoside Scaffold',
-      `<div class="subhead">Modification group (I–M)</div>
+      `<div class="subhead">Modification group</div>
        <div class="mod-grid">
          <div class="mod-card"><div class="mod-card-type">Base (col I)</div><div class="mod-card-value">${c.mod_base||'—'}</div><div class="mod-card-detail">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
          <div class="mod-card"><div class="mod-card-type">Sugar (col J)</div><div class="mod-card-value">${c.mod_sugar||'—'}</div><div class="mod-card-detail">${c.mod_phosphate?'Phosphate: '+c.mod_phosphate:''}</div></div>
@@ -2220,7 +2220,7 @@ function renderOverview(c) {
   const primaryTarget = c.primary_target || pred.imputed.primary_target || c.receptor || pred.imputed.receptor || c.enzyme || pred.imputed.enzyme;
   if (primaryTarget) {
     html += sec('Target (W–AM)',
-      `<div class="subhead">Compound &amp; Target (col W)</div>
+      `<div class="subhead">Compound &amp; Target</div>
        <div class="tag-list">${(primaryTarget).split(',').map(t=>`<span class="tag tag-blue">${esc(t.trim())}</span>`).join('')}</div>`
     );
   } else {
@@ -2230,7 +2230,7 @@ function renderOverview(c) {
   }
 
   if (c.ic50 || c.ec50 || c.kd) {
-    html += sec('Bioactivity (cols AO–AQ)',
+    html += sec('Bioactivity',
       `<div class="subhead">Biological Activity Data</div>
        <div class="info-grid">
          ${c.ic50 ? card('IC₅₀', `<span class="bio-val">${fmtActivity(c.ic50)}</span>`) : ''}
@@ -2253,14 +2253,14 @@ function renderModification(c) {
     <div class="sb-dot" style="background:${isCanon?'var(--c-green)':'var(--c-orange)'}"></div>
     <div class="sb-text">${isCanon?'<b>Canonical / Natural</b> — No structural modifications detected':'<b>'+esc(c.analog_status||'Analog')+'</b> — Modified '+esc(c.mod_region||'')+(c.mod_detail?' : <b>'+esc(c.mod_detail)+'</b>':'')}</div></div>`;
 
-  html += sec('Scaffold Components — Modification group (cols I–M)',
-    `<div class="subhead">Merged header: "Modification" spans columns I–M</div>
+  html += sec('Scaffold Components — Modification group',
+    `<div class="subhead">Merged header: "Modification"</div>
      <div class="info-grid">
-       <div class="ig-card"><div class="ig-key">Base (col I)</div><div class="ig-val">${c.mod_base||'—'}</div><div style="font-size:9.5px;color:var(--c-text3);margin-top:2px">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
-       <div class="ig-card"><div class="ig-key">Sugar (col J)</div><div class="ig-val">${c.mod_sugar||'—'}</div><div style="font-size:9.5px;color:var(--c-text3);margin-top:2px">${getSugarDesc(c.mod_sugar)}</div></div>
-       <div class="ig-card"><div class="ig-key">Phosphate (col K)</div><div class="ig-val">${c.mod_phosphate||''}</div></div>
-       <div class="ig-card ${c.mod_detail?'highlight':''}"><div class="ig-key">Modification Detail (col L)</div><div class="ig-val">${c.mod_detail?badge(c.mod_detail,'tag-red'):pred.mod_predicted?badge(pred.mod_predicted,'tag-yellow'):''}${!c.mod_detail&&pred.mod_predicted?'<div class="ig-predicted-label">⚡ Predicted</div>':''}</div></div>
-       <div class="ig-card"><div class="ig-key">Modified Region (col M)</div><div class="ig-val">${c.mod_region?`<span class="tag ${getRegionCls(c.mod_region)}">${c.mod_region}</span>`:''}</div></div>
+       <div class="ig-card"><div class="ig-key">Base </div><div class="ig-val">${c.mod_base||'—'}</div><div style="font-size:9.5px;color:var(--c-text3);margin-top:2px">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
+       <div class="ig-card"><div class="ig-key">Sugar </div><div class="ig-val">${c.mod_sugar||'—'}</div><div style="font-size:9.5px;color:var(--c-text3);margin-top:2px">${getSugarDesc(c.mod_sugar)}</div></div>
+       <div class="ig-card"><div class="ig-key">Phosphate </div><div class="ig-val">${c.mod_phosphate||''}</div></div>
+       <div class="ig-card ${c.mod_detail?'highlight':''}"><div class="ig-key">Modification Detail </div><div class="ig-val">${c.mod_detail?badge(c.mod_detail,'tag-red'):pred.mod_predicted?badge(pred.mod_predicted,'tag-yellow'):''}${!c.mod_detail&&pred.mod_predicted?'<div class="ig-predicted-label">⚡ Predicted</div>':''}</div></div>
+       <div class="ig-card"><div class="ig-key">Modified Region </div><div class="ig-val">${c.mod_region?`<span class="tag ${getRegionCls(c.mod_region)}">${c.mod_region}</span>`:''}</div></div>
      </div>`
   );
 
@@ -2341,12 +2341,12 @@ function renderTargets(c) {
   let html = '';
 
   const groups = [
-    { subhead: 'Compound & Target (col W)',          items: [ {k:'primary_target',l:'Primary Target',cls:'tag-blue'} ] },
-    { subhead: 'Molecular Targets (cols X–AD)',      items: [ {k:'receptor',l:'Receptors',cls:'tag-teal'},{k:'kinase',l:'Kinases',cls:'tag-purple'},{k:'cdk',l:'CDK/Cyclins',cls:'tag-pink'},{k:'enzyme',l:'Enzymes',cls:'tag-green'},{k:'transporter',l:'Transporters',cls:'tag-orange'},{k:'ion_channel',l:'Ion Channels',cls:'tag-yellow'},{k:'protein_signaling',l:'Proteins/Signaling',cls:'tag-gray'} ] },
-    { subhead: 'Cell Lines (cols AE–AF)',            items: [ {k:'cancer_cell_line',l:'Cancer Cell Lines',cls:'tag-red'},{k:'non_cancer_cell_line',l:'Non-Cancer Cell Lines',cls:'tag-gray'} ] },
-    { subhead: 'Pathogens (cols AG–AJ)',             items: [ {k:'virus',l:'Viruses',cls:'tag-red'},{k:'bacteria',l:'Bacteria',cls:'tag-orange'},{k:'fungi',l:'Fungi',cls:'tag-yellow'},{k:'parasite',l:'Parasites',cls:'tag-teal'} ] },
-    { subhead: 'Organisms & Tissues (cols AK–AL)',   items: [ {k:'model_organism',l:'Model Organisms',cls:'tag-green'},{k:'tissue',l:'Tissues/Fluids',cls:'tag-gray'} ] },
-    { subhead: 'Miscellaneous (col AM)',             items: [ {k:'other_bio',l:'Other',cls:'tag-gray'} ] },
+    { subhead: 'Compound & Target ',          items: [ {k:'primary_target',l:'Primary Target',cls:'tag-blue'} ] },
+    { subhead: 'Molecular Targets ',      items: [ {k:'receptor',l:'Receptors',cls:'tag-teal'},{k:'kinase',l:'Kinases',cls:'tag-purple'},{k:'cdk',l:'CDK/Cyclins',cls:'tag-pink'},{k:'enzyme',l:'Enzymes',cls:'tag-green'},{k:'transporter',l:'Transporters',cls:'tag-orange'},{k:'ion_channel',l:'Ion Channels',cls:'tag-yellow'},{k:'protein_signaling',l:'Proteins/Signaling',cls:'tag-gray'} ] },
+    { subhead: 'Cell Lines ',            items: [ {k:'cancer_cell_line',l:'Cancer Cell Lines',cls:'tag-red'},{k:'non_cancer_cell_line',l:'Non-Cancer Cell Lines',cls:'tag-gray'} ] },
+    { subhead: 'Pathogens ',             items: [ {k:'virus',l:'Viruses',cls:'tag-red'},{k:'bacteria',l:'Bacteria',cls:'tag-orange'},{k:'fungi',l:'Fungi',cls:'tag-yellow'},{k:'parasite',l:'Parasites',cls:'tag-teal'} ] },
+    { subhead: 'Organisms & Tissues ',   items: [ {k:'model_organism',l:'Model Organisms',cls:'tag-green'},{k:'tissue',l:'Tissues/Fluids',cls:'tag-gray'} ] },
+    { subhead: 'Miscellaneous',             items: [ {k:'other_bio',l:'Other',cls:'tag-gray'} ] },
   ];
 
   let hasAny = false;
@@ -2371,7 +2371,7 @@ function renderTargets(c) {
   }
 
   if (getVal('organism')) {
-    html += `<div class="subhead">Organism (col AV)</div>`;
+    html += `<div class="subhead">Organism </div>`;
     html += sec('Organism Context', `<div class="tag-list">${getVal('organism').split(',').map(t=>`<span class="tag tag-green">${esc(t.trim())}</span>`).join('')}</div>${!c.organism && pred.imputed.organism?'<div class="ig-predicted-label">Linked prediction</div>':''}`);
   }
 
@@ -2385,7 +2385,7 @@ function renderBioactivity(c) {
     html = `<div class="status-bar" style="background:var(--c-panel2);border:1px solid var(--c-border)"><div class="sb-dot" style="background:var(--c-text3)"></div><div class="sb-text">No quantitative bioactivity data for this compound.</div></div>`;
   } else {
     if (c.ic50||c.ec50||c.kd) {
-      html += `<div class="subhead">Biological Activity Data (cols AO–AQ)</div>`;
+      html += `<div class="subhead">Biological Activity Data </div>`;
       html += sec('Activity Values', `<table class="bio-table"><thead><tr><th>Type</th><th>Value</th><th>Target</th></tr></thead><tbody>
         ${c.ic50?`<tr><td>IC₅₀</td><td><span class="bio-val">${esc(fmtActivity(c.ic50))}</span></td><td>${esc(c.primary_target||'')}</td></tr>`:''}
         ${c.ec50?`<tr><td>EC₅₀</td><td><span class="bio-val">${esc(fmtActivity(c.ec50))}</span></td><td>${esc(c.primary_target||'')}</td></tr>`:''}
@@ -2393,7 +2393,7 @@ function renderBioactivity(c) {
       </tbody></table>`);
     }
     if (c.moa_role||c.mechanism) {
-      html += `<div class="subhead">Mechanism of Action (col AN)</div>`;
+      html += `<div class="subhead">Mechanism of Action </div>`;
       html += sec('Mechanism', `<div class="info-grid wide">
         ${c.moa_role   ? card('Role &amp; Target', esc(c.moa_role)) : ''}
         ${c.mechanism  ? card('Mechanism', esc(c.mechanism)) : ''}
@@ -2410,14 +2410,14 @@ function renderBioactivity(c) {
 function renderClinical(c) {
   let html = '';
   if (c.clinical_status||c.therapeutic_area||c.approved_by||c.patents) {
-    html += `<div class="subhead">Clinical Data (cols AR–AU)</div>`;
+    html += `<div class="subhead">Clinical Data </div>`;
     html += sec('Status', `<div class="info-grid">
       ${c.clinical_status ? card('Clinical Status', badge(c.clinical_status, getStatusBadgeClass(c.clinical_status))) : ''}
       ${c.therapeutic_area? card('Therapeutic Area', esc(c.therapeutic_area)) : ''}
       ${c.approved_by     ? card('Approved By', esc(c.approved_by)) : ''}
     </div>`);
     if (c.patents) {
-      html += `<div class="subhead">Regulatory (cols AW–AX)</div>`;
+      html += `<div class="subhead">Regulatory </div>`;
       html += sec('Patent Information', `<div class="ig-card full"><div class="ig-key">Patent(s)</div><div class="ig-val" style="font-family:var(--ff-mono);font-size:10.5px">${esc(c.patents)}</div></div>`);
     }
   } else {
@@ -2537,7 +2537,7 @@ async function renderRefs(c) {
       </div>`;
     }
   } else {
-    html += `<div class="subhead">Bibliography (cols BB–BJ)</div>`;
+    html += `<div class="subhead">Bibliography </div>`;
     const refs = [];
     for (let i=0; i<Math.min(total,25); i++) {
       refs.push({
@@ -2581,7 +2581,7 @@ function renderChemblLinks(chemblValue) {
 function renderIdentifiers(c) {
   let html = '';
   const safeSmiles = esc((c.smiles || '').split('\\').join('\\\\').split("'").join("\\'"));
-  html += `<div class="subhead">Cross References (cols AY–BA)</div>`;
+  html += `<div class="subhead">Cross References </div>`;
   html += sec('Database IDs', `<div class="xref-row">
     ${c.chembl_id ? renderChemblLinks(c.chembl_id) : ''}
     ${c.pubchem_id ? `<div class="xref-chip"><div><div class="xref-label">PubChem CID</div><div class="xref-val pubchem">${esc(c.pubchem_id)}</div></div><a href="https://pubchem.ncbi.nlm.nih.gov/compound/${esc(c.pubchem_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
@@ -2591,7 +2591,7 @@ function renderIdentifiers(c) {
   </div>`);
 
   if (c.smiles) {
-    html += `<div class="subhead">SMILES (col F)</div>`;
+    html += `<div class="subhead">SMILES</div>`;
     html += sec('SMILES', `<div class="ig-card full">
       <div class="ig-key">Input SMILES</div>
       <div style="font-family:var(--ff-mono);font-size:10.5px;color:var(--c-accent);word-break:break-all;line-height:1.8">${esc(c.smiles)}</div>
@@ -2602,7 +2602,7 @@ function renderIdentifiers(c) {
   }
 
   if (c.inchi || c.inchi_key) {
-    html += `<div class="subhead">InChI Identifiers (cols G–H)</div>`;
+    html += `<div class="subhead">InChI Identifiers </div>`;
     html += sec('InChI', `<div class="info-grid full">
       ${c.inchi     ? `<div class="ig-card"><div class="ig-key">InChI</div><div style="font-family:var(--ff-mono);font-size:9.5px;color:var(--c-text2);word-break:break-all;line-height:1.65">${esc(c.inchi)}</div></div>` : ''}
       ${c.inchi_key ? `<div class="ig-card"><div class="ig-key">InChI Key</div><div style="font-family:var(--ff-mono);font-size:12px;color:var(--c-teal);letter-spacing:.8px">${esc(c.inchi_key)}</div><button class="copy-btn" id="cb-ik" onclick="copyText('${esc(c.inchi_key)}','cb-ik')">Copy</button></div>` : ''}
@@ -2610,7 +2610,7 @@ function renderIdentifiers(c) {
   }
 
   if (c.synonyms) {
-    html += sec('Synonyms (col E)', `<div class="tag-list">${c.synonyms.split(/[,;]/).map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag tag-gray">${esc(s)}</span>`).join('')}</div>`);
+    html += sec('Synonyms', `<div class="tag-list">${c.synonyms.split(/[,;]/).map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag tag-gray">${esc(s)}</span>`).join('')}</div>`);
   }
 
   const identContent = document.getElementById('ident-content');
