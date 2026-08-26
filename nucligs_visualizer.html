@@ -2210,9 +2210,9 @@ function renderOverview(c) {
     html += sec('Nucleoside Scaffold',
       `<div class="subhead">Modification group</div>
        <div class="mod-grid">
-         <div class="mod-card"><div class="mod-card-type">Base (col I)</div><div class="mod-card-value">${c.mod_base||'—'}</div><div class="mod-card-detail">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
-         <div class="mod-card"><div class="mod-card-type">Sugar (col J)</div><div class="mod-card-value">${c.mod_sugar||'—'}</div><div class="mod-card-detail">${c.mod_phosphate?'Phosphate: '+c.mod_phosphate:''}</div></div>
-         <div class="mod-card"><div class="mod-card-type">Modification (col L–M)</div><div class="mod-card-value">${c.mod_detail||badge(pred.mod_predicted||'—',c.mod_detail?'tag-red':'tag-gray')}</div><div class="mod-card-detail">${c.mod_region?`<span class="tag ${getRegionCls(c.mod_region)}" style="font-size:9px">${c.mod_region}</span>`:''}</div></div>
+         <div class="mod-card"><div class="mod-card-type">Base</div><div class="mod-card-value">${c.mod_base||'—'}</div><div class="mod-card-detail">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
+         <div class="mod-card"><div class="mod-card-type">Sugar</div><div class="mod-card-value">${c.mod_sugar||'—'}</div><div class="mod-card-detail">${c.mod_phosphate?'Phosphate: '+c.mod_phosphate:''}</div></div>
+         <div class="mod-card"><div class="mod-card-type">Modification</div><div class="mod-card-value">${c.mod_detail||badge(pred.mod_predicted||'—',c.mod_detail?'tag-red':'tag-gray')}</div><div class="mod-card-detail">${c.mod_region?`<span class="tag ${getRegionCls(c.mod_region)}" style="font-size:9px">${c.mod_region}</span>`:''}</div></div>
        </div>`
     );
   }
