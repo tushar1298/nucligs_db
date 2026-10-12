@@ -84,8 +84,7 @@ a{color:var(--c-accent);text-decoration:none}a:hover{text-decoration:underline}
 .search-clear.visible{opacity:1}
 .search-clear:hover{color:var(--c-text2)}
 
-#filter-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:6px}
-#biblio-toggle{width:100%;padding:5px 8px;background:none;border:1px solid var(--c-border);border-radius:5px;color:var(--c-text3);font-size:10.5px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .15s;font-family:var(--ff-body)}
+#biblio-toggle{width:100%;padding:6px 8px;background:none;border:1px solid var(--c-border);border-radius:5px;color:var(--c-text3);font-size:10.5px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .15s;font-family:var(--ff-body)}
 #biblio-toggle:hover{border-color:var(--c-border2);color:var(--c-text2)}
 #biblio-toggle.active{border-color:rgba(56,189,248,.3);color:var(--c-accent)}
 #biblio-toggle .bt-arrow{transition:transform .2s;font-size:9px}
@@ -103,9 +102,6 @@ a{color:var(--c-accent);text-decoration:none}a:hover{text-decoration:underline}
 .bf-select:focus{border-color:var(--c-border2)}
 .bf-select option{background:var(--c-panel2);color:var(--c-text)}
 #biblio-active-count{display:none;font-size:9px;font-family:var(--ff-mono);font-weight:600;color:var(--c-accent);background:var(--c-accent-dim);padding:1px 5px;border-radius:3px}
-.filt-select{width:100%;padding:5px 6px;border-radius:5px;background:var(--c-panel);border:1px solid var(--c-border);color:var(--c-text2);font-size:10.5px;outline:none;cursor:pointer;transition:border-color .2s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%234b5a72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;padding-right:20px}
-.filt-select:focus{border-color:var(--c-border2)}
-.filt-select option{background:var(--c-panel2);color:var(--c-text)}
 
 /* Results toolbar */
 #results-toolbar{padding:7px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--c-border);flex-shrink:0;flex-wrap:wrap;background:var(--c-bg2)}
@@ -138,23 +134,6 @@ a{color:var(--c-accent);text-decoration:none}a:hover{text-decoration:underline}
 .ri-nl{font-family:var(--ff-mono);font-size:9.5px;color:var(--c-accent);font-weight:600;flex-shrink:0}
 .ri-name{font-size:11.5px;color:var(--c-text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
 .ri-iupac{font-size:10px;color:var(--c-text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2;margin-bottom:3px;font-style:italic}
-.ri-badges{display:flex;gap:3px;flex-wrap:wrap}
-.ri-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600;letter-spacing:.3px;white-space:nowrap;border:1px solid}
-.ri-rownum{position:absolute;right:10px;top:9px;font-family:var(--ff-mono);font-size:9px;color:var(--c-text4)}
-
-/* badge colour classes */
-.badge-analog{background:rgba(167,139,250,.12);color:var(--c-purple);border-color:rgba(167,139,250,.2)}
-.badge-natural{background:var(--c-green-dim);color:var(--c-green);border-color:rgba(74,222,128,.2)}
-.badge-adenine{background:rgba(56,189,248,.1);color:var(--c-accent);border-color:rgba(56,189,248,.2)}
-.badge-uracil{background:var(--c-orange-dim);color:var(--c-orange);border-color:rgba(251,146,60,.2)}
-.badge-cytosine{background:var(--c-teal-dim);color:var(--c-teal);border-color:rgba(45,212,191,.2)}
-.badge-guanine{background:var(--c-yellow-dim);color:var(--c-yellow);border-color:rgba(251,191,36,.2)}
-.badge-thymine{background:var(--c-pink-dim);color:var(--c-pink);border-color:rgba(244,114,182,.2)}
-.badge-modified-base{background:var(--c-red-dim);color:var(--c-red);border-color:rgba(248,113,113,.2)}
-.badge-mw{background:var(--c-panel2);color:var(--c-text3);border-color:var(--c-border)}
-.badge-mod-base{background:rgba(56,189,248,.08);color:var(--c-accent);border-color:rgba(56,189,248,.15)}
-.badge-mod-sugar{background:var(--c-teal-dim);color:var(--c-teal);border-color:rgba(45,212,191,.15)}
-.badge-mod-region{background:var(--c-red-dim);color:var(--c-red);border-color:rgba(248,113,113,.15)}
 
 /* Table view mode */
 .view-table{width:100%;border-collapse:collapse;font-size:10.5px}
@@ -194,13 +173,7 @@ a{color:var(--c-accent);text-decoration:none}a:hover{text-decoration:underline}
 #comp-name-block{flex:1;min-width:0}
 #comp-name{font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--c-text);line-height:1.3}
 #comp-iupac{font-size:10.5px;color:var(--c-text3);margin-top:2px;line-height:1.4;font-style:italic}
-#comp-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
-.comp-badge{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.3px;border:1px solid;white-space:nowrap}
-.cb-analog{background:var(--c-purple-dim);color:var(--c-purple);border-color:rgba(167,139,250,.25)}
-.cb-natural{background:var(--c-green-dim);color:var(--c-green);border-color:rgba(74,222,128,.25)}
-.cb-base{background:var(--c-accent-dim);color:var(--c-accent);border-color:rgba(56,189,248,.25)}
-.cb-sugar{background:var(--c-teal-dim);color:var(--c-teal);border-color:rgba(45,212,191,.25)}
-.cb-region{background:var(--c-red-dim);color:var(--c-red);border-color:rgba(248,113,113,.25)}
+#comp-badges{display:none}
 
 /* ── VIEWERS ─────────────────────────────────────────── */
 #viewers{display:grid;grid-template-columns:1fr 1fr;height:310px;min-height:240px;border-bottom:1px solid var(--c-border);flex-shrink:0;background:var(--c-border);gap:1px}
@@ -217,9 +190,6 @@ a{color:var(--c-accent);text-decoration:none}a:hover{text-decoration:underline}
 .vp-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--c-text4);font-size:11px;text-align:center}
 .vp-empty svg{opacity:.2;width:26px;height:26px;stroke:var(--c-text3);fill:none}
 #viewer3d-el{width:100%;height:100%}
-#viewer2d-legend{padding:5px 12px;border-top:1px solid var(--c-border);display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0;background:var(--c-surface)}
-.leg-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--c-text3)}
-.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 #3d-note{font-size:9.5px;color:var(--c-text4);text-align:center;padding:4px;border-top:1px solid var(--c-border);flex-shrink:0}
 
 /* ── TABS ─────────────────────────────────────────────── */
@@ -264,13 +234,6 @@ a{color:var(--c-accent);text-decoration:none}a:hover{text-decoration:underline}
 .tag-pink{background:var(--c-pink-dim);color:var(--c-pink);border-color:rgba(244,114,182,.18)}
 .tag-gray{background:var(--c-panel2);color:var(--c-text3);border-color:var(--c-border)}
 
-.prop-ring{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px}
-.prop-card{background:var(--c-panel2);border:1px solid var(--c-border);border-radius:var(--r);padding:11px;text-align:center}
-.prop-val{font-family:var(--ff-mono);font-size:17px;font-weight:600;color:var(--c-accent);line-height:1.1}
-.prop-val.good{color:var(--c-green)}.prop-val.warn{color:var(--c-yellow)}.prop-val.pred{color:var(--c-yellow)}
-.prop-label{font-size:9px;color:var(--c-text3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px}
-.prop-predicted{font-size:8px;color:var(--c-yellow);margin-top:2px}
-
 .bio-table{width:100%;border-collapse:collapse}
 .bio-table th{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--c-text3);font-weight:600;padding:6px 10px;text-align:left;border-bottom:1px solid var(--c-border)}
 .bio-table td{font-size:11px;color:var(--c-text);padding:6px 10px;border-bottom:1px solid var(--c-border2);vertical-align:top}
@@ -299,12 +262,6 @@ a{color:var(--c-accent);text-decoration:none}a:hover{text-decoration:underline}
 .xref-label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text3);font-weight:600}
 .xref-val{font-family:var(--ff-mono);font-size:11px;font-weight:600}
 .xref-val.chembl{color:#e8a45a}.xref-val.pubchem{color:#5b8dee}.xref-val.drugbank{color:#4ade80}
-
-.mod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
-.mod-card{background:var(--c-panel2);border:1px solid var(--c-border);border-radius:var(--r);padding:11px}
-.mod-card-type{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--c-text3);font-weight:700;margin-bottom:7px}
-.mod-card-value{font-size:12px;color:var(--c-text);font-weight:500}
-.mod-card-detail{font-size:10px;color:var(--c-text3);margin-top:3px}
 
 .status-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r);margin-bottom:11px}
 .sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -509,9 +466,8 @@ new Chart(document.getElementById('coverageChart'),{type:'polarArea',data:{label
 
     <div class="uz-tags">
       <span class="uz-tag hi">.xlsx / .xls</span>
-      <span class="uz-tag">64 columns auto-mapped</span>
-      <span class="uz-tag">3-level merged headers</span>
-      <span class="uz-tag">10 000+ compounds</span>
+      <span class="uz-tag">Auto-mapped metadata</span>
+      <span class="uz-tag">10,000+ compounds</span>
       <span class="uz-tag hi">Instant 3D Generator (Offline)</span>
     </div>
   </div>
@@ -535,8 +491,6 @@ new Chart(document.getElementById('coverageChart'),{type:'polarArea',data:{label
     </div>
     <div id="stat-pills">
       <div class="stat-pill loaded" id="pill-total">— compounds</div>
-      <div class="stat-pill" id="pill-analogs">— analogs</div>
-      <div class="stat-pill" id="pill-natural">— natural</div>
     </div>
     <div class="hspacer"></div>
     <div id="rdkit-pill">RDKit loading…</div>
@@ -558,29 +512,6 @@ new Chart(document.getElementById('coverageChart'),{type:'polarArea',data:{label
           <button class="search-clear" id="search-clear" onclick="clearSearch()" title="Clear">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
-        </div>
-        <div id="filter-row">
-          <select class="filt-select" id="filt-base" onchange="applyFilters()">
-            <option value="">All Bases</option>
-            <option value="Adenine">Adenine</option>
-            <option value="Uracil">Uracil</option>
-            <option value="Cytosine">Cytosine</option>
-            <option value="Guanine">Guanine</option>
-            <option value="Thymine">Thymine</option>
-            <option value="Modified">Modified</option>
-          </select>
-          <select class="filt-select" id="filt-status" onchange="applyFilters()">
-            <option value="">All Types</option>
-            <option value="Analog">Analogs</option>
-            <option value="Natural">Natural</option>
-          </select>
-          <select class="filt-select" id="filt-region" onchange="applyFilters()">
-            <option value="">All Regions</option>
-            <option value="Base">Base mod</option>
-            <option value="Sugar">Sugar mod</option>
-            <option value="Phosphate">Phosphate mod</option>
-            <option value="Combination">Combination</option>
-          </select>
         </div>
 
         <!-- Bibliography filters toggle -->
@@ -699,12 +630,6 @@ new Chart(document.getElementById('coverageChart'),{type:'polarArea',data:{label
             <div class="vp-body" id="viewer2d">
               <div class="vp-empty"><svg viewBox="0 0 24 24" stroke-width="1"><circle cx="12" cy="12" r="10"/></svg><span>Select compound</span></div>
             </div>
-            <div id="viewer2d-legend">
-              <div class="leg-item"><div class="leg-dot" style="background:#6eaaff"></div>Nucleobase</div>
-              <div class="leg-item"><div class="leg-dot" style="background:#3dffa0"></div>Sugar</div>
-              <div class="leg-item"><div class="leg-dot" style="background:#ff6b7a"></div>Modified</div>
-              <div class="leg-item"><div class="leg-dot" style="background:#ffaa40"></div>Phosphate</div>
-            </div>
           </div>
           <!-- 3D -->
           <div class="viewer-panel">
@@ -732,7 +657,6 @@ new Chart(document.getElementById('coverageChart'),{type:'polarArea',data:{label
         <div id="tabs-wrap">
           <div id="tab-bar">
             <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
-            <button class="tab-btn" onclick="showTab('structure')">Modification Analysis</button>
             <button class="tab-btn" onclick="showTab('props')">Physicochemical</button>
             <button class="tab-btn" onclick="showTab('targets')">Biological Targets</button>
             <button class="tab-btn" onclick="showTab('bioactivity')">Bioactivity</button>
@@ -742,7 +666,6 @@ new Chart(document.getElementById('coverageChart'),{type:'polarArea',data:{label
           </div>
           <div id="tab-contents">
             <div id="tab-overview" class="tab-pane active"><div id="ov-content"></div></div>
-            <div id="tab-structure" class="tab-pane"><div id="mod-content"></div></div>
             <div id="tab-props" class="tab-pane"><div id="props-content"></div></div>
             <div id="tab-targets" class="tab-pane"><div id="targets-content"></div></div>
             <div id="tab-bioactivity" class="tab-pane"><div id="bio-content"></div></div>
@@ -784,11 +707,6 @@ const TABLE_COLS = [
   { col:'nl', label:'Structure ID', w:'100px' },
   { col:'trade_name', label:'Name', w:'140px' },
   { col:'iupac_name', label:'IUPAC Name', w:'220px' },
-  { col:'analog_status', label:'Type', w:'70px' },
-  { col:'mod_base', label:'Base', w:'75px', subhead:'Modification' },
-  { col:'mod_sugar', label:'Sugar', w:'90px', subhead:'Modification' },
-  { col:'mod_detail', label:'Mod. Detail', w:'100px', subhead:'Modification' },
-  { col:'mod_region', label:'Region', w:'80px', subhead:'Modification' },
   { col:'mol_weight', label:'MW', w:'70px' },
   { col:'logp', label:'LogP', w:'60px' },
   { col:'primary_target', label:'Primary Target', w:'160px', subhead:'Target' },
@@ -818,7 +736,6 @@ const FIELD_ALIASES = [
   { key:'mod_phosphate', tests:['modification | phosphate', 'type of modification | phosphate level', 'phosphate'] },
   { key:'mod_detail', tests:['modification | modifications', 'type of modification | miscellaneous', 'modifications'] },
   { key:'mod_region', tests:['modification | modified region', 'modified region'] },
-  { key:'analog_status', tests:['analog status'] },
   { key:'mol_weight', tests:['molecular weight'] },
   { key:'mol_formula', tests:['molecular formula'] },
   { key:'melting_point', tests:['melting point'] },
@@ -829,7 +746,7 @@ const FIELD_ALIASES = [
   { key:'psa', tests:['polar surface area', 'psa'] },
   { key:'primary_target', tests:['compound target | primary target', 'target | compound target | primary target', 'primary target'] },
   { key:'receptor', tests:['molecular targets | receptor', 'receptor'] },
-  { key:'kinase', tests:['molecular targets | kinase', 'kinase'] },
+  { key:'kinase', tests:['molecular targets | cdk complex cyclin', 'kinase'] },
   { key:'cdk', tests:['molecular targets | cdk complex cyclin', 'cdk complex cyclin'] },
   { key:'enzyme', tests:['molecular targets | enzyme', 'target | enzymes', 'enzyme'] },
   { key:'transporter', tests:['molecular targets | transporter', 'transporter'] },
@@ -964,7 +881,7 @@ function buildColumnDefinitions(ws) {
       label: deepest,
       parts,
       fieldKey: fieldKey || `extra_${i + 1}`,
-      known: !!fieldKey
+      known: Boolean(fieldKey)
     });
   }
   return defs;
@@ -1044,15 +961,31 @@ async function autoLoadDatabase() {
   const fill = document.getElementById('prog-fill');
   const msg  = document.getElementById('load-msg');
 
+  const urls = [
+    'https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs_metadata.xlsx',
+    'https://raw.githubusercontent.com/tushar1298/nucligs_db/master/NucLigs_metadata.xlsx',
+    'https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/NucLigs_metadata.xlsx',
+    'https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@master/NucLigs_metadata.xlsx'
+  ];
+
   try {
     if(fill) fill.style.width = '10%'; 
-    if(msg) msg.textContent = 'Fetching database from repository...';
+    if(msg) msg.textContent = 'Fetching database from repository…';
 
-    let response = await fetch('https://raw.githubusercontent.com/tushar1298/nucligs_db/main/NucLigs_metadata.xlsx');
-    if (!response.ok) {
-      response = await fetch('https://raw.githubusercontent.com/tushar1298/nucligs_db/master/NucLigs_metadata.xlsx');
+    let response = null;
+    for (const url of urls) {
+      try {
+        const resp = await fetch(url);
+        if (resp && resp.ok) {
+          response = resp;
+          break;
+        }
+      } catch (err) {}
     }
-    if (!response.ok) throw new Error(`Database unavailable (Status: ${response.status})`);
+
+    if (!response || !response.ok) {
+      throw new Error(`Database unavailable from remote sources.`);
+    }
 
     const arrayBuffer = await response.arrayBuffer();
     await processExcelBuffer(arrayBuffer);
@@ -1125,16 +1058,8 @@ async function processExcelBuffer(buffer) {
   if(fill) fill.style.width = '100%';
   await tick(200);
   
-  const analogs = ALL_COMPOUNDS.filter(c => c.analog_status === 'Analog').length;
-  const natural = ALL_COMPOUNDS.filter(c => c.analog_status === 'Natural').length;
-  
   const pillTotal = document.getElementById('pill-total');
-  const pillAnalogs = document.getElementById('pill-analogs');
-  const pillNatural = document.getElementById('pill-natural');
-  
-  if(pillTotal) pillTotal.textContent   = ALL_COMPOUNDS.length.toLocaleString() + ' compounds';
-  if(pillAnalogs) pillAnalogs.textContent = (analogs || '—') + (analogs ? ' analogs' : '');
-  if(pillNatural) pillNatural.textContent = (natural || '—') + (natural ? ' natural' : '');
+  if(pillTotal) pillTotal.textContent = ALL_COMPOUNDS.length.toLocaleString() + ' compounds';
   
   const dataLoading = document.getElementById('data-loading');
   if(dataLoading) dataLoading.style.display = 'none';
@@ -1157,12 +1082,6 @@ function populateFilterDropdowns() {
     el.innerHTML = '<option value="">' + placeholder + '</option>' +
       values.map(v => '<option value="' + esc(v) + '"' + (v===cur?' selected':'') + '>' + esc(v) + '</option>').join('');
   }
-  const bases    = [...new Set(ALL_COMPOUNDS.map(c=>c.mod_base).filter(Boolean))].sort();
-  const statuses = [...new Set(ALL_COMPOUNDS.map(c=>c.analog_status).filter(Boolean))].sort();
-  const regions  = [...new Set(ALL_COMPOUNDS.map(c=>c.mod_region).filter(Boolean))].sort();
-  repopulate('filt-base',   bases,   'All Bases');
-  repopulate('filt-status', statuses,'All Types');
-  repopulate('filt-region', regions, 'All Regions');
 
   const yearSet = new Set();
   ALL_COMPOUNDS.forEach(c => {
@@ -1195,7 +1114,7 @@ function populateFilterDropdowns() {
 function populateSortDropdown() {
   const select = document.getElementById('sort-select');
   if (!select) return;
-  const preferred = ['pdbs','nl','trade_name','compound_name','iupac_name','authors','year','journal','analog_status','mod_base','mod_region','mol_weight','logp','chembl_id','pubchem_id','primary_target'];
+  const preferred = ['pdbs','nl','trade_name','compound_name','iupac_name','authors','year','journal','mol_weight','logp','chembl_id','pubchem_id','primary_target'];
   const knownOptions = preferred.map(key => ACTIVE_COLUMNS.find(col => col.fieldKey === key)).filter(Boolean);
   const remainingKnown = ACTIVE_COLUMNS.filter(col => !preferred.includes(col.fieldKey));
   SORTABLE_COLUMNS = [...knownOptions, ...remainingKnown, ...EXTRA_COLUMNS];
@@ -1210,10 +1129,9 @@ function buildSearchIndex() {
     i,
     text: [
       c.pdbs, c.nl, c.compound_name, c.iupac_name, c.trade_name, c.synonyms,
-      c.smiles, c.mod_base, c.mod_sugar, c.mod_detail, c.mod_region,
-      c.analog_status, c.primary_target, c.receptor, c.enzyme,
+      c.smiles, c.primary_target, c.receptor, c.enzyme,
       c.kinase, c.virus, c.bacteria, c.mechanism, c.therapeutic_area,
-      c.therapeutic_app, c.clinical_status, c.chembl_id, c.pubchem_id,c.modomics_id,
+      c.therapeutic_app, c.clinical_status, c.chembl_id, c.pubchem_id, c.modomics_id,
       c.drugbank_id, c.inchi_key, c.moa_role, c.cancer_cell_line,
       c.authors, c.year, c.journal, c.title, c.doi, c.pubmed_id,
       ...Object.values(c.__extra || {})
@@ -1230,9 +1148,6 @@ function doSearch(q) {
 
 function applyFilters() {
   const qStr = document.getElementById('search-input')?.value || '';
-  const base = document.getElementById('filt-base')?.value || '';
-  const status = document.getElementById('filt-status')?.value || '';
-  const region = document.getElementById('filt-region')?.value || '';
   const sortBy = document.getElementById('sort-select')?.value || 'default';
   
   const author = (document.getElementById('filt-author')?.value || '').trim().toLowerCase();
@@ -1244,16 +1159,6 @@ function applyFilters() {
   if(clearBtn) clearBtn.classList.toggle('visible', !!qStr);
 
   let results = doSearch(qStr);
-
-  if (base)   results = results.filter(c => c.mod_base === base);
-  if (status) results = results.filter(c => c.analog_status === status);
-  if (region) {
-    if (region === 'Combination') {
-      results = results.filter(c => c.mod_region && c.mod_region.includes('Combination'));
-    } else {
-      results = results.filter(c => c.mod_region === region);
-    }
-  }
 
   if (author) {
     results = results.filter(c => {
@@ -1448,7 +1353,7 @@ function renderList() {
 
 function renderCardView(list, compounds) {
   const frag = document.createDocumentFragment();
-  compounds.forEach((c, localIdx) => {
+  compounds.forEach((c) => {
     const realIdx = ALL_COMPOUNDS.indexOf(c);
     const el = document.createElement('div');
     el.className = 'result-item' + (realIdx === CURRENT_IDX ? ' active' : '');
@@ -1457,26 +1362,13 @@ function renderCardView(list, compounds) {
 
     const name  = shortenStr(getDisplayName(c), 50) || getPrimaryId(c);
     const iupac = c.iupac_name || '';
-    const mw    = c.mol_weight ? parseFloat(c.mol_weight).toFixed(1) : '';
-    const base  = c.mod_base || '';
-    const status= c.analog_status || '';
-    const mod   = c.mod_detail || '';
-    const region= c.mod_region || '';
-    const bCls  = baseBadgeCls(base);
 
     el.innerHTML = `
       <div class="ri-top">
         <span class="ri-nl">${esc(getPrimaryId(c))}</span>
         <span class="ri-name" title="${esc(getDisplayName(c)||iupac)}">${esc(name)}</span>
       </div>
-      ${iupac && iupac !== name ? `<div class="ri-iupac" title="${esc(iupac)}">${esc(iupac)}</div>` : ''}
-      <div class="ri-badges">
-        ${base   ? `<span class="ri-badge ${bCls}">${esc(base)}</span>` : ''}
-        ${status ? `<span class="ri-badge ${status==='Natural'?'badge-natural':'badge-analog'}">${esc(status)}</span>` : ''}
-        ${mod    ? `<span class="ri-badge badge-mod-region">${esc(shortenStr(mod,18))}</span>` : ''}
-        ${region && region !== mod ? `<span class="ri-badge badge-mod-region" style="opacity:.7">${esc(region)}</span>` : ''}
-        ${mw     ? `<span class="ri-badge badge-mw">${mw}Da</span>` : ''}
-      </div>`;
+      ${iupac && iupac !== name ? `<div class="ri-iupac" title="${esc(iupac)}">${esc(iupac)}</div>` : ''}`;
     frag.appendChild(el);
   });
   list.appendChild(frag);
@@ -1484,25 +1376,21 @@ function renderCardView(list, compounds) {
 
 function renderCompactView(list, compounds) {
   const frag = document.createDocumentFragment();
-  compounds.forEach((c, localIdx) => {
+  compounds.forEach((c) => {
     const realIdx = ALL_COMPOUNDS.indexOf(c);
     const el = document.createElement('div');
     el.className = 'result-item' + (realIdx === CURRENT_IDX ? ' active' : '');
     el.dataset.idx = realIdx;
-    el.style.padding = '6px 12px';
+    el.style.padding = '8px 12px';
     el.onclick = () => selectCompound(realIdx);
 
-    const name = shortenStr(getDisplayName(c), 42) || getPrimaryId(c);
-    const bCls = baseBadgeCls(c.mod_base||'');
+    const name = shortenStr(getDisplayName(c), 48) || getPrimaryId(c);
 
     el.innerHTML = `
       <div style="display:flex;align-items:center;gap:6px">
         <span class="ri-nl" style="min-width:80px;flex-shrink:0">${esc(getPrimaryId(c))}</span>
-        <span style="flex:1;font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text)">${esc(name)}</span>
-        ${c.mod_base ? `<span class="ri-badge ${bCls}" style="flex-shrink:0">${esc(c.mod_base)}</span>` : ''}
-        ${c.analog_status ? `<span class="ri-badge ${c.analog_status==='Natural'?'badge-natural':'badge-analog'}" style="flex-shrink:0">${c.analog_status==='Natural'?'NAT':'ANA'}</span>` : ''}
-      </div>
-      <div class="ri-rownum">${localIdx+1}</div>`;
+        <span style="flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text)">${esc(name)}</span>
+      </div>`;
     frag.appendChild(el);
   });
   list.appendChild(frag);
@@ -1564,7 +1452,7 @@ function renderTableView(list, compounds) {
   table.appendChild(thead);
 
   const tbody = document.createElement('tbody');
-  compounds.forEach((c, localIdx) => {
+  compounds.forEach((c) => {
     const realIdx = ALL_COMPOUNDS.indexOf(c);
     const tr = document.createElement('tr');
     tr.className = realIdx === CURRENT_IDX ? 'active-row' : '';
@@ -1580,10 +1468,6 @@ function renderTableView(list, compounds) {
         const display = getDisplayName(c);
         td.textContent = display ? shortenStr(display, 32) : '';
         if (display) td.title = display;
-      } else if (col.col === 'analog_status') {
-        td.innerHTML = val ? `<span class="ri-badge ${val==='Natural'?'badge-natural':'badge-analog'}">${esc(val)}</span>` : '';
-      } else if (col.col === 'mod_base') {
-        td.innerHTML = val ? `<span class="ri-badge ${baseBadgeCls(val)}">${esc(val)}</span>` : '';
       } else if (col.col === 'clinical_status') {
         td.innerHTML = val ? `<span class="tag ${getStatusBadgeClass(val)}" style="font-size:9.5px;padding:2px 7px">${esc(val)}</span>` : '';
       } else if (col.col === 'ic50' || col.col === 'ec50') {
@@ -1645,19 +1529,9 @@ function selectCompound(idx) {
   const expBtn = document.getElementById('export-selected-btn');
   if(expBtn) expBtn.disabled = false;
 
-  const badges = document.getElementById('comp-badges');
-  if(badges) {
-      badges.innerHTML = '';
-      if (c.analog_status) addBadge(badges, c.analog_status, c.analog_status==='Natural'?'cb-natural':'cb-analog');
-      if (c.mod_base)      addBadge(badges, c.mod_base + ' base', 'cb-base');
-      if (c.mod_sugar)     addBadge(badges, c.mod_sugar, 'cb-sugar');
-      if (c.mod_region)    addBadge(badges, c.mod_region + ' mod', 'cb-region');
-  }
-
   draw2D(c);
   generate3DConformation(c);
   renderOverview(c);
-  renderModification(c);
   renderProps(c);
   renderTargets(c);
   renderBioactivity(c);
@@ -1665,21 +1539,6 @@ function selectCompound(idx) {
   renderRefs(c);
   renderIdentifiers(c);
 }
-
-function addBadge(parent, text, cls) {
-  const b = document.createElement('span');
-  b.className = 'comp-badge ' + cls;
-  b.textContent = text;
-  parent.appendChild(b);
-}
-
-const SCAFFOLDS = {
-  Adenine:  { base:'Nc1ncnc2ncnc12',         sugar:'OCC1OC(O)C(O)C1' },
-  Guanine:  { base:'Nc1nc(=O)c2ncnc2[nH]1',   sugar:'OCC1OC(O)C(O)C1' },
-  Cytosine: { base:'Nc1ccnc(=O)[nH]1',        sugar:'OCC1OC(O)C(O)C1' },
-  Uracil:   { base:'O=c1cc[nH]c(=O)[nH]1',    sugar:'OCC1OC(O)C(O)C1' },
-  Thymine:  { base:'Cc1c[nH]c(=O)[nH]c1=O',   sugar:'OCC1OCC(O)C1'    },
-};
 
 function draw2D(c) {
   const box = document.getElementById('viewer2d');
@@ -1693,45 +1552,27 @@ function draw2D(c) {
     const atomCount = document.getElementById('atom-count');
     if(atomCount) atomCount.textContent = mol.get_num_atoms() + ' atoms';
 
-    const base=c.mod_base||'', bAtoms=[], sAtoms=[], pAtoms=[], mAtoms=[];
-    let bestScore=0;
-    for (const [nm,data] of Object.entries(SCAFFOLDS)) {
-      if (base && !nm.toLowerCase().startsWith(base.toLowerCase().slice(0,3))) continue;
-      let ba=[],sa=[],sc=0;
-      try {
-        const bq=RDKIT.get_qmol(data.base); if(bq&&bq.is_valid()){const m=JSON.parse(mol.get_substruct_match(bq));if(m&&m.atoms){ba=m.atoms;sc+=m.atoms.length*2;}bq.delete();}
-        const sq=RDKIT.get_qmol(data.sugar);if(sq&&sq.is_valid()){const m=JSON.parse(mol.get_substruct_match(sq));if(m&&m.atoms){sa=m.atoms;sc+=m.atoms.length;}sq.delete();}
-      } catch(e){}
-      if(sc>bestScore){bestScore=sc;bAtoms.push(...ba);sAtoms.push(...sa);}
-    }
-    if(!bAtoms.length){
-      for(const data of Object.values(SCAFFOLDS)){
-        try{const bq=RDKIT.get_qmol(data.base);if(bq&&bq.is_valid()){const m=JSON.parse(mol.get_substruct_match(bq));if(m&&m.atoms&&m.atoms.length>bestScore){bestScore=m.atoms.length;bAtoms.push(...m.atoms);}bq.delete();}}catch(e){}
-      }
-    }
-    try{const pq=RDKIT.get_qmol('P(=O)(O)O');if(pq&&pq.is_valid()){const ms=JSON.parse(mol.get_substruct_matches(pq));if(ms)ms.forEach(m=>{if(m.atoms)pAtoms.push(...m.atoms);});pq.delete();}}catch(e){}
-
-    const known=new Set([...bAtoms,...sAtoms,...pAtoms]);
-    if(known.size>0){for(let i=0;i<mol.get_num_atoms();i++){if(!known.has(i))mAtoms.push(i);}}
-
-    const aC={}, allA=[...bAtoms,...sAtoms,...pAtoms,...mAtoms];
-    bAtoms.forEach(a=>aC[a]=[.43,.67,1.0]);
-    sAtoms.forEach(a=>aC[a]=[.24,1.0,.63]);
-    pAtoms.forEach(a=>aC[a]=[1.0,.67,.25]);
-    mAtoms.forEach(a=>aC[a]=[1.0,.42,.48]);
-
-    const w=Math.min(box.clientWidth||500,660), h=Math.min((box.clientHeight||280)-4,330);
-    const det={width:w,height:h,backgroundColour:[0,0,0,0],bondLineWidth:1.6,padding:.1,atoms:allA,highlightAtomColors:aC,highlightBondColors:{},highlightAtomRadii:Object.fromEntries(mAtoms.map(a=>[a,.5]))};
-    let svg=mol.get_svg_with_highlights(JSON.stringify(det));
-    svg=svg.replace(/fill:#FFFFFF/g,'fill:transparent').replace(/fill:#ffffff/g,'fill:transparent').replace(/stroke:#000000/g,`stroke:${palette.atom}`).replace(/stroke:#0F0F0F/g,`stroke:${palette.atom}`);
-    box.innerHTML=svg;
+    const w = Math.min(box.clientWidth || 500, 660);
+    const h = Math.min((box.clientHeight || 280) - 4, 330);
+    const drawDetails = {
+      width: w,
+      height: h,
+      backgroundColour: [0, 0, 0, 0],
+      bondLineWidth: 1.6,
+      padding: 0.1
+    };
+    let svg = mol.get_svg_with_highlights(JSON.stringify(drawDetails));
+    svg = svg.replace(/fill:#FFFFFF/g, 'fill:transparent')
+             .replace(/fill:#ffffff/g, 'fill:transparent')
+             .replace(/stroke:#000000/g, `stroke:${palette.atom}`)
+             .replace(/stroke:#0F0F0F/g, `stroke:${palette.atom}`);
+    box.innerHTML = svg;
     mol.delete();
-  } catch(e){ box.innerHTML=`<div class="vp-empty"><span>Render error</span></div>`; console.error(e); }
+  } catch(e) { 
+    box.innerHTML = `<div class="vp-empty"><span>Render error</span></div>`; 
+    console.error(e); 
+  }
 }
-
-// ════════════════════════════════════════════════════════════════════
-//  3D CONFORMATION ENGINE (100% OFFLINE, PURE SMILES-TO-3D FORCE FIELD)
-// ════════════════════════════════════════════════════════════════════
 
 function parseMolBlock(molBlock) {
   const lines = molBlock.split('\n');
@@ -1794,11 +1635,10 @@ function findSmallestRings(atoms, bonds) {
 
     while (queue.length > 0) {
       const u = queue.shift();
-      if (dist[u] >= 4) continue; // up to 7-membered rings
+      if (dist[u] >= 4) continue;
       for (const v of adj[u]) {
         if (v === parent[u]) continue;
         if (dist[v] !== -1) {
-          // cycle found
           const path1 = [];
           let cur = u;
           while (cur !== -1) { path1.push(cur); cur = parent[cur]; }
@@ -1854,11 +1694,9 @@ function build3DConformationEngine(smiles) {
   const { atoms, bonds, countsLine, header } = parsed;
   const n = atoms.length;
 
-  // 1. Identify topology & rings
   const rings = findSmallestRings(atoms, bonds);
   const ringAtomSet = new Set(rings.flat());
 
-  // Identify aromatic vs puckered rings
   const aromaticAtoms = new Set();
   rings.forEach(ring => {
     let isArom = true;
@@ -1867,7 +1705,7 @@ function build3DConformationEngine(smiles) {
       const hasDoubleOrArom = atom.neighbors.some(nb => nb.order >= 2 || (nb.order === 4));
       const isHetero = ['N', 'O', 'S'].includes(atom.sym);
       if (!hasDoubleOrArom && !isHetero && ring.length === 5 && atom.neighbors.length >= 4) {
-        isArom = false; // sugar ring (tetrahydrofuran / furanose)
+        isArom = false;
       }
     }
     if (isArom) {
@@ -1875,7 +1713,6 @@ function build3DConformationEngine(smiles) {
     }
   });
 
-  // Standard Target Bond Lengths (in Angstroms)
   function getIdealBondLength(s1, s2, order) {
     const pair = [s1, s2].sort().join('-');
     if (order >= 3) return 1.20;
@@ -1900,17 +1737,14 @@ function build3DConformationEngine(smiles) {
     return 1.48;
   }
 
-  // 2. Initial 3D Scaffold Construction & Sugar Puckering
   for (let i = 0; i < n; i++) {
     const a = atoms[i];
     const isArom = aromaticAtoms.has(i);
     const inRing = ringAtomSet.has(i);
 
     if (isArom) {
-      // Pure planar nucleobase aromatic placement with slight micro-displacement
       a.z = 0.02 * Math.sin(i * 1.5);
     } else if (inRing) {
-      // 5-membered Furanose ring (Ribose / Deoxyribose) envelope puckering (C2'-endo / C3'-endo)
       const ringIdx = rings.findIndex(r => r.includes(i));
       const posInRing = ringIdx >= 0 ? rings[ringIdx].indexOf(i) : i % 5;
       if (posInRing === 1 || posInRing === 2) {
@@ -1919,7 +1753,6 @@ function build3DConformationEngine(smiles) {
         a.z = -0.15 * Math.cos(posInRing * 1.25);
       }
     } else {
-      // Tetrahedral / Acyclic chains & phosphate groups
       const deg = a.neighbors.length;
       if (a.sym === 'P') {
         a.z = 0.85;
@@ -1931,7 +1764,6 @@ function build3DConformationEngine(smiles) {
     }
   }
 
-  // Scale initial 2D coordinates to 3D interatomic bond distance scale (~1.45Å)
   let avgDist = 0, bCount = 0;
   bonds.forEach(({ a1, a2 }) => {
     const dx = atoms[a1].x - atoms[a2].x;
@@ -1945,12 +1777,10 @@ function build3DConformationEngine(smiles) {
     a.y *= scale;
   });
 
-  // 3. Classical Force-Field / Energy Minimization (Steepest Descent with Bond, Angle & VdW Steric Repulsion)
   const MAX_ITER = 95;
   for (let iter = 0; iter < MAX_ITER; iter++) {
     const forces = Array.from({ length: n }, () => ({ fx: 0, fy: 0, fz: 0 }));
 
-    // A. Bond Stretching Force (Harmonic)
     for (const b of bonds) {
       const a1 = atoms[b.a1];
       const a2 = atoms[b.a2];
@@ -1971,13 +1801,12 @@ function build3DConformationEngine(smiles) {
       forces[b.a2].fx -= fx; forces[b.a2].fy -= fy; forces[b.a2].fz -= fz;
     }
 
-    // B. Valence Angle Bending Force (Harmonic Angle Restraints for sp3 Tetrahedral & sp2 Trigonal)
     for (let i = 0; i < n; i++) {
       const a = atoms[i];
       const nbs = a.neighbors;
       if (nbs.length >= 2) {
         const isArom = aromaticAtoms.has(i);
-        const targetCos = isArom ? -0.5 : (nbs.length >= 3 || a.sym === 'P' || a.sym === 'C') ? -0.333 : -0.42; // 120° (cos = -0.5) vs 109.5° (cos = -0.333)
+        const targetCos = isArom ? -0.5 : (nbs.length >= 3 || a.sym === 'P' || a.sym === 'C') ? -0.333 : -0.42;
         const kAngle = 0.12;
 
         for (let j = 0; j < nbs.length; j++) {
@@ -2003,7 +1832,6 @@ function build3DConformationEngine(smiles) {
       }
     }
 
-    // C. Non-bonded Steric / Van der Waals Repulsion (Prevents 3D atomic clashes)
     const bondedSet = new Set(bonds.map(b => `${Math.min(b.a1, b.a2)}-${Math.max(b.a1, b.a2)}`));
     for (let i = 0; i < n; i++) {
       for (let j = i + 1; j < n; j++) {
@@ -2026,14 +1854,12 @@ function build3DConformationEngine(smiles) {
       }
     }
 
-    // D. Planar Restraints for Aromatic Bases
     for (let i = 0; i < n; i++) {
       if (aromaticAtoms.has(i)) {
-        forces[i].fz -= atoms[i].z * 0.35; // keep nucleobase in standard planar conformation
+        forces[i].fz -= atoms[i].z * 0.35;
       }
     }
 
-    // Apply forces with adaptive damping
     const damping = Math.max(0.08, 0.45 * (1 - iter / MAX_ITER));
     for (let i = 0; i < n; i++) {
       atoms[i].x += Math.max(-0.6, Math.min(0.6, forces[i].fx * damping));
@@ -2042,13 +1868,11 @@ function build3DConformationEngine(smiles) {
     }
   }
 
-  // 4. Center molecule at origin (0, 0, 0)
   let cx = 0, cy = 0, cz = 0;
   atoms.forEach(a => { cx += a.x; cy += a.y; cz += a.z; });
   cx /= n; cy /= n; cz /= n;
   atoms.forEach(a => { a.x -= cx; a.y -= cy; a.z -= cz; });
 
-  // 5. Build output V2000 SDF string
   const outLines = [];
   outLines.push(header[0] || 'NucLigs_3D_Conformer');
   outLines.push(header[1] || '  Generated by NucLigs ');
@@ -2109,7 +1933,6 @@ function generate3DConformation(c) {
     return;
   }
 
-  // Instantaneous direct 3D coordinate generation from SMILES
   setTimeout(() => {
     try {
       const sdf3D = build3DConformationEngine(c.smiles);
@@ -2175,7 +1998,7 @@ function set3DStyle(s){
 }
 
 function showTab(name) {
-  const tabs=['overview','structure','props','targets','bioactivity','clinical','refs','identifiers'];
+  const tabs=['overview','props','targets','bioactivity','clinical','refs','identifiers'];
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===name));
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   const tab = document.getElementById('tab-'+name);
@@ -2188,11 +2011,9 @@ function renderOverview(c) {
 
   html += sec('Quick Facts', `<div class="info-grid">
     <div class="ig-card highlight"><div class="ig-key">Structure Identifier</div><div class="ig-val mono">${esc(getPrimaryId(c))}</div></div>
-    ${getDisplayName(c) && getDisplayName(c) !== getPrimaryId(c) ? card('Trade / Common Name', esc(getDisplayName(c))) : ''}
-    ${c.analog_status? card('Type', badge(c.analog_status, c.analog_status==='Natural'?'tag-green':'tag-purple')) : ''}
+    ${getDisplayName(c) && getDisplayName(c) !== getPrimaryId(c) ? card('Trade / Common / IUPAC Name', esc(getDisplayName(c))) : ''}
     ${c.mol_formula ? card('Molecular Formula', `<span class="ig-val mono">${esc(c.mol_formula)}</span>`) : ''}
     ${c.mol_weight  ? card('Molecular Weight', `<span class="ig-val large">${parseFloat(c.mol_weight).toFixed(2)} <small style="color:var(--c-text3)">g/mol</small></span>`) : ''}
-    ${c.logp        ? card('LogP', `<span class="ig-val large ${parseFloat(c.logp)>5?'warn':''}">${parseFloat(c.logp).toFixed(3)}</span>`) : pred.logp ? card('LogP (predicted)', `<span class="ig-val large predicted">${pred.logp}</span><div class="ig-predicted-label">⚡ RDKit</div>`) : ''}
     ${c.chembl_id ? card(
       'ChEMBL ID',
       c.chembl_id.toString().split(/[,;|\n]/).map(id => id.trim()).filter(Boolean).map(id => `
@@ -2205,17 +2026,6 @@ function renderOverview(c) {
     ) : ''}
     ${c.pubchem_id  ? card('PubChem CID', `<a href="https://pubchem.ncbi.nlm.nih.gov/compound/${esc(c.pubchem_id)}" target="_blank" style="font-family:var(--ff-mono);font-size:11px;color:#5b8dee">${esc(c.pubchem_id)}</a>`) : ''}
   </div>`);
-
-  if (c.mod_base || c.mod_sugar || c.mod_detail) {
-    html += sec('Nucleoside Scaffold',
-      `<div class="subhead">Modification group</div>
-       <div class="mod-grid">
-         <div class="mod-card"><div class="mod-card-type">Base</div><div class="mod-card-value">${c.mod_base||'—'}</div><div class="mod-card-detail">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
-         <div class="mod-card"><div class="mod-card-type">Sugar</div><div class="mod-card-value">${c.mod_sugar||'—'}</div><div class="mod-card-detail">${c.mod_phosphate?'Phosphate: '+c.mod_phosphate:''}</div></div>
-         <div class="mod-card"><div class="mod-card-type">Modification</div><div class="mod-card-value">${c.mod_detail||badge(pred.mod_predicted||'—',c.mod_detail?'tag-red':'tag-gray')}</div><div class="mod-card-detail">${c.mod_region?`<span class="tag ${getRegionCls(c.mod_region)}" style="font-size:9px">${c.mod_region}</span>`:''}</div></div>
-       </div>`
-    );
-  }
 
   const primaryTarget = c.primary_target || pred.imputed.primary_target || c.receptor || pred.imputed.receptor || c.enzyme || pred.imputed.enzyme;
   if (primaryTarget) {
@@ -2244,79 +2054,23 @@ function renderOverview(c) {
   if(ovContent) ovContent.innerHTML = html;
 }
 
-function renderModification(c) {
-  const pred = predictMissing(c);
-  let html = '';
-
-  const isCanon = c.analog_status==='Natural' && !c.mod_detail;
-  html += `<div class="status-bar" style="background:${isCanon?'var(--c-green-dim)':'var(--c-orange-dim)'};border:1px solid ${isCanon?'rgba(74,222,128,.15)':'rgba(251,146,60,.15)'}">
-    <div class="sb-dot" style="background:${isCanon?'var(--c-green)':'var(--c-orange)'}"></div>
-    <div class="sb-text">${isCanon?'<b>Canonical / Natural</b> — No structural modifications detected':'<b>'+esc(c.analog_status||'Analog')+'</b> — Modified '+esc(c.mod_region||'')+(c.mod_detail?' : <b>'+esc(c.mod_detail)+'</b>':'')}</div></div>`;
-
-  html += sec('Scaffold Components — Modification group',
-    `<div class="subhead">Merged header: "Modification"</div>
-     <div class="info-grid">
-       <div class="ig-card"><div class="ig-key">Base </div><div class="ig-val">${c.mod_base||'—'}</div><div style="font-size:9.5px;color:var(--c-text3);margin-top:2px">${getBaseClass(c.mod_base)} · ${getBaseType(c.mod_base)}</div></div>
-       <div class="ig-card"><div class="ig-key">Sugar </div><div class="ig-val">${c.mod_sugar||'—'}</div><div style="font-size:9.5px;color:var(--c-text3);margin-top:2px">${getSugarDesc(c.mod_sugar)}</div></div>
-       <div class="ig-card"><div class="ig-key">Phosphate </div><div class="ig-val">${c.mod_phosphate||''}</div></div>
-       <div class="ig-card ${c.mod_detail?'highlight':''}"><div class="ig-key">Modification Detail </div><div class="ig-val">${c.mod_detail?badge(c.mod_detail,'tag-red'):pred.mod_predicted?badge(pred.mod_predicted,'tag-yellow'):''}${!c.mod_detail&&pred.mod_predicted?'<div class="ig-predicted-label">⚡ Predicted</div>':''}</div></div>
-       <div class="ig-card"><div class="ig-key">Modified Region </div><div class="ig-val">${c.mod_region?`<span class="tag ${getRegionCls(c.mod_region)}">${c.mod_region}</span>`:''}</div></div>
-     </div>`
-  );
-
-  const missPred = [];
-  if (!c.logp && pred.logp) missPred.push({k:'LogP',v:pred.logp,note:'RDKit CrippenClogP'});
-  if (!c.psa  && pred.psa)  missPred.push({k:'PSA (Å²)',v:pred.psa,note:'RDKit tPSA'});
-  if (!c.primary_target && pred.predicted_target) missPred.push({k:'Predicted Target',v:pred.predicted_target,note:'Linked records / scaffold consensus'});
-  if (!c.mod_detail && pred.mod_predicted) missPred.push({k:'Modification type',v:pred.mod_predicted,note:'SMARTS detection'});
-  if (!c.solubility && pred.solubility) missPred.push({k:'Solubility class',v:pred.solubility,note:'From LogP'});
-
-  if (missPred.length) {
-    html += sec('⚡ Predicted / Inferred Data',
-      `<div class="status-bar" style="background:var(--c-yellow-dim);border:1px solid rgba(251,191,36,.15)">
-         <div class="sb-dot" style="background:var(--c-yellow)"></div>
-         <div class="sb-text" style="font-size:10.5px">Values are emitted only when deterministic descriptors or strong linked evidence support them.</div></div>
-       <div class="info-grid">`
-      + missPred.map(m=>`<div class="ig-card"><div class="ig-key">${esc(m.k)}</div><div class="ig-val predicted">${esc(m.v)}</div><div class="ig-predicted-label">⚡ ${esc(m.note)}</div></div>`).join('')
-      + '</div>'
-    );
-  }
-
-  if (c.smiles && RDKIT) {
-    const pats = detectPatterns(c.smiles);
-    if (pats.length) {
-      html += sec('Detected Structural Patterns (SMARTS)', `<div class="tag-list">${pats.map(p=>`<span class="tag ${p.cls}" title="${esc(p.desc)}">${esc(p.name)}</span>`).join('')}</div>`);
-    }
-  }
-
-  const modContent = document.getElementById('mod-content');
-  if(modContent) modContent.innerHTML = html;
-}
-
 function renderProps(c) {
   const pred = predictMissing(c);
   let html = '';
 
-  html += sec('Key Property Cards', `<div class="prop-ring">
-    ${c.mol_weight ? `<div class="prop-card"><div class="prop-val">${parseFloat(c.mol_weight).toFixed(1)}</div><div class="prop-label">MW g/mol</div></div>` : ''}
-    ${(c.logp||pred.logp) ? `<div class="prop-card"><div class="prop-val ${!c.logp?'pred':parseFloat(c.logp)>5?'warn':'good'}">${c.logp?parseFloat(c.logp).toFixed(2):pred.logp}</div><div class="prop-label">LogP</div>${!c.logp?'<div class="prop-predicted">⚡ Predicted</div>':''}</div>` : ''}
-    ${c.pka ? `<div class="prop-card"><div class="prop-val">${c.pka}</div><div class="prop-label">pKa</div></div>` : ''}
-    ${(c.psa||pred.psa)   ? `<div class="prop-card"><div class="prop-val ${!c.psa?'pred':parseFloat(c.psa||pred.psa)>140?'warn':'good'}">${c.psa||pred.psa}</div><div class="prop-label">PSA Å²</div>${!c.psa?'<div class="prop-predicted">⚡ RDKit</div>':''}</div>` : ''}
-    ${pred.hbd!=null ? `<div class="prop-card"><div class="prop-val good">${pred.hbd}</div><div class="prop-label">H-Bond Donors</div><div class="prop-predicted">⚡ RDKit</div></div>` : ''}
-    ${pred.hba!=null ? `<div class="prop-card"><div class="prop-val good">${pred.hba}</div><div class="prop-label">H-Bond Acceptors</div><div class="prop-predicted">⚡ RDKit</div></div>` : ''}
-  </div>`);
-
-  html += sec('All Physicochemical Data', `<div class="info-grid">
-    ${c.mol_formula ? card('Molecular Formula',`<span class="mono">${esc(c.mol_formula)}</span>`) : ''}
-    ${c.mol_weight  ? card('Molecular Weight', parseFloat(c.mol_weight).toFixed(4)+' g/mol') : ''}
-    ${c.logp        ? card('LogP', parseFloat(c.logp).toFixed(4)) : pred.logp ? card('LogP (predicted)', `<span class="predicted">${pred.logp}</span><div class="ig-predicted-label">⚡ RDKit</div>`) : ''}
+  html += sec('Physicochemical Properties', `<div class="info-grid">
+    
+    <!-- ${c.mol_weight  ? card('Molecular Weight', parseFloat(c.mol_weight).toFixed(4)+' g/mol') : ''} -->
+    <!--${c.logp        ? card('LogP', parseFloat(c.logp).toFixed(4)) : pred.logp ? card('LogP (predicted)', `<span class="predicted">${pred.logp}</span><div class="ig-predicted-label">⚡ RDKit</div>`) : ''}-->
     ${c.pka         ? card('pKa', esc(c.pka)) : ''}
     ${c.psa         ? card('Polar Surface Area', esc(c.psa)+' Å²') : pred.psa ? card('PSA (predicted)', `<span class="predicted">${pred.psa} Å²</span><div class="ig-predicted-label">⚡ RDKit tPSA</div>`) : ''}
+    <!--${pred.hbd!=null ? card('H-Bond Donors (HBD)', `<span class="predicted">${pred.hbd}</span><div class="ig-predicted-label">⚡ RDKit</div>`) : ''}-->
+    <!--${pred.hba!=null ? card('H-Bond Acceptors (HBA)', `<span class="predicted">${pred.hba}</span><div class="ig-predicted-label">⚡ RDKit</div>`) : ''}-->
     ${c.melting_point ? card('Melting Point', esc(c.melting_point)) : ''}
     ${c.boiling_point ? card('Boiling Point', esc(c.boiling_point)) : ''}
     ${c.solubility  ? card('Solubility', esc(c.solubility)) : pred.solubility ? card('Solubility (estimated)', `<span class="predicted">${pred.solubility}</span><div class="ig-predicted-label">⚡ From LogP</div>`) : ''}
   </div>`);
-
+  
   if (c.mol_weight || c.logp) {
     const mw=parseFloat(c.mol_weight||0), lp=parseFloat(c.logp||pred.logp||0);
     const rules=[
@@ -2330,7 +2084,7 @@ function renderProps(c) {
       + '</div>'
     );
   }
-
+  
   const propsContent = document.getElementById('props-content');
   if(propsContent) propsContent.innerHTML = html;
 }
@@ -2341,12 +2095,12 @@ function renderTargets(c) {
   let html = '';
 
   const groups = [
-    { subhead: 'Compound & Target ',          items: [ {k:'primary_target',l:'Primary Target',cls:'tag-blue'} ] },
-    { subhead: 'Molecular Targets ',      items: [ {k:'receptor',l:'Receptors',cls:'tag-teal'},{k:'kinase',l:'Kinases',cls:'tag-purple'},{k:'cdk',l:'CDK/Cyclins',cls:'tag-pink'},{k:'enzyme',l:'Enzymes',cls:'tag-green'},{k:'transporter',l:'Transporters',cls:'tag-orange'},{k:'ion_channel',l:'Ion Channels',cls:'tag-yellow'},{k:'protein_signaling',l:'Proteins/Signaling',cls:'tag-gray'} ] },
-    { subhead: 'Cell Lines ',            items: [ {k:'cancer_cell_line',l:'Cancer Cell Lines',cls:'tag-red'},{k:'non_cancer_cell_line',l:'Non-Cancer Cell Lines',cls:'tag-gray'} ] },
-    { subhead: 'Pathogens ',             items: [ {k:'virus',l:'Viruses',cls:'tag-red'},{k:'bacteria',l:'Bacteria',cls:'tag-orange'},{k:'fungi',l:'Fungi',cls:'tag-yellow'},{k:'parasite',l:'Parasites',cls:'tag-teal'} ] },
-    { subhead: 'Organisms & Tissues ',   items: [ {k:'model_organism',l:'Model Organisms',cls:'tag-green'},{k:'tissue',l:'Tissues/Fluids',cls:'tag-gray'} ] },
-    { subhead: 'Miscellaneous',             items: [ {k:'other_bio',l:'Other',cls:'tag-gray'} ] },
+    { subhead: 'Compound & Target', items: [ {k:'primary_target',l:'Primary Target',cls:'tag-blue'} ] },
+    { subhead: 'Molecular Targets', items: [ {k:'receptor',l:'Receptors',cls:'tag-teal'},{k:'kinase',l:'Kinases',cls:'tag-purple'},{k:'cdk',l:'CDK/Cyclins',cls:'tag-pink'},{k:'enzyme',l:'Enzymes',cls:'tag-green'},{k:'transporter',l:'Transporters',cls:'tag-orange'},{k:'ion_channel',l:'Ion Channels',cls:'tag-yellow'},{k:'protein_signaling',l:'Proteins/Signaling',cls:'tag-gray'} ] },
+    { subhead: 'Cell Lines', items: [ {k:'cancer_cell_line',l:'Cancer Cell Lines',cls:'tag-red'},{k:'non_cancer_cell_line',l:'Non-Cancer Cell Lines',cls:'tag-gray'} ] },
+    { subhead: 'Pathogens', items: [ {k:'virus',l:'Viruses',cls:'tag-red'},{k:'bacteria',l:'Bacteria',cls:'tag-orange'},{k:'fungi',l:'Fungi',cls:'tag-yellow'},{k:'parasite',l:'Parasites',cls:'tag-teal'} ] },
+    { subhead: 'Organisms & Tissues', items: [ {k:'model_organism',l:'Model Organisms',cls:'tag-green'},{k:'tissue',l:'Tissues/Fluids',cls:'tag-gray'} ] },
+    { subhead: 'Miscellaneous', items: [ {k:'other_bio',l:'Other',cls:'tag-gray'} ] },
   ];
 
   let hasAny = false;
@@ -2371,7 +2125,7 @@ function renderTargets(c) {
   }
 
   if (getVal('organism')) {
-    html += `<div class="subhead">Organism </div>`;
+    html += `<div class="subhead">Organism</div>`;
     html += sec('Organism Context', `<div class="tag-list">${getVal('organism').split(',').map(t=>`<span class="tag tag-green">${esc(t.trim())}</span>`).join('')}</div>${!c.organism && pred.imputed.organism?'<div class="ig-predicted-label">Linked prediction</div>':''}`);
   }
 
@@ -2385,7 +2139,7 @@ function renderBioactivity(c) {
     html = `<div class="status-bar" style="background:var(--c-panel2);border:1px solid var(--c-border)"><div class="sb-dot" style="background:var(--c-text3)"></div><div class="sb-text">No quantitative bioactivity data for this compound.</div></div>`;
   } else {
     if (c.ic50||c.ec50||c.kd) {
-      html += `<div class="subhead">Biological Activity Data </div>`;
+      html += `<div class="subhead">Biological Activity Data</div>`;
       html += sec('Activity Values', `<table class="bio-table"><thead><tr><th>Type</th><th>Value</th><th>Target</th></tr></thead><tbody>
         ${c.ic50?`<tr><td>IC₅₀</td><td><span class="bio-val">${esc(fmtActivity(c.ic50))}</span></td><td>${esc(c.primary_target||'')}</td></tr>`:''}
         ${c.ec50?`<tr><td>EC₅₀</td><td><span class="bio-val">${esc(fmtActivity(c.ec50))}</span></td><td>${esc(c.primary_target||'')}</td></tr>`:''}
@@ -2393,7 +2147,7 @@ function renderBioactivity(c) {
       </tbody></table>`);
     }
     if (c.moa_role||c.mechanism) {
-      html += `<div class="subhead">Mechanism of Action </div>`;
+      html += `<div class="subhead">Mechanism of Action</div>`;
       html += sec('Mechanism', `<div class="info-grid wide">
         ${c.moa_role   ? card('Role &amp; Target', esc(c.moa_role)) : ''}
         ${c.mechanism  ? card('Mechanism', esc(c.mechanism)) : ''}
@@ -2410,14 +2164,14 @@ function renderBioactivity(c) {
 function renderClinical(c) {
   let html = '';
   if (c.clinical_status||c.therapeutic_area||c.approved_by||c.patents) {
-    html += `<div class="subhead">Clinical Data </div>`;
+    html += `<div class="subhead">Clinical Data</div>`;
     html += sec('Status', `<div class="info-grid">
       ${c.clinical_status ? card('Clinical Status', badge(c.clinical_status, getStatusBadgeClass(c.clinical_status))) : ''}
       ${c.therapeutic_area? card('Therapeutic Area', esc(c.therapeutic_area)) : ''}
       ${c.approved_by     ? card('Approved By', esc(c.approved_by)) : ''}
     </div>`);
     if (c.patents) {
-      html += `<div class="subhead">Regulatory </div>`;
+      html += `<div class="subhead">Regulatory</div>`;
       html += sec('Patent Information', `<div class="ig-card full"><div class="ig-key">Patent(s)</div><div class="ig-val" style="font-family:var(--ff-mono);font-size:10.5px">${esc(c.patents)}</div></div>`);
     }
   } else {
@@ -2537,7 +2291,7 @@ async function renderRefs(c) {
       </div>`;
     }
   } else {
-    html += `<div class="subhead">Bibliography </div>`;
+    html += `<div class="subhead">Bibliography</div>`;
     const refs = [];
     for (let i=0; i<Math.min(total,25); i++) {
       refs.push({
@@ -2581,7 +2335,7 @@ function renderChemblLinks(chemblValue) {
 function renderIdentifiers(c) {
   let html = '';
   const safeSmiles = esc((c.smiles || '').split('\\').join('\\\\').split("'").join("\\'"));
-  html += `<div class="subhead">Cross References </div>`;
+  html += `<div class="subhead">Cross References</div>`;
   html += sec('Database IDs', `<div class="xref-row">
     ${c.chembl_id ? renderChemblLinks(c.chembl_id) : ''}
     ${c.pubchem_id ? `<div class="xref-chip"><div><div class="xref-label">PubChem CID</div><div class="xref-val pubchem">${esc(c.pubchem_id)}</div></div><a href="https://pubchem.ncbi.nlm.nih.gov/compound/${esc(c.pubchem_id)}" target="_blank" style="font-size:10px;color:var(--c-text3);margin-left:8px">↗</a></div>` : ''}
@@ -2602,7 +2356,7 @@ function renderIdentifiers(c) {
   }
 
   if (c.inchi || c.inchi_key) {
-    html += `<div class="subhead">InChI Identifiers </div>`;
+    html += `<div class="subhead">InChI Identifiers</div>`;
     html += sec('InChI', `<div class="info-grid full">
       ${c.inchi     ? `<div class="ig-card"><div class="ig-key">InChI</div><div style="font-family:var(--ff-mono);font-size:9.5px;color:var(--c-text2);word-break:break-all;line-height:1.65">${esc(c.inchi)}</div></div>` : ''}
       ${c.inchi_key ? `<div class="ig-card"><div class="ig-key">InChI Key</div><div style="font-family:var(--ff-mono);font-size:12px;color:var(--c-teal);letter-spacing:.8px">${esc(c.inchi_key)}</div><button class="copy-btn" id="cb-ik" onclick="copyText('${esc(c.inchi_key)}','cb-ik')">Copy</button></div>` : ''}
@@ -2636,7 +2390,7 @@ function buildPredictionIndex() {
       });
     });
 
-    const signature = [record.mod_base, record.mod_sugar, record.mod_detail, record.mod_region, record.analog_status]
+    const signature = [record.primary_target, record.receptor, record.kinase, record.enzyme]
       .map(normText).filter(Boolean).join('|');
     if (signature) {
       if (!signatures.has(signature)) signatures.set(signature, []);
@@ -2663,7 +2417,7 @@ function getLinkedRecords(record, field) {
 
 function getSignatureRecords(record) {
   if (!PREDICTION_INDEX) return [];
-  const signature = [record.mod_base, record.mod_sugar, record.mod_detail, record.mod_region, record.analog_status]
+  const signature = [record.primary_target, record.receptor, record.kinase, record.enzyme]
     .map(normText).filter(Boolean).join('|');
   if (!signature) return [];
   return (PREDICTION_INDEX.signatures.get(signature) || []).filter(match => match !== record);
@@ -2683,30 +2437,6 @@ function getConsensusValue(records, field, threshold = 0.8, minCount = 2) {
   if (count < minCount) return null;
   if ((count / total) < threshold) return null;
   return { value, confidence: count / total, support: `${count}/${total}` };
-}
-
-const PATS=[
-  {name:"2'-Fluoro",   smarts:'[F][C@@H]1O',     site:'sugar',     desc:"Fluorine at 2'",    cls:'tag-teal'},
-  {name:"3'-Azido",    smarts:'N=[N+]=[N-]',      site:'sugar',     desc:"3'-Azido (AZT)",    cls:'tag-red'},
-  {name:"2'-OMe",      smarts:'[C@@H](OC)[C@H]1O',site:'sugar',     desc:"2'-O-Methyl",       cls:'tag-teal'},
-  {name:'Phosphate',   smarts:'P(=O)(O)O',        site:'phosphate', desc:'Phosphate ester',   cls:'tag-orange'},
-  {name:'Thio-P',      smarts:'P(=S)',            site:'phosphate', desc:'Phosphorothioate',  cls:'tag-orange'},
-  {name:'5-Halogen',   smarts:'[F,Cl,Br,I]c1c[nH]',site:'base',     desc:'5-Halogenation',    cls:'tag-blue'},
-  {name:'N-alkyl',     smarts:'[nH0;r6]',          site:'base',     desc:'N-alkylation',      cls:'tag-blue'},
-  {name:'Cyano',       smarts:'C#N',               site:'other',    desc:'Nitrile group',     cls:'tag-gray'},
-  {name:'Bicyclic LNA',smarts:'C1OCC2OC12',        site:'sugar',    desc:'LNA bicyclic sugar',cls:'tag-purple'},
-  {name:'Vinyl',       smarts:'C=C[C@@H]1O',       site:'sugar',    desc:'Vinyl/alkene',      cls:'tag-teal'},
-  {name:'Trifluoro',   smarts:'FC(F)F',            site:'other',    desc:'Trifluoromethyl',   cls:'tag-gray'},
-];
-
-function detectPatterns(smiles) {
-  if (!RDKIT || !smiles) return [];
-  let mol; try { mol=RDKIT.get_mol(smiles); if(!mol.is_valid()) return []; } catch(e){ return []; }
-  const found=[];
-  for (const p of PATS) {
-    try{const q=RDKIT.get_qmol(p.smarts);if(q&&q.is_valid()){const m=JSON.parse(mol.get_substruct_match(q));if(m&&m.atoms&&m.atoms.length)found.push(p);q.delete();}}catch(e){}
-  }
-  mol.delete(); return found;
 }
 
 function predictMissing(c) {
@@ -2729,14 +2459,6 @@ function predictMissing(c) {
   if (!c.solubility) {
     const lp=parseFloat(c.logp||pred.logp||0);
     pred.solubility = lp<0?'High (polar)':lp<2?'Moderate':lp<4?'Low-Moderate':'Low (lipophilic)';
-  }
-  if (!c.mod_detail && c.analog_status==='Analog') {
-    const pats = detectPatterns(smiles);
-    if (pats.length) pred.mod_predicted = pats.slice(0,2).map(p => p.name).join(' + ');
-  }
-  if (!c.mod_sugar) {
-    const s=c.smiles||'';
-    pred.sugar_class=s.includes('F')?"Fluorinated furanose (likely 2'-F or 2',2'-diF)":s.includes('O[C@@H]1')?"Ribose-type furanose":s.includes('OC')?"Likely ribose":"Acyclic or modified";
   }
   IMPUTABLE_FIELDS.forEach(field => {
     if (c[field]) return;
@@ -2783,13 +2505,6 @@ function fmtActivity(val) {
   }
   return String(val);
 }
-function baseBadgeCls(base) {
-  return {'Adenine':'badge-adenine','Uracil':'badge-uracil','Cytosine':'badge-cytosine','Guanine':'badge-guanine','Thymine':'badge-thymine','Modified':'badge-modified-base'}[base]||'badge-mw';
-}
-function getBaseClass(b){ return {'Adenine':'Purine','Guanine':'Purine','Cytosine':'Pyrimidine','Uracil':'Pyrimidine','Thymine':'Pyrimidine','Modified':'Modified scaffold'}[b]||''; }
-function getBaseType(b) { return {'Adenine':'6-aminopurine','Guanine':'2-amino-6-oxopurine','Cytosine':'4-aminopyrimidine','Uracil':'2,4-dioxopyrimidine','Thymine':'5-methyl-2,4-dioxopyrimidine'}[b]||''; }
-function getSugarDesc(s){ return {'Ribose':'5-membered furanose ring, 3 OH groups','2\'-Deoxyribose':"5-membered furanose, missing 2'-OH",'Modified furanose':'Structurally altered furanose ring'}[s]||''; }
-function getRegionCls(r){ if(!r)return 'tag-gray'; if(r==='Base')return 'tag-blue'; if(r==='Sugar')return 'tag-teal'; if(r==='Phosphate')return 'tag-orange'; if(r.includes('Combination'))return 'tag-purple'; return 'tag-gray'; }
 function getStatusBadgeClass(s){ if(!s)return 'tag-gray'; if(s.includes('Approved'))return 'tag-green'; if(s.includes('Clinical'))return 'tag-yellow'; if(s.includes('Research')||s.includes('Experimental'))return 'tag-blue'; return 'tag-gray'; }
 function copyText(text, btnId) {
   navigator.clipboard.writeText(text).then(()=>{
@@ -2809,7 +2524,6 @@ function buildExportRecord(record) {
     if (!value && col.fieldKey === 'logp' && pred.logp) value = pred.logp;
     if (!value && col.fieldKey === 'psa' && pred.psa) value = pred.psa;
     if (!value && col.fieldKey === 'solubility' && pred.solubility) value = pred.solubility;
-    if (!value && col.fieldKey === 'mod_detail' && pred.mod_predicted) value = pred.mod_predicted;
     if (!value && col.fieldKey === 'primary_target' && pred.predicted_target) value = pred.predicted_target;
     row[col.label] = value;
   });
@@ -2910,6 +2624,7 @@ document.addEventListener('DOMContentLoaded', () => {
       rdkitPill.textContent='RDKit unavailable';
       rdkitPill.className='err';
     }
+    autoLoadDatabase();
   });
 });
 
