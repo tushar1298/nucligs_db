@@ -109,7 +109,7 @@ with header_left:
 with header_right:
     # Generates a dynamic timestamp parameter to bypass cache environments completely
     nocache_suffix = str(int(time.time()))
-    fresh_url = f"https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial.pdf?cb={nocache_suffix}"
+    fresh_url = f"https://cdn.jsdelivr.net/gh/tushar1298/nucligs_db@main/tutorial2.pdf?cb={nocache_suffix}"
 
     st.link_button(
         label="Tutorial", 
